@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "hooks": {
+    "preToolUse": [
+      {
+        "type": "command",
+        "powershell": "npx @nizos/probity --agent github-copilot"
+      }
+    ]
+  }
+}
