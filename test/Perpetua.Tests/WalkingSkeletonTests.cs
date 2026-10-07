@@ -1,6 +1,6 @@
-using Cairn;
+using Perpetua;
 
-namespace Cairn.Tests;
+namespace Perpetua.Tests;
 
 public class WalkingSkeletonTests
 {

@@ -3,10 +3,10 @@
   <PropertyGroup>
     <Authors>Sébastien Van De Poel</Authors>
     <Company>Arcrit</Company>
-    <Product>Cairn</Product>
-    <Description>Cairn - embed meaningful markers in your code; tools follow them to generate documentation (C4/Structurizr, flows, onboarding).</Description>
-    <PackageProjectUrl>https://github.com/SebaVDP/Cairn</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/SebaVDP/Cairn</RepositoryUrl>
+    <Product>Perpetua</Product>
+    <Description>Perpetua - a living-documentation platform: embed meaningful markers in your code and generate always-current documentation (C4/Structurizr, flows, onboarding).</Description>
+    <PackageProjectUrl>https://github.com/SebaVDP/Perpetua</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/SebaVDP/Perpetua</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>

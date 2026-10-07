@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/Perpetua/">
+    <Project Path="src/Perpetua/Perpetua.csproj" />
+  </Folder>
+  <Folder Name="/src/Perpetua.Structurizr/">
+    <Project Path="src/Perpetua.Structurizr/Perpetua.Structurizr.csproj" />
+  </Folder>
+  <Folder Name="/test/" />
+  <Folder Name="/test/Perpetua.Tests/">
+    <Project Path="test/Perpetua.Tests/Perpetua.Tests.csproj" />
+  </Folder>
+</Solution>

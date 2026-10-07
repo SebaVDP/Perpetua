@@ -18,8 +18,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Cairn\Cairn.csproj" />
-    <ProjectReference Include="..\..\src\Cairn.Structurizr\Cairn.Structurizr.csproj" />
+    <ProjectReference Include="..\..\src\Perpetua\Perpetua.csproj" />
+    <ProjectReference Include="..\..\src\Perpetua.Structurizr\Perpetua.Structurizr.csproj" />
   </ItemGroup>
 
 </Project>

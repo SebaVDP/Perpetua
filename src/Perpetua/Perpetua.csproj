@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\Cairn.Structurizr\Cairn.Structurizr.csproj" />
+    <ProjectReference Include="..\Perpetua.Structurizr\Perpetua.Structurizr.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

@@ -18,13 +18,13 @@ jobs:
           dotnet-version: '10.0.x'
 
       - name: Restore
-        run: dotnet restore Cairn.slnx
+        run: dotnet restore Perpetua.slnx
 
       - name: Build
-        run: dotnet build Cairn.slnx --configuration Release --no-restore
+        run: dotnet build Perpetua.slnx --configuration Release --no-restore
 
       - name: Test
-        run: dotnet run --project test/Cairn.Tests/Cairn.Tests.csproj --configuration Release --no-build
+        run: dotnet run --project test/Perpetua.Tests/Perpetua.Tests.csproj --configuration Release --no-build
 
   mutation:
     runs-on: ubuntu-latest
@@ -41,16 +41,16 @@ jobs:
         run: dotnet tool restore
 
       - name: Restore
-        run: dotnet restore Cairn.slnx
+        run: dotnet restore Perpetua.slnx
 
       - name: Mutation test
-        working-directory: test/Cairn.Tests
-        run: dotnet stryker --project Cairn.Structurizr.csproj --test-runner mtp
+        working-directory: test/Perpetua.Tests
+        run: dotnet stryker --project Perpetua.Structurizr.csproj --test-runner mtp
 
       - name: Upload mutation report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: mutation-report
-          path: test/Cairn.Tests/StrykerOutput/**/reports/*.html
+          path: test/Perpetua.Tests/StrykerOutput/**/reports/*.html
           if-no-files-found: ignore

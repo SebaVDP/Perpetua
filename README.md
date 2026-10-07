@@ -1,22 +1,22 @@
-# Cairn
+# Perpetua
 
-[![CI](https://github.com/SebaVDP/Cairn/actions/workflows/ci.yml/badge.svg)](https://github.com/SebaVDP/Cairn/actions/workflows/ci.yml)
-[![NuGet (Cairn)](https://img.shields.io/nuget/v/Cairn?label=Cairn)](https://www.nuget.org/packages/Cairn)
-[![NuGet (Cairn.Structurizr)](https://img.shields.io/nuget/v/Cairn.Structurizr?label=Cairn.Structurizr)](https://www.nuget.org/packages/Cairn.Structurizr)
+[![CI](https://github.com/SebaVDP/Perpetua/actions/workflows/ci.yml/badge.svg)](https://github.com/SebaVDP/Perpetua/actions/workflows/ci.yml)
+[![NuGet (Perpetua)](https://img.shields.io/nuget/v/Perpetua?label=Perpetua)](https://www.nuget.org/packages/Perpetua)
+[![NuGet (Perpetua.Structurizr)](https://img.shields.io/nuget/v/Perpetua.Structurizr?label=Perpetua.Structurizr)](https://www.nuget.org/packages/Perpetua.Structurizr)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-Cairn - embed meaningful markers in your code; tools follow them to generate documentation (C4/Structurizr, flows, onboarding).
+Perpetua is a living-documentation platform: embed meaningful markers in your code and generate always-current documentation (C4/Structurizr, flows, onboarding).
 
 ## Install
 
 ```bash
-dotnet add package Cairn
+dotnet add package Perpetua
 ```
 
 ## Usage
 
 ```csharp
-using Cairn;
+using Perpetua;
 
 var dsl = new Generator().Generate();
 // dsl is a valid Structurizr workspace.dsl

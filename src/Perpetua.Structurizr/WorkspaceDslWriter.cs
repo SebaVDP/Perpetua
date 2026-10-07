@@ -1,4 +1,4 @@
-namespace Cairn.Structurizr;
+namespace Perpetua.Structurizr;
 
 /// <summary>
 /// Writes Structurizr workspace DSL. The walking-skeleton implementation emits

@@ -1,6 +1,6 @@
-using Cairn.Structurizr;
+using Perpetua.Structurizr;
 
-namespace Cairn;
+namespace Perpetua;
 
 /// <summary>
 /// Entry point that generates documentation artifacts from marked-up code.
