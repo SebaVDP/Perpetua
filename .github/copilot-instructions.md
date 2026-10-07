@@ -13,6 +13,8 @@ Every change follows this loop:
 5. **Show the commit message** — present the proposed commit message for approval.
 6. **Commit** — only after approval. Never commit without showing the message first.
 
+_Exact test and mutation-testing commands live in the `running-tests` skill._
+
 ## Conventions
 
 - **Small commits** that follow a single user story / acceptance criterion.
@@ -21,9 +23,3 @@ Every change follows this loop:
 - **Test placement — favor behavior over structure.** Write tests against the outermost boundary that expresses the behavior, so they assert *what the system does for a user*, not *how the code is arranged internally*. Concretely, exercise behavior through the use-case boundary (Application handlers/scenarios) whenever a user action drives it — this keeps tests resilient when responsibilities move between domain types during refactoring. Drop to a Domain unit test only for an invariant that is intrinsic to a single object in isolation and has no meaningful use-case expression. Prefer the higher-level test when both are possible; a test that has to reach into a specific aggregate to observe a behavior is a smell that it is coupled to structure.
 - A **Probity preToolUse hook** (`.github/hooks/probity.json`) enforces strict TDD: one new test per write, and production code only after a clean RED.
 - **Document meaning, not mechanics.** Code should explain how the software works through names, types, and structure. Documentation should capture meaning, intent, rationale, and domain or architectural knowledge that cannot reasonably be expressed by the code itself. Because Cairn generates documentation from code, these descriptions remain part of the living source of truth.
-
-## Commands
-
-- Backlog: `gh issue list` / `gh issue view <n>` (tickets are GitHub Issues)
-- Tests: `dotnet test --verbosity quiet --nologo`
-- Mutation testing: from `test/Application.Tests/`, `dotnet stryker --project Cairn.Domain.csproj`
