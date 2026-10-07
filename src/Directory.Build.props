@@ -1,0 +1,31 @@
+<Project>
+
+  <PropertyGroup>
+    <Authors>Sébastien Van De Poel</Authors>
+    <Company>Arcrit</Company>
+    <Product>Cairn</Product>
+    <Description>Cairn - embed meaningful markers in your code; tools follow them to generate documentation (C4/Structurizr, flows, onboarding).</Description>
+    <PackageProjectUrl>https://github.com/SebaVDP/Cairn</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/SebaVDP/Cairn</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>documentation;c4;structurizr;architecture;onboarding;source-generator</PackageTags>
+    <Copyright>Copyright (c) 2026 Sébastien Van De Poel</Copyright>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
+    <Deterministic>true</Deterministic>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>

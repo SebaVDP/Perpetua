@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/Cairn/">
+    <Project Path="src/Cairn/Cairn.csproj" />
+  </Folder>
+  <Folder Name="/src/Cairn.Structurizr/">
+    <Project Path="src/Cairn.Structurizr/Cairn.Structurizr.csproj" />
+  </Folder>
+  <Folder Name="/test/" />
+  <Folder Name="/test/Cairn.Tests/">
+    <Project Path="test/Cairn.Tests/Cairn.Tests.csproj" />
+  </Folder>
+</Solution>
