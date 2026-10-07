@@ -1,6 +1,6 @@
 # Development Workflow
 
-This is Cairn — a tool that embeds meaningful markers in code so other tools can follow them to generate documentation (C4/Structurizr, flows, onboarding) — built in C# (.NET 10) using **TDD** and **DDD**, with small, user-story-following git commits. Work proceeds story-by-story from the backlog in `Documentation/Backlog/`.
+This is Cairn — a tool that embeds meaningful markers in code so other tools can follow them to generate documentation (C4/Structurizr, flows, onboarding) — built in C# (.NET 10) using **TDD** and **DDD**, with small, user-story-following git commits. Work proceeds story-by-story from the backlog tracked as **GitHub Issues**.
 
 ## TDD cycle (definition of done)
 
@@ -23,5 +23,6 @@ Every change follows this loop:
 
 ## Commands
 
+- Backlog: `gh issue list` / `gh issue view <n>` (tickets are GitHub Issues)
 - Tests: `dotnet test --verbosity quiet --nologo`
 - Mutation testing: from `test/Application.Tests/`, `dotnet stryker --project Cairn.Domain.csproj`
