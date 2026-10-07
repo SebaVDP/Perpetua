@@ -17,14 +17,33 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
+      - name: Restore tools
+        run: dotnet tool restore
+
       - name: Restore
         run: dotnet restore Perpetua.slnx
 
       - name: Build
         run: dotnet build Perpetua.slnx --configuration Release --no-restore
 
-      - name: Test
-        run: dotnet run --project test/Perpetua.Tests/Perpetua.Tests.csproj --configuration Release --no-build
+      - name: Test with coverage
+        run: dotnet dotnet-coverage collect -f cobertura -o coverage.cobertura.xml "dotnet run --project test/Perpetua.Tests/Perpetua.Tests.csproj --configuration Release --no-build"
+
+      - name: Generate coverage report
+        if: always()
+        run: dotnet tool run reportgenerator -reports:coverage.cobertura.xml -targetdir:coveragereport "-reporttypes:MarkdownSummaryGithub;Html"
+
+      - name: Publish coverage to job summary
+        if: always()
+        run: cat coveragereport/SummaryGithub.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coveragereport/**
+          if-no-files-found: ignore
 
   mutation:
     runs-on: ubuntu-latest
@@ -45,12 +64,16 @@ jobs:
 
       - name: Mutation test
         working-directory: test/Perpetua.Tests
-        run: dotnet stryker --project Perpetua.Structurizr.csproj --test-runner mtp
+        run: dotnet stryker --project Perpetua.Structurizr.csproj --test-runner mtp --reporter markdown --reporter html
+
+      - name: Publish mutation report to job summary
+        if: always()
+        run: find test/Perpetua.Tests/StrykerOutput -name mutation-report.md -exec cat {} + >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload mutation report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: mutation-report
-          path: test/Perpetua.Tests/StrykerOutput/**/reports/*.html
+          path: test/Perpetua.Tests/StrykerOutput/**/reports/mutation-report.html
           if-no-files-found: ignore
