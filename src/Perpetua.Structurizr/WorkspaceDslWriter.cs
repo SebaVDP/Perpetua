@@ -1,3 +1,5 @@
+using Perpetua;
+
 namespace Perpetua.Structurizr;
 
 /// <summary>
@@ -7,6 +9,29 @@ namespace Perpetua.Structurizr;
 public sealed class WorkspaceDslWriter
 {
     /// <summary>Returns a valid, empty Structurizr <c>workspace.dsl</c> document.</summary>
-    public string Write() =>
-        "workspace {\n    model {\n    }\n    views {\n    }\n}\n";
+    public string Write() => Write([]);
+
+    /// <summary>Returns a workspace containing the declared software systems and containers.</summary>
+    public string Write(IEnumerable<ContainerAttribute> containers)
+    {
+        var lines = new List<string>
+        {
+            "workspace {",
+            "    model {"
+        };
+
+        foreach (var group in containers.GroupBy(container => container.Context).OrderBy(group => group.Key, StringComparer.Ordinal))
+        {
+            lines.Add($"        softwareSystem \"{group.Key}\" {{");
+            lines.AddRange(group.OrderBy(container => container.Name, StringComparer.Ordinal).Select(container => $"            container \"{container.Name}\""));
+            lines.Add("        }");
+        }
+
+        lines.Add("    }");
+        lines.Add("    views {");
+        lines.Add("    }");
+        lines.Add("}");
+
+        return $"{string.Join('\n', lines)}\n";
+    }
 }

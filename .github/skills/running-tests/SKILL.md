@@ -12,14 +12,14 @@ Perpetua uses **xUnit v3**, which runs on the **Microsoft Testing Platform (MTP)
 
 ## Tests
 
-    dotnet run --project test\Perpetua.Tests\Perpetua.Tests.csproj
+    dotnet run --project test\Perpetua.Structurizr.Tests\Perpetua.Structurizr.Tests.csproj
 
 `dotnet test` is unreliable here (the MTP `dotnet test` harness reports
 "Zero tests ran" on this machine), so run the test project directly.
 
 ## Mutation testing (Stryker)
 
-From `test/Perpetua.Tests/` (run `dotnet tool restore` first if needed):
+From `test/Perpetua.Structurizr.Tests/` (run `dotnet tool restore` first if needed):
 
     dotnet stryker --project Perpetua.Structurizr.csproj --test-runner mtp
 

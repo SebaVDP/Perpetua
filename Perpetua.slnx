@@ -7,7 +7,10 @@
     <Project Path="src/Perpetua.Structurizr/Perpetua.Structurizr.csproj" />
   </Folder>
   <Folder Name="/test/" />
-  <Folder Name="/test/Perpetua.Tests/">
-    <Project Path="test/Perpetua.Tests/Perpetua.Tests.csproj" />
+  <Folder Name="/test/Perpetua.Structurizr.Tests/">
+    <Project Path="test/Perpetua.Structurizr.Tests/Perpetua.Structurizr.Tests.csproj" />
+  </Folder>
+  <Folder Name="/test/Perpetua.Structurizr.Tests.Fixtures/">
+    <Project Path="test/Perpetua.Structurizr.Tests.Fixtures/Perpetua.Structurizr.Tests.Fixtures.csproj" />
   </Folder>
 </Solution>

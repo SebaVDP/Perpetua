@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Testcontainers" Version="4.16.0" />
     <PackageReference Include="xunit.v3" Version="4.0.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="4.0.0" />
   </ItemGroup>
@@ -20,6 +21,14 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Perpetua\Perpetua.csproj" />
     <ProjectReference Include="..\..\src\Perpetua.Structurizr\Perpetua.Structurizr.csproj" />
+    <ProjectReference Include="..\Perpetua.Structurizr.Tests.Fixtures\Perpetua.Structurizr.Tests.Fixtures.csproj" ReferenceOutputAssembly="false" Private="false" />
   </ItemGroup>
+
+  <Target Name="CopyFixtureAssemblies" AfterTargets="Build">
+    <ItemGroup>
+      <FixtureAssemblies Include="$(MSBuildThisFileDirectory)..\Perpetua.Structurizr.Tests.Fixtures\bin\$(Configuration)\$(TargetFramework)\*.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(FixtureAssemblies)" DestinationFolder="$(OutDir)fixtures" SkipUnchangedFiles="true" />
+  </Target>
 
 </Project>

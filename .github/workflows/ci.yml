@@ -27,7 +27,7 @@ jobs:
         run: dotnet build Perpetua.slnx --configuration Release --no-restore
 
       - name: Test with coverage
-        run: dotnet dotnet-coverage collect -f cobertura -o coverage.cobertura.xml "dotnet run --project test/Perpetua.Tests/Perpetua.Tests.csproj --configuration Release --no-build"
+        run: dotnet dotnet-coverage collect -f cobertura -o coverage.cobertura.xml "dotnet run --project test/Perpetua.Structurizr.Tests/Perpetua.Structurizr.Tests.csproj --configuration Release --no-build"
 
       - name: Generate coverage report
         if: always()
@@ -63,17 +63,17 @@ jobs:
         run: dotnet restore Perpetua.slnx
 
       - name: Mutation test
-        working-directory: test/Perpetua.Tests
+        working-directory: test/Perpetua.Structurizr.Tests
         run: dotnet stryker --project Perpetua.Structurizr.csproj --test-runner mtp --reporter markdown --reporter html
 
       - name: Publish mutation report to job summary
         if: always()
-        run: find test/Perpetua.Tests/StrykerOutput -name mutation-report.md -exec cat {} + >> "$GITHUB_STEP_SUMMARY"
+        run: find test/Perpetua.Structurizr.Tests/StrykerOutput -name mutation-report.md -exec cat {} + >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload mutation report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: mutation-report
-          path: test/Perpetua.Tests/StrykerOutput/**/reports/mutation-report.html
+          path: test/Perpetua.Structurizr.Tests/StrykerOutput/**/reports/mutation-report.html
           if-no-files-found: ignore

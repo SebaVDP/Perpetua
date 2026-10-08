@@ -1,9 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <ItemGroup>
+    <ProjectReference Include="..\Perpetua\Perpetua.csproj" />
+    <InternalsVisibleTo Include="Perpetua.Structurizr.Tests" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <OutputType>Exe</OutputType>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>perpetua-structurizr</ToolCommandName>
   </PropertyGroup>
 
 </Project>
