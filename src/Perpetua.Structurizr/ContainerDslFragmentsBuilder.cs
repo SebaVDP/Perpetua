@@ -6,6 +6,11 @@ public sealed class ContainerDslFragmentsBuilder
 {
     public ContainerDslFragmentsResult Build(IEnumerable<ContainerAttribute> containers)
     {
+        if (!containers.Any())
+        {
+            return new NoContainersFound();
+        }
+
         if (containers.Count() > 1)
         {
             return new OnlyOneContainerAllowed();

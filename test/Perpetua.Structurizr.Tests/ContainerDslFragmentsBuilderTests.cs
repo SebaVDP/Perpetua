@@ -22,6 +22,16 @@ public class ContainerDslFragmentsBuilderTests
     }
 
     [Fact]
+    public void Reports_that_no_containers_are_found_when_there_are_none()
+    {
+        // When
+        var result = new ContainerDslFragmentsBuilder().Build([]);
+
+        // Then
+        Assert.IsType<NoContainersFound>(result);
+    }
+
+    [Fact]
     public void Reports_an_error_when_more_than_one_container_is_found()
     {
         // Given
