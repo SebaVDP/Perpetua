@@ -5,16 +5,40 @@ public class ProgramTests
     [Fact]
     public void Returns_success_when_the_assembly_directory_is_valid()
     {
-        var assemblyDirectory = Directory.CreateTempSubdirectory();
+        // Given
+        var assemblyDirectory = Path.Combine(AppContext.BaseDirectory, "fixtures");
+        var workingDirectory = Directory.CreateTempSubdirectory();
+
         try
         {
-            var result = Program.Run([assemblyDirectory.FullName], TextWriter.Null, TextWriter.Null);
+            // When
+            var result = Program.Run([assemblyDirectory], workingDirectory, TextWriter.Null);
 
+            // Then
             Assert.Equal(Program.CommandExitCode.Success, result);
+            Assert.Equal(
+                ["OtherSystem.dsl", "SampleSystem.dsl"],
+                Directory.GetFiles(workingDirectory.FullName, "*.dsl")
+                    .Select(Path.GetFileName)
+                    .Order(StringComparer.Ordinal));
+            Assert.Equal(
+                """
+                container "OtherContainer"
+                container "OtherWorker"
+
+                """.ReplaceLineEndings("\n"),
+                File.ReadAllText(Path.Combine(workingDirectory.FullName, "OtherSystem.dsl")));
+            Assert.Equal(
+                """
+                container "SampleContainer"
+                container "SampleWorker"
+
+                """.ReplaceLineEndings("\n"),
+                File.ReadAllText(Path.Combine(workingDirectory.FullName, "SampleSystem.dsl")));
         }
         finally
         {
-            assemblyDirectory.Delete(recursive: true);
+            workingDirectory.Delete(recursive: true);
         }
     }
 
@@ -23,7 +47,7 @@ public class ProgramTests
     {
         using var error = new StringWriter();
 
-        var result = Program.Run([], TextWriter.Null, error);
+        var result = Program.Run([], new DirectoryInfo(Environment.CurrentDirectory), error);
 
         Assert.Equal(Program.CommandExitCode.InvalidArguments, result);
         Assert.Contains("directory", error.ToString(), StringComparison.OrdinalIgnoreCase);
@@ -34,7 +58,7 @@ public class ProgramTests
     {
         using var error = new StringWriter();
 
-        var result = Program.Run(["does-not-exist"], TextWriter.Null, error);
+        var result = Program.Run(["does-not-exist"], new DirectoryInfo(Environment.CurrentDirectory), error);
 
         Assert.Equal(Program.CommandExitCode.InvalidArguments, result);
         Assert.Contains("directory", error.ToString(), StringComparison.OrdinalIgnoreCase);
