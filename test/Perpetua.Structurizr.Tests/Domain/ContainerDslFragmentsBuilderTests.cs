@@ -5,7 +5,7 @@ namespace Perpetua.Structurizr.Tests;
 public class ContainerDslFragmentsBuilderTests
 {
     [Fact]
-    public void Groups_container_fragments_by_context()
+    public void Builds_the_context_fragment_of_the_container()
     {
         // Given
         var containers = new[]
@@ -23,7 +23,7 @@ public class ContainerDslFragmentsBuilderTests
     }
 
     [Fact]
-    public void Reports_that_no_containers_are_found_when_there_are_none()
+    public void Reports_that_no_containers_are_found_when_the_deployment_unit_declares_none()
     {
         // When
         var result = new ContainerDslFragmentsBuilder().Build([]);
