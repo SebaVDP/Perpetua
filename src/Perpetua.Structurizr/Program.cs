@@ -33,8 +33,15 @@ public static class Program
             NoContainersFound => CommandExitCode.Success,
             OnlyOneContainerAllowed => ReportOnlyOneContainerAllowed(error),
             InvalidContainerName => ReportInvalidContainerName(error),
+            InvalidContextName => ReportInvalidContextName(error),
             _ => throw new UnreachableException()
         };
+    }
+
+    private static CommandExitCode ReportInvalidContextName(TextWriter error)
+    {
+        error.WriteLine("The context is not a valid identifier.");
+        return CommandExitCode.InvalidContextName;
     }
 
     private static CommandExitCode ReportInvalidContainerName(TextWriter error)
@@ -54,6 +61,7 @@ public static class Program
         Success = 0,
         InvalidArguments = 1,
         OnlyOneContainerAllowed = 2,
-        InvalidContainerName = 3
+        InvalidContainerName = 3,
+        InvalidContextName = 4
     }
 }

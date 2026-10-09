@@ -65,6 +65,30 @@ public class GenerateContainerDslHandlerTests
         Assert.Empty(output.Written);
     }
 
+    [Theory]
+    [InlineData("Example.System")]
+    [InlineData("Example System")]
+    [InlineData("É")]
+    [InlineData("Example/System")]
+    [InlineData("Example$System")]
+    [InlineData("Example:System")]
+    [InlineData("-Example")]
+    [InlineData("")]
+    public void Writes_nothing_when_the_context_is_not_a_valid_identifier(string context)
+    {
+        // Given
+        var source = new InMemoryContainerSource(new ContainerAttribute(context, "Website"));
+        var output = new InMemoryContainerDslOutput();
+        var handler = new GenerateContainerDslHandler(source, output);
+
+        // When
+        var result = handler.Handle();
+
+        // Then
+        Assert.IsType<InvalidContextName>(result);
+        Assert.Empty(output.Written);
+    }
+
     [Fact]
     public void Writes_nothing_when_more_than_one_container_is_found()
     {
