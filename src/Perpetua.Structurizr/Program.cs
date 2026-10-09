@@ -22,8 +22,11 @@ public static class Program
     private static void WriteContainerDslFiles(DirectoryInfo assemblyDirectory, DirectoryInfo outputDirectory)
     {
         var containers = new ContainerScanner().Scan(assemblyDirectory);
-        var fragments = new ContainerDslFragmentsBuilder().Build(containers);
-        new ContainerDslWriter().Write(fragments, outputDirectory);
+        var result = new ContainerDslFragmentsBuilder().Build(containers);
+        if (result is ContainerDslFragments fragments)
+        {
+            new ContainerDslWriter().Write(fragments, outputDirectory);
+        }
     }
 
     internal enum CommandExitCode

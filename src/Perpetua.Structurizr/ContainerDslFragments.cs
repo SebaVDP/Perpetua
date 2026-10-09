@@ -1,3 +1,3 @@
 namespace Perpetua.Structurizr;
 
-public sealed record ContainerDslFragments(List<ContextDslFragment> Contexts);
+public sealed record ContainerDslFragments(List<ContextDslFragment> Contexts) : ContainerDslFragmentsResult;

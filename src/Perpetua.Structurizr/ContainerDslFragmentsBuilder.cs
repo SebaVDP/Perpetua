@@ -4,7 +4,7 @@ namespace Perpetua.Structurizr;
 
 public sealed class ContainerDslFragmentsBuilder
 {
-    public ContainerDslFragments Build(IEnumerable<ContainerAttribute> containers)
+    public ContainerDslFragmentsResult Build(IEnumerable<ContainerAttribute> containers)
     {
         var contextFragments = containers
             .GroupBy(container => container.Context)
