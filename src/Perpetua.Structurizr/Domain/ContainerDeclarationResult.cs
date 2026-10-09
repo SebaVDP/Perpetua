@@ -21,4 +21,10 @@ public abstract record ContainerDeclarationResult
     /// so the run fails and generates nothing.
     /// </summary>
     public sealed record OnlyOneContainerAllowed : ContainerDeclarationResult;
+
+    /// <summary>
+    /// The container name cannot be used as a Structurizr identifier or as a folder name,
+    /// so the run fails and generates nothing.
+    /// </summary>
+    public sealed record InvalidContainerName : ContainerDeclarationResult;
 }

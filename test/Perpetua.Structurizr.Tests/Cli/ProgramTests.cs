@@ -73,6 +73,22 @@ public class ProgramTests
     }
 
     [Fact]
+    public void Reports_an_error_when_the_container_name_is_not_a_valid_identifier()
+    {
+        // Given
+        var source = new InMemoryContainerSource(new ContainerAttribute("ExampleSystem", "a.b"));
+        var output = new InMemoryContainerDslOutput();
+        using var error = new StringWriter();
+
+        // When
+        var result = Program.Generate(source, output, error);
+
+        // Then
+        Assert.Equal(Program.CommandExitCode.InvalidContainerName, result);
+        Assert.Contains("identifier", error.ToString(), StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void Reports_an_error_when_the_assembly_directory_is_missing()
     {
         using var error = new StringWriter();

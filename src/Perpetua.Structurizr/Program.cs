@@ -32,8 +32,15 @@ public static class Program
             DeclarationGenerated => CommandExitCode.Success,
             NoContainersFound => CommandExitCode.Success,
             OnlyOneContainerAllowed => ReportOnlyOneContainerAllowed(error),
+            InvalidContainerName => ReportInvalidContainerName(error),
             _ => throw new UnreachableException()
         };
+    }
+
+    private static CommandExitCode ReportInvalidContainerName(TextWriter error)
+    {
+        error.WriteLine("The container name is not a valid identifier.");
+        return CommandExitCode.InvalidContainerName;
     }
 
     private static CommandExitCode ReportOnlyOneContainerAllowed(TextWriter error)
@@ -46,6 +53,7 @@ public static class Program
     {
         Success = 0,
         InvalidArguments = 1,
-        OnlyOneContainerAllowed = 2
+        OnlyOneContainerAllowed = 2,
+        InvalidContainerName = 3
     }
 }
