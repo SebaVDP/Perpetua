@@ -66,6 +66,24 @@ public class ProgramTests
     }
 
     [Fact]
+    public void Reports_an_error_when_more_than_one_container_is_found()
+    {
+        // Given
+        var source = new InMemoryContainerSource(
+            new ContainerAttribute("Billing", "Invoicing"),
+            new ContainerAttribute("Accounts", "Ledger"));
+        var output = new InMemoryContainerDslOutput();
+        using var error = new StringWriter();
+
+        // When
+        var result = Program.Generate(source, output, error);
+
+        // Then
+        Assert.Equal(Program.CommandExitCode.OnlyOneContainerAllowed, result);
+        Assert.Contains("one container", error.ToString(), StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void Reports_an_error_when_the_assembly_directory_is_missing()
     {
         using var error = new StringWriter();

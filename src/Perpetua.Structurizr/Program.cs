@@ -1,4 +1,5 @@
 using Perpetua.Structurizr.Application;
+using Perpetua.Structurizr.Domain;
 using Perpetua.Structurizr.Infrastructure;
 
 namespace Perpetua.Structurizr;
@@ -18,20 +19,25 @@ public static class Program
         }
 
         var outputDirectory = args.Length == 2 ? new DirectoryInfo(args[1]) : workingDirectory;
-        WriteContainerDslFiles(assemblyDirectory, outputDirectory);
-        return CommandExitCode.Success;
+        return Generate(new ContainerScanner(assemblyDirectory), new ContainerDslWriter(outputDirectory), error);
     }
 
-    private static void WriteContainerDslFiles(DirectoryInfo assemblyDirectory, DirectoryInfo outputDirectory)
+    internal static CommandExitCode Generate(IContainerSource source, IContainerDslOutput output, TextWriter error)
     {
-        var containerSource = new ContainerScanner(assemblyDirectory);
-        var output = new ContainerDslWriter(outputDirectory);
-        new GenerateContainerDslHandler(containerSource, output).Handle();
+        var result = new GenerateContainerDslHandler(source, output).Handle();
+        if (result is OnlyOneContainerAllowed)
+        {
+            error.WriteLine("A deployment unit may declare only one container.");
+            return CommandExitCode.OnlyOneContainerAllowed;
+        }
+
+        return CommandExitCode.Success;
     }
 
     internal enum CommandExitCode
     {
         Success = 0,
-        InvalidArguments = 1
+        InvalidArguments = 1,
+        OnlyOneContainerAllowed = 2
     }
 }
