@@ -1,6 +1,6 @@
 using Perpetua.Structurizr.Application;
 using Perpetua.Structurizr.Domain;
-using static Perpetua.Structurizr.Domain.ContainerDslFragmentResult;
+using static Perpetua.Structurizr.Domain.ContainerDeclarationResult;
 
 namespace Perpetua.Structurizr.Tests;
 
@@ -34,11 +34,11 @@ public class GenerateContainerDslHandlerTests
         var result = handler.Handle();
 
         // Then
-        var generated = Assert.IsType<FragmentGenerated>(result);
-        var context = generated.Fragment;
+        var generated =         Assert.IsType<DeclarationGenerated>(result);
+                var context = generated.Declaration;
         Assert.Same(context, Assert.Single(output.Written));
         Assert.Equal("ExampleSystem", context.ContextName);
-        Assert.Equal(new ContainerDslFragment("Website"), context.Container);
+        Assert.Equal(new ContainerDeclaration("Website"), context.Container);
     }
 
     [Fact]

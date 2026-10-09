@@ -10,7 +10,7 @@ internal sealed class InMemoryContainerSource(params ContainerAttribute[] contai
 
 internal sealed class InMemoryContainerDslOutput : IContainerDslOutput
 {
-    public List<ContextDslFragment> Written { get; } = [];
+    public List<ContextDeclaration> Written { get; } = [];
 
-    public void Write(ContextDslFragment context) => Written.Add(context);
+    public void Write(ContextDeclaration context) => Written.Add(context);
 }

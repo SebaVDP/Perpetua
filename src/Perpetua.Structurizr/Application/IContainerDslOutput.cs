@@ -5,5 +5,5 @@ namespace Perpetua.Structurizr.Application;
 /// <summary>Where the generated container DSL goes.</summary>
 public interface IContainerDslOutput
 {
-    void Write(ContextDslFragment context);
+    void Write(ContextDeclaration context);
 }

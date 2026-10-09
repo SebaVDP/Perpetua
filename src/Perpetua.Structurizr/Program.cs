@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using Perpetua.Structurizr.Application;
 using Perpetua.Structurizr.Domain;
-using static Perpetua.Structurizr.Domain.ContainerDslFragmentResult;
+using static Perpetua.Structurizr.Domain.ContainerDeclarationResult;
 using Perpetua.Structurizr.Infrastructure;
 
 namespace Perpetua.Structurizr;
@@ -29,7 +29,7 @@ public static class Program
         var result = new GenerateContainerDslHandler(source, output).Handle();
         return result switch
         {
-            FragmentGenerated => CommandExitCode.Success,
+            DeclarationGenerated => CommandExitCode.Success,
             NoContainersFound => CommandExitCode.Success,
             OnlyOneContainerAllowed => ReportOnlyOneContainerAllowed(error),
             _ => throw new UnreachableException()

@@ -1,5 +1,5 @@
 using Perpetua.Structurizr.Domain;
-using static Perpetua.Structurizr.Domain.ContainerDslFragmentResult;
+using static Perpetua.Structurizr.Domain.ContainerDeclarationResult;
 
 namespace Perpetua.Structurizr.Application;
 
@@ -9,12 +9,12 @@ namespace Perpetua.Structurizr.Application;
 /// </summary>
 public sealed class GenerateContainerDslHandler(IContainerSource source, IContainerDslOutput output)
 {
-    public ContainerDslFragmentResult Handle()
+    public ContainerDeclarationResult Handle()
     {
-        var result = new ContainerDslFragmentBuilder().Build(source.Containers());
-        if (result is FragmentGenerated generated)
+        var result = new ContainerDeclarationBuilder().Build(source.Containers());
+        if (result is DeclarationGenerated generated)
         {
-            output.Write(generated.Fragment);
+            output.Write(generated.Declaration);
         }
 
         return result;

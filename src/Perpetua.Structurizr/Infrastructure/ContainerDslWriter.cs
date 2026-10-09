@@ -5,7 +5,7 @@ namespace Perpetua.Structurizr.Infrastructure;
 
 public sealed class ContainerDslWriter(DirectoryInfo outputDirectory) : IContainerDslOutput
 {
-    public void Write(ContextDslFragment context)
+    public void Write(ContextDeclaration context)
     {
         File.WriteAllText(
             Path.Combine(outputDirectory.FullName, $"{context.ContextName}.dsl"),
