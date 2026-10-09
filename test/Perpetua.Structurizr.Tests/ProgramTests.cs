@@ -100,6 +100,29 @@ public class ProgramTests
     }
 
     [Fact]
+    public void Generates_nothing_and_succeeds_when_no_containers_are_found()
+    {
+        // Given
+        var assemblyDirectory = Directory.CreateTempSubdirectory();
+        var outputDirectory = Directory.CreateTempSubdirectory();
+
+        try
+        {
+            // When
+            var result = Program.Run([assemblyDirectory.FullName, outputDirectory.FullName], outputDirectory, TextWriter.Null);
+
+            // Then
+            Assert.Equal(Program.CommandExitCode.Success, result);
+            Assert.Empty(Directory.GetFileSystemEntries(outputDirectory.FullName));
+        }
+        finally
+        {
+            assemblyDirectory.Delete(recursive: true);
+            outputDirectory.Delete(recursive: true);
+        }
+    }
+
+    [Fact]
     public void Reports_an_error_when_the_assembly_directory_is_missing()
     {
         using var error = new StringWriter();
