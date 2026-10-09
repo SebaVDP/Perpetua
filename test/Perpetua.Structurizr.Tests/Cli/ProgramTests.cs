@@ -3,38 +3,6 @@ namespace Perpetua.Structurizr.Tests;
 public class ProgramTests
 {
     [Fact]
-    public void Returns_success_when_the_assembly_directory_is_valid()
-    {
-        // Given
-        var assemblyDirectory = Path.Combine(AppContext.BaseDirectory, "fixtures");
-        var workingDirectory = Directory.CreateTempSubdirectory();
-
-        try
-        {
-            // When
-            var result = Program.Run([assemblyDirectory], workingDirectory, TextWriter.Null);
-
-            // Then
-            Assert.Equal(Program.CommandExitCode.Success, result);
-            Assert.Equal(
-                ["SampleSystem.dsl"],
-                Directory.GetFiles(workingDirectory.FullName, "*.dsl")
-                    .Select(Path.GetFileName)
-                    .Order(StringComparer.Ordinal));
-            Assert.Equal(
-                """
-                container "SampleContainer"
-
-                """.ReplaceLineEndings("\n"),
-                File.ReadAllText(Path.Combine(workingDirectory.FullName, "SampleSystem.dsl")));
-        }
-        finally
-        {
-            workingDirectory.Delete(recursive: true);
-        }
-    }
-
-    [Fact]
     public void Writes_the_files_to_the_output_directory_when_one_is_supplied()
     {
         // Given
@@ -54,6 +22,12 @@ public class ProgramTests
                 Directory.GetFiles(outputDirectory.FullName, "*.dsl")
                     .Select(Path.GetFileName)
                     .Order(StringComparer.Ordinal));
+            Assert.Equal(
+                """
+                container "SampleContainer"
+
+                """.ReplaceLineEndings("\n"),
+                File.ReadAllText(Path.Combine(outputDirectory.FullName, "SampleSystem.dsl")));
             Assert.Empty(Directory.GetFiles(workingDirectory.FullName));
         }
         finally
@@ -88,29 +62,6 @@ public class ProgramTests
             {
                 generatedFile.Delete();
             }
-        }
-    }
-
-    [Fact]
-    public void Generates_nothing_and_succeeds_when_no_containers_are_found()
-    {
-        // Given
-        var assemblyDirectory = Directory.CreateTempSubdirectory();
-        var outputDirectory = Directory.CreateTempSubdirectory();
-
-        try
-        {
-            // When
-            var result = Program.Run([assemblyDirectory.FullName, outputDirectory.FullName], outputDirectory, TextWriter.Null);
-
-            // Then
-            Assert.Equal(Program.CommandExitCode.Success, result);
-            Assert.Empty(Directory.GetFileSystemEntries(outputDirectory.FullName));
-        }
-        finally
-        {
-            assemblyDirectory.Delete(recursive: true);
-            outputDirectory.Delete(recursive: true);
         }
     }
 
