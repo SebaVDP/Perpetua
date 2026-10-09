@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Perpetua.Structurizr.Application;
 using Perpetua.Structurizr.Domain;
 using Perpetua.Structurizr.Infrastructure;
@@ -25,13 +26,19 @@ public static class Program
     internal static CommandExitCode Generate(IContainerSource source, IContainerDslOutput output, TextWriter error)
     {
         var result = new GenerateContainerDslHandler(source, output).Handle();
-        if (result is OnlyOneContainerAllowed)
+        return result switch
         {
-            error.WriteLine("A deployment unit may declare only one container.");
-            return CommandExitCode.OnlyOneContainerAllowed;
-        }
+            ContextDslFragment => CommandExitCode.Success,
+            NoContainersFound => CommandExitCode.Success,
+            OnlyOneContainerAllowed => ReportOnlyOneContainerAllowed(error),
+            _ => throw new UnreachableException()
+        };
+    }
 
-        return CommandExitCode.Success;
+    private static CommandExitCode ReportOnlyOneContainerAllowed(TextWriter error)
+    {
+        error.WriteLine("A deployment unit may declare only one container.");
+        return CommandExitCode.OnlyOneContainerAllowed;
     }
 
     internal enum CommandExitCode
