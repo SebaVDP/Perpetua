@@ -7,11 +7,8 @@ public sealed class ContainerDslWriter(DirectoryInfo outputDirectory) : IContain
 {
     public void Write(ContextDslFragment context)
     {
-        var containerDeclarations = context.Containers
-            .Select(container => $"container \"{container.Name}\"");
-        var dsl = $"{string.Join('\n', containerDeclarations)}\n";
         File.WriteAllText(
             Path.Combine(outputDirectory.FullName, $"{context.ContextName}.dsl"),
-            dsl);
+            $"container \"{context.Container.Name}\"\n");
     }
 }

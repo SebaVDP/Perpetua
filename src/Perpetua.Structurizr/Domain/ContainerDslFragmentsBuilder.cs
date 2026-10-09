@@ -10,7 +10,7 @@ public sealed class ContainerDslFragmentsBuilder
             [] => new NoContainersFound(),
             [var container] => new ContextDslFragment(
                 container.Context,
-                [new ContainerDslFragment(container.Name)]),
+                new ContainerDslFragment(container.Name)),
             _ => new OnlyOneContainerAllowed()
         };
 }

@@ -36,7 +36,7 @@ public class GenerateContainerDslHandlerTests
         var context = Assert.IsType<ContextDslFragment>(result);
         Assert.Same(context, Assert.Single(output.Written));
         Assert.Equal("ExampleSystem", context.ContextName);
-        Assert.Equal(new ContainerDslFragment("Website"), Assert.Single(context.Containers));
+        Assert.Equal(new ContainerDslFragment("Website"), context.Container);
     }
 
     [Fact]
