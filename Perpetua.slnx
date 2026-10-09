@@ -13,4 +13,7 @@
   <Folder Name="/test/Perpetua.Structurizr.Tests.Fixtures/">
     <Project Path="test/Perpetua.Structurizr.Tests.Fixtures/Perpetua.Structurizr.Tests.Fixtures.csproj" />
   </Folder>
+  <Folder Name="/test/Perpetua.Structurizr.Tests.FrameworkFixtures/">
+    <Project Path="test/Perpetua.Structurizr.Tests.FrameworkFixtures/Perpetua.Structurizr.Tests.FrameworkFixtures.csproj" />
+  </Folder>
 </Solution>

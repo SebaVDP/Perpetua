@@ -30,4 +30,15 @@ public class ContainerScannerTests
             directory.Delete(recursive: true);
         }
     }
+
+    [Fact]
+    public void Finds_containers_in_assemblies_with_types_that_depend_on_unavailable_frameworks()
+    {
+        var assemblyDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "framework-dependent-fixtures"));
+
+        var containers = new ContainerScanner().Scan(assemblyDirectory);
+
+        Assert.Contains(containers, container =>
+            container.Context == "SampleSystem" && container.Name == "FrameworkIndependentContainer");
+    }
 }

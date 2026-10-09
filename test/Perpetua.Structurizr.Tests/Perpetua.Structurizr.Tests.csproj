@@ -22,6 +22,7 @@
     <ProjectReference Include="..\..\src\Perpetua\Perpetua.csproj" />
     <ProjectReference Include="..\..\src\Perpetua.Structurizr\Perpetua.Structurizr.csproj" />
     <ProjectReference Include="..\Perpetua.Structurizr.Tests.Fixtures\Perpetua.Structurizr.Tests.Fixtures.csproj" ReferenceOutputAssembly="false" Private="false" />
+    <ProjectReference Include="..\Perpetua.Structurizr.Tests.FrameworkFixtures\Perpetua.Structurizr.Tests.FrameworkFixtures.csproj" ReferenceOutputAssembly="false" Private="false" />
   </ItemGroup>
 
   <Target Name="CopyFixtureAssemblies" AfterTargets="Build">
@@ -29,6 +30,13 @@
       <FixtureAssemblies Include="$(MSBuildThisFileDirectory)..\Perpetua.Structurizr.Tests.Fixtures\bin\$(Configuration)\$(TargetFramework)\*.dll" />
     </ItemGroup>
     <Copy SourceFiles="@(FixtureAssemblies)" DestinationFolder="$(OutDir)fixtures" SkipUnchangedFiles="true" />
+  </Target>
+
+  <Target Name="CopyFrameworkDependentFixtureAssembly" AfterTargets="Build">
+    <ItemGroup>
+      <FrameworkDependentFixture Include="$(MSBuildThisFileDirectory)..\Perpetua.Structurizr.Tests.FrameworkFixtures\bin\$(Configuration)\$(TargetFramework)\Perpetua.Structurizr.Tests.FrameworkFixtures.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(FrameworkDependentFixture)" DestinationFolder="$(OutDir)framework-dependent-fixtures" SkipUnchangedFiles="true" />
   </Target>
 
 </Project>
