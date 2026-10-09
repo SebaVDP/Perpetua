@@ -6,14 +6,15 @@ public sealed class ContainerDslFragmentsBuilder
 {
     public ContainerDslFragmentsResult Build(IEnumerable<ContainerAttribute> containers)
     {
+        if (containers.Count() > 1)
+        {
+            return new OnlyOneContainerAllowed();
+        }
+
         var contextFragments = containers
-            .GroupBy(container => container.Context)
-            .OrderBy(context => context.Key, StringComparer.Ordinal)
-            .Select(context => new ContextDslFragment(
-                context.Key,
-                context.OrderBy(container => container.Name, StringComparer.Ordinal)
-                    .Select(container => new ContainerDslFragment(container.Name))
-                    .ToList()))
+            .Select(container => new ContextDslFragment(
+                container.Context,
+                [new ContainerDslFragment(container.Name)]))
             .ToList();
 
         return new ContainerDslFragments(contextFragments);

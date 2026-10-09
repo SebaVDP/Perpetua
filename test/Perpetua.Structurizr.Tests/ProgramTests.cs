@@ -17,21 +17,13 @@ public class ProgramTests
             // Then
             Assert.Equal(Program.CommandExitCode.Success, result);
             Assert.Equal(
-                ["OtherSystem.dsl", "SampleSystem.dsl"],
+                ["SampleSystem.dsl"],
                 Directory.GetFiles(workingDirectory.FullName, "*.dsl")
                     .Select(Path.GetFileName)
                     .Order(StringComparer.Ordinal));
             Assert.Equal(
                 """
-                container "OtherContainer"
-                container "OtherWorker"
-
-                """.ReplaceLineEndings("\n"),
-                File.ReadAllText(Path.Combine(workingDirectory.FullName, "OtherSystem.dsl")));
-            Assert.Equal(
-                """
                 container "SampleContainer"
-                container "SampleWorker"
 
                 """.ReplaceLineEndings("\n"),
                 File.ReadAllText(Path.Combine(workingDirectory.FullName, "SampleSystem.dsl")));
@@ -58,7 +50,7 @@ public class ProgramTests
             // Then
             Assert.Equal(Program.CommandExitCode.Success, result);
             Assert.Equal(
-                ["OtherSystem.dsl", "SampleSystem.dsl"],
+                ["SampleSystem.dsl"],
                 Directory.GetFiles(outputDirectory.FullName, "*.dsl")
                     .Select(Path.GetFileName)
                     .Order(StringComparer.Ordinal));
@@ -85,7 +77,7 @@ public class ProgramTests
             // Then
             Assert.Equal(Program.CommandExitCode.Success, result);
             Assert.Equal(
-                ["OtherSystem.dsl", "SampleSystem.dsl"],
+                ["SampleSystem.dsl"],
                 Directory.GetFiles(workingDirectory.FullName, "*.dsl")
                     .Select(Path.GetFileName)
                     .Order(StringComparer.Ordinal));
