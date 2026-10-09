@@ -1,11 +1,11 @@
 using System.Reflection;
-using Perpetua;
+using Perpetua.Structurizr.Application;
 
-namespace Perpetua.Structurizr;
+namespace Perpetua.Structurizr.Infrastructure;
 
-public sealed class ContainerScanner
+public sealed class ContainerScanner(DirectoryInfo assemblyDirectory) : IContainerSource
 {
-    public IEnumerable<ContainerAttribute> Scan(DirectoryInfo assemblyDirectory)
+    public IEnumerable<ContainerAttribute> Containers()
         => assemblyDirectory.GetFiles("*.dll")
             .SelectMany(assemblyFile => GetLoadableTypes(Assembly.LoadFrom(assemblyFile.FullName)))
             .Select(type => type.GetCustomAttribute<ContainerAttribute>())

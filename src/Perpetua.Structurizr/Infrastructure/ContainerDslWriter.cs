@@ -1,8 +1,11 @@
-namespace Perpetua.Structurizr;
+using Perpetua.Structurizr.Application;
+using Perpetua.Structurizr.Domain;
 
-public sealed class ContainerDslWriter
+namespace Perpetua.Structurizr.Infrastructure;
+
+public sealed class ContainerDslWriter(DirectoryInfo outputDirectory) : IContainerDslOutput
 {
-    public void Write(ContextDslFragment context, DirectoryInfo outputDirectory)
+    public void Write(ContextDslFragment context)
     {
         var containerDeclarations = context.Containers
             .Select(container => $"container \"{container.Name}\"");

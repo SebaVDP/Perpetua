@@ -1,6 +1,6 @@
 using Perpetua;
 
-namespace Perpetua.Structurizr;
+namespace Perpetua.Structurizr.Domain;
 
 public sealed class ContainerDslFragmentsBuilder
 {

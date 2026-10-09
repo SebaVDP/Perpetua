@@ -1,3 +1,5 @@
+using Perpetua.Structurizr.Domain;
+
 namespace Perpetua.Structurizr.Tests;
 
 public class ContainerDslFragmentsBuilderTests

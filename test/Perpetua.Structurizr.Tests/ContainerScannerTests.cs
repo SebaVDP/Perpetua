@@ -1,3 +1,5 @@
+using Perpetua.Structurizr.Infrastructure;
+
 namespace Perpetua.Structurizr.Tests;
 
 public class ContainerScannerTests
@@ -7,7 +9,7 @@ public class ContainerScannerTests
     {
         var directory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "fixtures"));
 
-        var containers = new ContainerScanner().Scan(directory);
+        var containers = new ContainerScanner(directory).Containers();
 
         Assert.Contains(containers, container =>
             container.Context == "SampleSystem" && container.Name == "SampleContainer");
@@ -21,7 +23,7 @@ public class ContainerScannerTests
 
         try
         {
-            var containers = new ContainerScanner().Scan(directory);
+            var containers = new ContainerScanner(directory).Containers();
 
             Assert.Empty(containers);
         }
@@ -36,7 +38,7 @@ public class ContainerScannerTests
     {
         var assemblyDirectory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "framework-dependent-fixtures"));
 
-        var containers = new ContainerScanner().Scan(assemblyDirectory);
+        var containers = new ContainerScanner(assemblyDirectory).Containers();
 
         Assert.Contains(containers, container =>
             container.Context == "SampleSystem" && container.Name == "FrameworkIndependentContainer");

@@ -1,3 +1,6 @@
+using Perpetua.Structurizr.Application;
+using Perpetua.Structurizr.Infrastructure;
+
 namespace Perpetua.Structurizr;
 
 public static class Program
@@ -21,12 +24,9 @@ public static class Program
 
     private static void WriteContainerDslFiles(DirectoryInfo assemblyDirectory, DirectoryInfo outputDirectory)
     {
-        var containers = new ContainerScanner().Scan(assemblyDirectory);
-        var result = new ContainerDslFragmentsBuilder().Build(containers);
-        if (result is ContextDslFragment context)
-        {
-            new ContainerDslWriter().Write(context, outputDirectory);
-        }
+        var containerSource = new ContainerScanner(assemblyDirectory);
+        var output = new ContainerDslWriter(outputDirectory);
+        new GenerateContainerDslHandler(containerSource, output).Handle();
     }
 
     internal enum CommandExitCode
