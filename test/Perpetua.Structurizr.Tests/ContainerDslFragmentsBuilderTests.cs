@@ -15,8 +15,7 @@ public class ContainerDslFragmentsBuilderTests
         var result = new ContainerDslFragmentsBuilder().Build(containers);
 
         // Then
-        var fragments = Assert.IsType<ContainerDslFragments>(result);
-        var context = Assert.Single(fragments.Contexts);
+        var context = Assert.IsType<ContextDslFragment>(result);
         Assert.Equal("ExampleSystem", context.ContextName);
         Assert.Equal(new ContainerDslFragment("Website"), Assert.Single(context.Containers));
     }

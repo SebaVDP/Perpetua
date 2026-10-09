@@ -23,9 +23,9 @@ public static class Program
     {
         var containers = new ContainerScanner().Scan(assemblyDirectory);
         var result = new ContainerDslFragmentsBuilder().Build(containers);
-        if (result is ContainerDslFragments fragments)
+        if (result is ContextDslFragment context)
         {
-            new ContainerDslWriter().Write(fragments, outputDirectory);
+            new ContainerDslWriter().Write(context, outputDirectory);
         }
     }
 
