@@ -7,21 +7,23 @@ public static class Program
 
     internal static CommandExitCode Run(string[] args, DirectoryInfo workingDirectory, TextWriter error)
     {
-        if (args.Length != 1 || !Directory.Exists(args[0]))
+        var assemblyDirectory = args.Length >= 1 ? new DirectoryInfo(args[0]) : workingDirectory;
+        if (args.Length > 2 || !assemblyDirectory.Exists)
         {
             error.WriteLine("Provide a directory containing the assemblies to scan.");
             return CommandExitCode.InvalidArguments;
         }
 
-        WriteContainerDslFiles(new DirectoryInfo(args[0]), workingDirectory);
+        var outputDirectory = args.Length == 2 ? new DirectoryInfo(args[1]) : workingDirectory;
+        WriteContainerDslFiles(assemblyDirectory, outputDirectory);
         return CommandExitCode.Success;
     }
 
-    private static void WriteContainerDslFiles(DirectoryInfo assemblyDirectory, DirectoryInfo workingDirectory)
+    private static void WriteContainerDslFiles(DirectoryInfo assemblyDirectory, DirectoryInfo outputDirectory)
     {
         var containers = new ContainerScanner().Scan(assemblyDirectory);
         var fragments = new ContainerDslFragmentsBuilder().Build(containers);
-        new ContainerDslWriter().Write(fragments, workingDirectory);
+        new ContainerDslWriter().Write(fragments, outputDirectory);
     }
 
     internal enum CommandExitCode
