@@ -3,15 +3,13 @@ using Perpetua;
 namespace Perpetua.Structurizr;
 
 /// <summary>
-/// Writes Structurizr workspace DSL. The walking-skeleton implementation emits
-/// the canonical empty workspace that downstream tooling can render.
+/// In the C4 model, a container belongs to a software system; containers with the
+/// same context are represented under that system in the generated workspace.
 /// </summary>
 public sealed class WorkspaceDslWriter
 {
-    /// <summary>Returns a valid, empty Structurizr <c>workspace.dsl</c> document.</summary>
     public string Write() => Write([]);
 
-    /// <summary>Returns a workspace containing the declared software systems and containers.</summary>
     public string Write(IEnumerable<ContainerAttribute> containers)
     {
         var lines = new List<string>

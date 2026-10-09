@@ -5,7 +5,7 @@ public class ContainerScannerTests
     [Fact]
     public void Finds_containers_declared_in_the_scanned_assemblies()
     {
-        var directory = Path.Combine(AppContext.BaseDirectory, "fixtures");
+        var directory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "fixtures"));
 
         var containers = new ContainerScanner().Scan(directory);
 
@@ -21,7 +21,7 @@ public class ContainerScannerTests
 
         try
         {
-            var containers = new ContainerScanner().Scan(directory.FullName);
+            var containers = new ContainerScanner().Scan(directory);
 
             Assert.Empty(containers);
         }
