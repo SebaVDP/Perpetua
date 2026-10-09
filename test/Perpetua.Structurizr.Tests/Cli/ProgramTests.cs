@@ -16,7 +16,7 @@ public class ProgramTests
             var result = Program.Run([assemblyDirectory, outputDirectory.FullName], workingDirectory, TextWriter.Null);
 
             // Then
-            Assert.Equal(Program.CommandExitCode.Success, result);
+            Assert.Equal(CommandExitCode.Success, result);
             Assert.Equal(
                 """
                 SampleContainer = container "SampleContainer"
@@ -44,7 +44,7 @@ public class ProgramTests
             var result = Program.Run([], workingDirectory, TextWriter.Null);
 
             // Then
-            Assert.Equal(Program.CommandExitCode.Success, result);
+            Assert.Equal(CommandExitCode.Success, result);
             Assert.True(File.Exists(Path.Combine(
                 workingDirectory.FullName, "SampleSystem", "containers", "SampleContainer.dsl")));
         }
@@ -68,7 +68,7 @@ public class ProgramTests
         var result = Program.Generate(source, output, error);
 
         // Then
-        Assert.Equal(Program.CommandExitCode.OnlyOneContainerAllowed, result);
+        Assert.Equal(CommandExitCode.OnlyOneContainerAllowed, result);
         Assert.Contains("one container", error.ToString(), StringComparison.OrdinalIgnoreCase);
     }
 
@@ -84,7 +84,7 @@ public class ProgramTests
         var result = Program.Generate(source, output, error);
 
         // Then
-        Assert.Equal(Program.CommandExitCode.InvalidContainerName, result);
+        Assert.Equal(CommandExitCode.InvalidContainerName, result);
         Assert.Contains("identifier", error.ToString(), StringComparison.OrdinalIgnoreCase);
     }
 
@@ -100,7 +100,7 @@ public class ProgramTests
         var result = Program.Generate(source, output, error);
 
         // Then
-        Assert.Equal(Program.CommandExitCode.InvalidContextName, result);
+        Assert.Equal(CommandExitCode.InvalidContextName, result);
         Assert.Contains("context", error.ToString(), StringComparison.OrdinalIgnoreCase);
     }
 
@@ -111,7 +111,7 @@ public class ProgramTests
 
         var result = Program.Run(["does-not-exist"], new DirectoryInfo(Environment.CurrentDirectory), error);
 
-        Assert.Equal(Program.CommandExitCode.InvalidArguments, result);
+        Assert.Equal(CommandExitCode.InvalidArguments, result);
         Assert.Contains("directory", error.ToString(), StringComparison.OrdinalIgnoreCase);
     }
 }

@@ -1,7 +1,4 @@
-using System.Diagnostics;
 using Perpetua.Structurizr.Application;
-using Perpetua.Structurizr.Domain;
-using static Perpetua.Structurizr.Domain.ContainerDeclarationResult;
 using Perpetua.Structurizr.Infrastructure;
 
 namespace Perpetua.Structurizr;
@@ -26,42 +23,12 @@ public static class Program
 
     internal static CommandExitCode Generate(IContainerSource source, IContainerDslOutput output, TextWriter error)
     {
-        var result = new GenerateContainerDslHandler(source, output).Handle();
-        return result switch
+        var outcome = CommandOutcome.From(new GenerateContainerDslHandler(source, output).Handle());
+        if (outcome.Message is not null)
         {
-            DeclarationGenerated => CommandExitCode.Success,
-            NoContainersFound => CommandExitCode.Success,
-            OnlyOneContainerAllowed => ReportOnlyOneContainerAllowed(error),
-            InvalidContainerName => ReportInvalidContainerName(error),
-            InvalidContextName => ReportInvalidContextName(error),
-            _ => throw new UnreachableException()
-        };
-    }
+            error.WriteLine(outcome.Message);
+        }
 
-    private static CommandExitCode ReportInvalidContextName(TextWriter error)
-    {
-        error.WriteLine("The context is not a valid identifier.");
-        return CommandExitCode.InvalidContextName;
-    }
-
-    private static CommandExitCode ReportInvalidContainerName(TextWriter error)
-    {
-        error.WriteLine("The container name is not a valid identifier.");
-        return CommandExitCode.InvalidContainerName;
-    }
-
-    private static CommandExitCode ReportOnlyOneContainerAllowed(TextWriter error)
-    {
-        error.WriteLine("A deployment unit may declare only one container.");
-        return CommandExitCode.OnlyOneContainerAllowed;
-    }
-
-    internal enum CommandExitCode
-    {
-        Success = 0,
-        InvalidArguments = 1,
-        OnlyOneContainerAllowed = 2,
-        InvalidContainerName = 3,
-        InvalidContextName = 4
+        return outcome.ExitCode;
     }
 }
