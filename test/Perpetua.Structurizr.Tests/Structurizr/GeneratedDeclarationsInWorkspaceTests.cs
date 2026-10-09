@@ -1,9 +1,9 @@
 namespace Perpetua.Structurizr.Tests;
 
-public class GeneratedFragmentsInWorkspaceTests
+public class GeneratedDeclarationsInWorkspaceTests
 {
     [Fact]
-    public async Task Generated_fragment_is_accepted_inside_a_manually_authored_software_system()
+    public async Task Generated_container_declaration_is_accepted_inside_a_manually_authored_software_system()
     {
         // Given
         var assemblyDirectory = Path.Combine(AppContext.BaseDirectory, "fixtures");
@@ -16,9 +16,10 @@ public class GeneratedFragmentsInWorkspaceTests
                 Path.Combine(workspaceDirectory.FullName, "workspace.dsl"),
                 """
                 workspace {
+                    !identifiers hierarchical
                     model {
-                        softwareSystem "SampleSystem" {
-                            !include SampleSystem.dsl
+                        SampleSystem = softwareSystem "SampleSystem" {
+                            !include SampleSystem/containers
                         }
                     }
                 }

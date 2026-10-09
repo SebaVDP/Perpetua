@@ -18,16 +18,11 @@ public class ProgramTests
             // Then
             Assert.Equal(Program.CommandExitCode.Success, result);
             Assert.Equal(
-                ["SampleSystem.dsl"],
-                Directory.GetFiles(outputDirectory.FullName, "*.dsl")
-                    .Select(Path.GetFileName)
-                    .Order(StringComparer.Ordinal));
-            Assert.Equal(
                 """
-                container "SampleContainer"
+                SampleContainer = container "SampleContainer"
 
                 """.ReplaceLineEndings("\n"),
-                File.ReadAllText(Path.Combine(outputDirectory.FullName, "SampleSystem.dsl")));
+                File.ReadAllText(Path.Combine(outputDirectory.FullName, "SampleSystem", "containers", "SampleContainer.dsl")));
             Assert.Empty(Directory.GetFiles(workingDirectory.FullName));
         }
         finally
@@ -50,18 +45,12 @@ public class ProgramTests
 
             // Then
             Assert.Equal(Program.CommandExitCode.Success, result);
-            Assert.Equal(
-                ["SampleSystem.dsl"],
-                Directory.GetFiles(workingDirectory.FullName, "*.dsl")
-                    .Select(Path.GetFileName)
-                    .Order(StringComparer.Ordinal));
+            Assert.True(File.Exists(Path.Combine(
+                workingDirectory.FullName, "SampleSystem", "containers", "SampleContainer.dsl")));
         }
         finally
         {
-            foreach (var generatedFile in workingDirectory.GetFiles("*.dsl"))
-            {
-                generatedFile.Delete();
-            }
+            Directory.Delete(Path.Combine(workingDirectory.FullName, "SampleSystem"), recursive: true);
         }
     }
 
