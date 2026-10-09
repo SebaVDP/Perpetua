@@ -105,6 +105,35 @@ public class ProgramTests
     }
 
     [Fact]
+    public void Overwrites_the_declaration_of_an_earlier_run_with_the_same_context_and_identifier()
+    {
+        // Given
+        var assemblyDirectory = Path.Combine(AppContext.BaseDirectory, "fixtures");
+        var workingDirectory = Directory.CreateTempSubdirectory();
+        var outputDirectory = Directory.CreateTempSubdirectory();
+        var earlierRun = Path.Combine(outputDirectory.FullName, "SampleSystem", "containers", "SampleContainer.dsl");
+        Directory.CreateDirectory(Path.GetDirectoryName(earlierRun)!);
+        File.WriteAllText(earlierRun, "stale");
+
+        try
+        {
+            // When
+            var result = Program.Run([assemblyDirectory, outputDirectory.FullName], workingDirectory, TextWriter.Null);
+
+            // Then
+            Assert.Equal(CommandExitCode.Success, result);
+            Assert.Equal(
+                "SampleContainer = container \"SampleContainer\"\n",
+                File.ReadAllText(earlierRun));
+        }
+        finally
+        {
+            workingDirectory.Delete(recursive: true);
+            outputDirectory.Delete(recursive: true);
+        }
+    }
+
+    [Fact]
     public void Reports_an_error_when_the_assembly_directory_is_missing()
     {
         using var error = new StringWriter();
