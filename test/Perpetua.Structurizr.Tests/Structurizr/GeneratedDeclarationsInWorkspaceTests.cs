@@ -79,4 +79,47 @@ public class GeneratedDeclarationsInWorkspaceTests
             workspaceDirectory.Delete(recursive: true);
         }
     }
+
+    [Fact]
+    public async Task Relationships_are_accepted_when_included_after_the_containers_of_all_software_systems()
+    {
+        // Given
+        var workspaceDirectory = Directory.CreateTempSubdirectory();
+        var writer = new ContainerDslWriter(workspaceDirectory);
+        Identifier.TryCreate("Website", out var website);
+        Identifier.TryCreate("Api", out var api);
+
+        try
+        {
+            writer.Write(new ContextDeclaration("Billing", new ContainerDeclaration(website!)));
+            writer.Write(new ContextDeclaration("Accounts", new ContainerDeclaration(api!)));
+            File.WriteAllText(
+                Path.Combine(workspaceDirectory.FullName, "workspace.dsl"),
+                """
+                workspace {
+                    !identifiers hierarchical
+                    model {
+                        Billing = softwareSystem "Billing" {
+                            !include Billing/containers
+                        }
+                        Accounts = softwareSystem "Accounts" {
+                            !include Accounts/containers
+                        }
+                        !include Billing/relationships
+                        !include Accounts/relationships
+                    }
+                }
+                """);
+
+            // When
+            var accepted = await StructurizrCli.AcceptsAsync(workspaceDirectory);
+
+            // Then
+            Assert.True(accepted);
+        }
+        finally
+        {
+            workspaceDirectory.Delete(recursive: true);
+        }
+    }
 }
