@@ -4,4 +4,6 @@ namespace Perpetua.Structurizr.Application;
 public interface IContainerSource
 {
     IEnumerable<ContainerAttribute> Containers();
+
+    IEnumerable<DependsOnAttribute> Dependencies();
 }

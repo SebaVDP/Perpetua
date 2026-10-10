@@ -5,11 +5,21 @@ namespace Perpetua.Structurizr.Infrastructure;
 
 public sealed class ContainerScanner(DirectoryInfo assemblyDirectory) : IContainerSource
 {
+    private readonly Lazy<Type[]> types = new(() => assemblyDirectory.GetFiles("*.dll")
+        .SelectMany(assemblyFile => GetLoadableTypes(Assembly.LoadFrom(assemblyFile.FullName)))
+        .ToArray());
+
     public IEnumerable<ContainerAttribute> Containers()
-        => assemblyDirectory.GetFiles("*.dll")
-            .SelectMany(assemblyFile => GetLoadableTypes(Assembly.LoadFrom(assemblyFile.FullName)))
+        => Types()
             .Select(type => type.GetCustomAttribute<ContainerAttribute>())
             .OfType<ContainerAttribute>();
+
+    public IEnumerable<DependsOnAttribute> Dependencies()
+        => Types()
+            .SelectMany(type => type.GetCustomAttributes<DependsOnAttribute>());
+
+    private IEnumerable<Type> Types()
+        => types.Value;
 
     private static IEnumerable<Type> GetLoadableTypes(Assembly assembly)
     {

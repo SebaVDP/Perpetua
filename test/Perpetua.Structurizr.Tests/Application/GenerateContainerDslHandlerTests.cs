@@ -41,6 +41,44 @@ public class GenerateContainerDslHandlerTests
         Assert.Equal("Website", context.Container.Name.Value);
     }
 
+    [Fact]
+    public void Writes_a_relationship_to_the_container_context_when_dependency_has_no_context()
+    {
+        // Given
+        var source = new InMemoryContainerSource(
+            [new ContainerAttribute("Billing", "CBA")],
+            new DependsOnAttribute("ABC"));
+        var output = new InMemoryContainerDslOutput();
+        var handler = new GenerateContainerDslHandler(source, output);
+
+        // When
+        var result = handler.Handle();
+
+        // Then
+        var generated = Assert.IsType<DeclarationGenerated>(result);
+        Assert.Same(generated.Declaration, Assert.Single(output.Written));
+        Assert.Equal(new DependencyDeclaration("ABC", null, null), Assert.Single(generated.Declaration.Dependencies));
+    }
+
+    [Fact]
+    public void Writes_a_relationship_to_the_specified_context()
+    {
+        // Given
+        var source = new InMemoryContainerSource(
+            [new ContainerAttribute("Billing", "CBA")],
+            new DependsOnAttribute("ABC", "Accounts"));
+        var output = new InMemoryContainerDslOutput();
+        var handler = new GenerateContainerDslHandler(source, output);
+
+        // When
+        var result = handler.Handle();
+
+        // Then
+        var generated = Assert.IsType<DeclarationGenerated>(result);
+        Assert.Same(generated.Declaration, Assert.Single(output.Written));
+        Assert.Equal(new DependencyDeclaration("ABC", "Accounts", null), Assert.Single(generated.Declaration.Dependencies));
+    }
+
     [Theory]
     [InlineData("a.b")]
     [InlineData("a b")]

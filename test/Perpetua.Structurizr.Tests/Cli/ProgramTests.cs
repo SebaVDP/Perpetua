@@ -22,7 +22,13 @@ public class ProgramTests
             """.ReplaceLineEndings("\n"),
             File.ReadAllText(Path.Combine(outputDirectory.Info.FullName, "SampleSystem", "containers", "SampleContainer.dsl")));
         Assert.Empty(Directory.GetFiles(workingDirectory.Info.FullName));
-        Assert.Equal(string.Empty, File.ReadAllText(Path.Combine(outputDirectory.Info.FullName, "SampleSystem", "relationships", "SampleContainer.dsl")));
+        Assert.Equal(
+            """
+            SampleSystem.SampleContainer -> SampleSystem.Api
+            SampleSystem.SampleContainer -> Accounts.Ledger
+
+            """.ReplaceLineEndings("\n"),
+            File.ReadAllText(Path.Combine(outputDirectory.Info.FullName, "SampleSystem", "relationships", "SampleContainer.dsl")));
     }
 
     [Fact]

@@ -14,7 +14,17 @@ public sealed class GenerateContainerDslHandler(IContainerSource source, IContai
         var result = new ContainerDeclarationBuilder().Build(source.Containers());
         if (result is DeclarationGenerated generated)
         {
-            output.Write(generated.Declaration);
+            var declaration = generated.Declaration with
+            {
+                Dependencies = source.Dependencies()
+                    .Select(dependency => new DependencyDeclaration(
+                        dependency.Identifier,
+                        dependency.Context,
+                        dependency.Description))
+                    .ToArray()
+            };
+            output.Write(declaration);
+            return generated with { Declaration = declaration };
         }
 
         return result;

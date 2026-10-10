@@ -9,7 +9,12 @@ public sealed class ContainerDslWriter(DirectoryInfo outputDirectory) : IContain
     {
         var name = context.Container.Name;
         WriteFile(context, "containers", name, $"{name} = container \"{name}\"\n");
-        WriteFile(context, "relationships", name, string.Empty);
+        WriteFile(
+            context,
+            "relationships",
+            name,
+            string.Concat(context.Dependencies.Select(dependency =>
+                $"{context.ContextName}.{name} -> {dependency.Context ?? context.ContextName}.{dependency.Identifier}\n")));
     }
 
     private void WriteFile(ContextDeclaration context, string folder, Identifier name, string content)
