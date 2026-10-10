@@ -15,12 +15,14 @@ public sealed class ContainerDeclarationBuilder
         => containers.ToList() switch
         {
             [] => new NoContainersFound(),
-            [var container] when !Identifier.TryCreate(container.Context, out _) => new InvalidContextName(),
-            [var container] when Identifier.TryCreate(container.Name, out var name) =>
-                new DeclarationGenerated(new ContextDeclaration(
-                    container.Context,
-                    new ContainerDeclaration(name))),
-            [_] => new InvalidContainerName(),
+            [var container] => Declare(container),
             _ => new OnlyOneContainerAllowed()
         };
+
+    private static ContainerDeclarationResult Declare(ContainerAttribute container)
+        => ContextName.Create(container.Context).Match<ContainerDeclarationResult>(
+            context => ContainerName.Create(container.Name).Match<ContainerDeclarationResult>(
+                name => new DeclarationGenerated(new ContextDeclaration(context, new ContainerDeclaration(name))),
+                () => new InvalidContainerName()),
+            () => new InvalidContextName());
 }

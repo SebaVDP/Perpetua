@@ -46,12 +46,11 @@ public class GeneratedDeclarationsInWorkspaceTests
         // Given
         var workspaceDirectory = Directory.CreateTempSubdirectory();
         var writer = new ContextDeclarationDslWriter(workspaceDirectory);
-        Identifier.TryCreate("Website", out var website);
 
         try
         {
-            writer.Write(new ContextDeclaration("Billing", new ContainerDeclaration(website!)));
-            writer.Write(new ContextDeclaration("Accounts", new ContainerDeclaration(website!)));
+            writer.Write(new ContextDeclaration(Context("Billing"), new ContainerDeclaration(Container("Website"))));
+            writer.Write(new ContextDeclaration(Context("Accounts"), new ContainerDeclaration(Container("Website"))));
             File.WriteAllText(
                 Path.Combine(workspaceDirectory.FullName, "workspace.dsl"),
                 """
@@ -86,13 +85,11 @@ public class GeneratedDeclarationsInWorkspaceTests
         // Given
         var workspaceDirectory = Directory.CreateTempSubdirectory();
         var writer = new ContextDeclarationDslWriter(workspaceDirectory);
-        Identifier.TryCreate("Website", out var website);
-        Identifier.TryCreate("Api", out var api);
 
         try
         {
-            writer.Write(new ContextDeclaration("Billing", new ContainerDeclaration(website!)));
-            writer.Write(new ContextDeclaration("Accounts", new ContainerDeclaration(api!)));
+            writer.Write(new ContextDeclaration(Context("Billing"), new ContainerDeclaration(Container("Website"))));
+            writer.Write(new ContextDeclaration(Context("Accounts"), new ContainerDeclaration(Container("Api"))));
             File.WriteAllText(
                 Path.Combine(workspaceDirectory.FullName, "workspace.dsl"),
                 """
@@ -122,4 +119,10 @@ public class GeneratedDeclarationsInWorkspaceTests
             workspaceDirectory.Delete(recursive: true);
         }
     }
+
+    private static ContextName Context(string value)
+        => ((Result<ContextName>.Success)ContextName.Create(value)).Value;
+
+    private static ContainerName Container(string value)
+        => ((Result<ContainerName>.Success)ContainerName.Create(value)).Value;
 }

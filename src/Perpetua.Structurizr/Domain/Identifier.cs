@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 
 namespace Perpetua.Structurizr.Domain;
@@ -13,11 +12,10 @@ public sealed partial record Identifier
 
     public string Value { get; }
 
-    public static bool TryCreate(string value, [NotNullWhen(true)] out Identifier? identifier)
-    {
-        identifier = ValidIdentifier.IsMatch(value) ? new Identifier(value) : null;
-        return identifier is not null;
-    }
+    public static Result<Identifier> Create(string value)
+        => ValidIdentifier.IsMatch(value)
+            ? new Result<Identifier>.Success(new Identifier(value))
+            : new Result<Identifier>.Failure();
 
     public override string ToString() => Value;
 
