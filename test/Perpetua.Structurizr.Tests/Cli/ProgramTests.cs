@@ -26,6 +26,7 @@ public class ProgramTests
             """
             SampleSystem.SampleContainer -> SampleSystem.Api
             SampleSystem.SampleContainer -> Accounts.Ledger
+            SampleSystem.SampleContainer -> Compliance.Audit "Records changes"
 
             """.ReplaceLineEndings("\n"),
             File.ReadAllText(Path.Combine(outputDirectory.Info.FullName, "SampleSystem", "relationships", "SampleContainer.dsl")));

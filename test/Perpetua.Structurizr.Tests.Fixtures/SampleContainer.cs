@@ -4,4 +4,5 @@ namespace Perpetua.Structurizr.Tests.Fixtures;
 [Container("SampleSystem", "SampleContainer")]
 [DependsOn("Api")]
 [DependsOn("Ledger", "Accounts")]
+[DependsOn("Audit", "Compliance", "Records changes")]
 public sealed class SampleContainer;

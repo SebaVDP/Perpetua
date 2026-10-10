@@ -13,8 +13,15 @@ public sealed class ContextDeclarationDslWriter(DirectoryInfo outputDirectory) :
             context,
             "relationships",
             name,
-            string.Concat(context.Dependencies.Select(dependency =>
-                $"{context.ContextName}.{name} -> {dependency.Context ?? context.ContextName}.{dependency.Identifier}\n")));
+            string.Concat(context.Dependencies.Select(dependency => Relationship(context, dependency))));
+    }
+
+    private static string Relationship(ContextDeclaration context, DependencyDeclaration dependency)
+    {
+        var source = $"{context.ContextName}.{context.Container.Name}";
+        var target = $"{dependency.Context ?? context.ContextName}.{dependency.Identifier}";
+        var description = dependency.Description is null ? "" : $" \"{dependency.Description}\"";
+        return $"{source} -> {target}{description}\n";
     }
 
     private void WriteFile(ContextDeclaration context, string folder, Identifier name, string content)
