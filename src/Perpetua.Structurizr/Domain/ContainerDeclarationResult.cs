@@ -33,4 +33,10 @@ public abstract record ContainerDeclarationResult
     /// so the run fails and generates nothing.
     /// </summary>
     public sealed record InvalidContextName : ContainerDeclarationResult;
+
+    /// <summary>
+    /// A dependency identifier cannot be used as a Structurizr identifier,
+    /// so the run fails and generates nothing.
+    /// </summary>
+    public sealed record InvalidDependencyIdentifier : ContainerDeclarationResult;
 }

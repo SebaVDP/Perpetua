@@ -79,6 +79,24 @@ public class GenerateContainerDslHandlerTests
         Assert.Equal(new DependencyDeclaration("ABC", "Accounts", null), Assert.Single(generated.Declaration.Dependencies));
     }
 
+    [Fact]
+    public void Writes_nothing_when_a_dependency_identifier_is_not_a_valid_identifier()
+    {
+        // Given
+        var source = new InMemoryContainerSource(
+            [new ContainerAttribute("Billing", "CBA")],
+            new DependsOnAttribute("A.B"));
+        var output = new InMemoryContextDeclarationDslOutput();
+        var handler = new GenerateContainerDslHandler(source, output);
+
+        // When
+        var result = handler.Handle();
+
+        // Then
+        Assert.IsType<InvalidDependencyIdentifier>(result);
+        Assert.Empty(output.Written);
+    }
+
     [Theory]
     [InlineData("a.b")]
     [InlineData("a b")]

@@ -14,6 +14,11 @@ public sealed class GenerateContainerDslHandler(IDeclarationSource source, ICont
         var result = new ContainerDeclarationBuilder().Build(source.Containers());
         if (result is DeclarationGenerated generated)
         {
+            if (HasInvalidDependencyIdentifier())
+            {
+                return new InvalidDependencyIdentifier();
+            }
+
             var declaration = generated.Declaration with
             {
                 Dependencies = source.Dependencies()
@@ -29,4 +34,8 @@ public sealed class GenerateContainerDslHandler(IDeclarationSource source, ICont
 
         return result;
     }
+
+    private bool HasInvalidDependencyIdentifier()
+        => source.Dependencies()
+            .Any(dependency => Identifier.Create(dependency.Identifier) is Result<Identifier>.Failure);
 }
