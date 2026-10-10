@@ -24,6 +24,7 @@ public class ProgramTests
                 """.ReplaceLineEndings("\n"),
                 File.ReadAllText(Path.Combine(outputDirectory.FullName, "SampleSystem", "containers", "SampleContainer.dsl")));
             Assert.Empty(Directory.GetFiles(workingDirectory.FullName));
+            Assert.Equal(string.Empty, File.ReadAllText(Path.Combine(outputDirectory.FullName, "SampleSystem", "relationships", "SampleContainer.dsl")));
         }
         finally
         {

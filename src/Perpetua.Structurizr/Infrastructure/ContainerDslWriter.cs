@@ -7,10 +7,15 @@ public sealed class ContainerDslWriter(DirectoryInfo outputDirectory) : IContain
 {
     public void Write(ContextDeclaration context)
     {
-        var containersDirectory = Directory.CreateDirectory(
-            Path.Combine(outputDirectory.FullName, context.ContextName, "containers"));
-        File.WriteAllText(
-            Path.Combine(containersDirectory.FullName, $"{context.Container.Name}.dsl"),
-            $"{context.Container.Name} = container \"{context.Container.Name}\"\n");
+        var name = context.Container.Name;
+        WriteFile(context, "containers", name, $"{name} = container \"{name}\"\n");
+        WriteFile(context, "relationships", name, string.Empty);
+    }
+
+    private void WriteFile(ContextDeclaration context, string folder, Identifier name, string content)
+    {
+        var directory = Directory.CreateDirectory(
+            Path.Combine(outputDirectory.FullName, context.ContextName, folder));
+        File.WriteAllText(Path.Combine(directory.FullName, $"{name}.dsl"), content);
     }
 }
