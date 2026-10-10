@@ -76,7 +76,7 @@ public class GenerateContainerDslHandlerTests
         // Then
         var generated = Assert.IsType<DeclarationGenerated>(result);
         Assert.Same(generated.Declaration, Assert.Single(output.Written));
-        Assert.Equal(new DependencyDeclaration(Container("ABC"), "Accounts", null), Assert.Single(generated.Declaration.Dependencies));
+        Assert.Equal(new DependencyDeclaration(Container("ABC"), Context("Accounts"), null), Assert.Single(generated.Declaration.Dependencies));
     }
 
     [Fact]
@@ -94,6 +94,24 @@ public class GenerateContainerDslHandlerTests
 
         // Then
         Assert.IsType<InvalidDependencyIdentifier>(result);
+        Assert.Empty(output.Written);
+    }
+
+    [Fact]
+    public void Writes_nothing_when_a_dependency_context_is_not_a_valid_identifier()
+    {
+        // Given
+        var source = new InMemoryContainerSource(
+            [new ContainerAttribute("Billing", "CBA")],
+            new DependsOnAttribute("ABC", "A.B"));
+        var output = new InMemoryContextDeclarationDslOutput();
+        var handler = new GenerateContainerDslHandler(source, output);
+
+        // When
+        var result = handler.Handle();
+
+        // Then
+        Assert.IsType<InvalidDependencyContext>(result);
         Assert.Empty(output.Written);
     }
 
@@ -165,4 +183,7 @@ public class GenerateContainerDslHandlerTests
 
     private static ContainerName Container(string value)
         => ((Result<ContainerName>.Success)ContainerName.Create(value)).Value;
+
+    private static ContextName Context(string value)
+        => ((Result<ContextName>.Success)ContextName.Create(value)).Value;
 }

@@ -19,7 +19,7 @@ public sealed class ContextDeclarationDslWriter(DirectoryInfo outputDirectory) :
     private static string Relationship(ContextDeclaration context, DependencyDeclaration dependency)
     {
         var source = $"{context.ContextName}.{context.Container.Name}";
-        var target = $"{dependency.Context ?? context.ContextName.Value}.{dependency.Container}";
+        var target = $"{dependency.Context ?? context.ContextName}.{dependency.Container}";
         var description = dependency.Description is null ? "" : $" \"{dependency.Description}\"";
         return $"{source} -> {target}{description}\n";
     }

@@ -17,12 +17,10 @@ public sealed class GenerateContainerDslHandler(IDeclarationSource source, ICont
             var dependencies = new List<DependencyDeclaration>();
             foreach (var dependency in source.Dependencies())
             {
-                if (ContainerName.Create(dependency.Identifier) is not Result<ContainerName>.Success { Value: var name })
+                if (AddDependency(dependencies, dependency) is { } failure)
                 {
-                    return new InvalidDependencyIdentifier();
+                    return failure;
                 }
-
-                dependencies.Add(new DependencyDeclaration(name, dependency.Context, dependency.Description));
             }
 
             var declaration = generated.Declaration with { Dependencies = dependencies };
@@ -31,5 +29,30 @@ public sealed class GenerateContainerDslHandler(IDeclarationSource source, ICont
         }
 
         return result;
+    }
+
+    // Adds the dependency when it is valid; otherwise returns the failure that stops the run.
+    private static ContainerDeclarationResult? AddDependency(
+        List<DependencyDeclaration> dependencies,
+        DependsOnAttribute dependency)
+    {
+        if (ContainerName.Create(dependency.Identifier) is not Result<ContainerName>.Success { Value: var name })
+        {
+            return new InvalidDependencyIdentifier();
+        }
+
+        ContextName? context = null;
+        if (dependency.Context is not null)
+        {
+            if (ContextName.Create(dependency.Context) is not Result<ContextName>.Success { Value: var created })
+            {
+                return new InvalidDependencyContext();
+            }
+
+            context = created;
+        }
+
+        dependencies.Add(new DependencyDeclaration(name, context, dependency.Description));
+        return null;
     }
 }
