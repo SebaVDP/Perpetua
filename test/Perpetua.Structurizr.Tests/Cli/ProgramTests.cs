@@ -7,30 +7,22 @@ public class ProgramTests
     {
         // Given
         var assemblyDirectory = Path.Combine(AppContext.BaseDirectory, "fixtures");
-        var workingDirectory = Directory.CreateTempSubdirectory();
-        var outputDirectory = Directory.CreateTempSubdirectory();
+        using var workingDirectory = new TemporaryDirectory();
+        using var outputDirectory = new TemporaryDirectory();
 
-        try
-        {
-            // When
-            var result = Program.Run([assemblyDirectory, outputDirectory.FullName], workingDirectory, TextWriter.Null);
+        // When
+        var result = Program.Run([assemblyDirectory, outputDirectory.Info.FullName], workingDirectory.Info, TextWriter.Null);
 
-            // Then
-            Assert.Equal(CommandExitCode.Success, result);
-            Assert.Equal(
-                """
-                SampleContainer = container "SampleContainer"
+        // Then
+        Assert.Equal(CommandExitCode.Success, result);
+        Assert.Equal(
+            """
+            SampleContainer = container "SampleContainer"
 
-                """.ReplaceLineEndings("\n"),
-                File.ReadAllText(Path.Combine(outputDirectory.FullName, "SampleSystem", "containers", "SampleContainer.dsl")));
-            Assert.Empty(Directory.GetFiles(workingDirectory.FullName));
-            Assert.Equal(string.Empty, File.ReadAllText(Path.Combine(outputDirectory.FullName, "SampleSystem", "relationships", "SampleContainer.dsl")));
-        }
-        finally
-        {
-            workingDirectory.Delete(recursive: true);
-            outputDirectory.Delete(recursive: true);
-        }
+            """.ReplaceLineEndings("\n"),
+            File.ReadAllText(Path.Combine(outputDirectory.Info.FullName, "SampleSystem", "containers", "SampleContainer.dsl")));
+        Assert.Empty(Directory.GetFiles(workingDirectory.Info.FullName));
+        Assert.Equal(string.Empty, File.ReadAllText(Path.Combine(outputDirectory.Info.FullName, "SampleSystem", "relationships", "SampleContainer.dsl")));
     }
 
     [Fact]
@@ -110,28 +102,20 @@ public class ProgramTests
     {
         // Given
         var assemblyDirectory = Path.Combine(AppContext.BaseDirectory, "fixtures");
-        var workingDirectory = Directory.CreateTempSubdirectory();
-        var outputDirectory = Directory.CreateTempSubdirectory();
-        var earlierRun = Path.Combine(outputDirectory.FullName, "SampleSystem", "containers", "SampleContainer.dsl");
+        using var workingDirectory = new TemporaryDirectory();
+        using var outputDirectory = new TemporaryDirectory();
+        var earlierRun = Path.Combine(outputDirectory.Info.FullName, "SampleSystem", "containers", "SampleContainer.dsl");
         Directory.CreateDirectory(Path.GetDirectoryName(earlierRun)!);
         File.WriteAllText(earlierRun, "stale");
 
-        try
-        {
-            // When
-            var result = Program.Run([assemblyDirectory, outputDirectory.FullName], workingDirectory, TextWriter.Null);
+        // When
+        var result = Program.Run([assemblyDirectory, outputDirectory.Info.FullName], workingDirectory.Info, TextWriter.Null);
 
-            // Then
-            Assert.Equal(CommandExitCode.Success, result);
-            Assert.Equal(
-                "SampleContainer = container \"SampleContainer\"\n",
-                File.ReadAllText(earlierRun));
-        }
-        finally
-        {
-            workingDirectory.Delete(recursive: true);
-            outputDirectory.Delete(recursive: true);
-        }
+        // Then
+        Assert.Equal(CommandExitCode.Success, result);
+        Assert.Equal(
+            "SampleContainer = container \"SampleContainer\"\n",
+            File.ReadAllText(earlierRun));
     }
 
     [Fact]
