@@ -45,7 +45,7 @@ public class GeneratedDeclarationsInWorkspaceTests
     {
         // Given
         var workspaceDirectory = Directory.CreateTempSubdirectory();
-        var writer = new ContainerDslWriter(workspaceDirectory);
+        var writer = new ContextDeclarationDslWriter(workspaceDirectory);
         Identifier.TryCreate("Website", out var website);
 
         try
@@ -85,7 +85,7 @@ public class GeneratedDeclarationsInWorkspaceTests
     {
         // Given
         var workspaceDirectory = Directory.CreateTempSubdirectory();
-        var writer = new ContainerDslWriter(workspaceDirectory);
+        var writer = new ContextDeclarationDslWriter(workspaceDirectory);
         Identifier.TryCreate("Website", out var website);
         Identifier.TryCreate("Api", out var api);
 

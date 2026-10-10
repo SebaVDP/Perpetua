@@ -60,7 +60,7 @@ public class ProgramTests
         var source = new InMemoryContainerSource(
             new ContainerAttribute("Billing", "Invoicing"),
             new ContainerAttribute("Accounts", "Ledger"));
-        var output = new InMemoryContainerDslOutput();
+        var output = new InMemoryContextDeclarationDslOutput();
         using var error = new StringWriter();
 
         // When
@@ -76,7 +76,7 @@ public class ProgramTests
     {
         // Given
         var source = new InMemoryContainerSource(new ContainerAttribute("ExampleSystem", "a.b"));
-        var output = new InMemoryContainerDslOutput();
+        var output = new InMemoryContextDeclarationDslOutput();
         using var error = new StringWriter();
 
         // When
@@ -92,7 +92,7 @@ public class ProgramTests
     {
         // Given
         var source = new InMemoryContainerSource(new ContainerAttribute("Example.System", "Website"));
-        var output = new InMemoryContainerDslOutput();
+        var output = new InMemoryContextDeclarationDslOutput();
         using var error = new StringWriter();
 
         // When

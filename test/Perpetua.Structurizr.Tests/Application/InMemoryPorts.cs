@@ -24,7 +24,7 @@ internal sealed class InMemoryContainerSource : IDeclarationSource
     public IEnumerable<DependsOnAttribute> Dependencies() => dependencies;
 }
 
-internal sealed class InMemoryContainerDslOutput : IContainerDslOutput
+internal sealed class InMemoryContextDeclarationDslOutput : IContextDeclarationDslOutput
 {
     public List<ContextDeclaration> Written { get; } = [];
 

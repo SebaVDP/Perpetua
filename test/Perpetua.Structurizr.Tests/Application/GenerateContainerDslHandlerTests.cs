@@ -11,7 +11,7 @@ public class GenerateContainerDslHandlerTests
     {
         // Given
         var source = new InMemoryContainerSource();
-        var output = new InMemoryContainerDslOutput();
+        var output = new InMemoryContextDeclarationDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
         // When
@@ -27,7 +27,7 @@ public class GenerateContainerDslHandlerTests
     {
         // Given
         var source = new InMemoryContainerSource(new ContainerAttribute("ExampleSystem", "Website"));
-        var output = new InMemoryContainerDslOutput();
+        var output = new InMemoryContextDeclarationDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
         // When
@@ -48,7 +48,7 @@ public class GenerateContainerDslHandlerTests
         var source = new InMemoryContainerSource(
             [new ContainerAttribute("Billing", "CBA")],
             new DependsOnAttribute("ABC"));
-        var output = new InMemoryContainerDslOutput();
+        var output = new InMemoryContextDeclarationDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
         // When
@@ -67,7 +67,7 @@ public class GenerateContainerDslHandlerTests
         var source = new InMemoryContainerSource(
             [new ContainerAttribute("Billing", "CBA")],
             new DependsOnAttribute("ABC", "Accounts"));
-        var output = new InMemoryContainerDslOutput();
+        var output = new InMemoryContextDeclarationDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
         // When
@@ -92,7 +92,7 @@ public class GenerateContainerDslHandlerTests
     {
         // Given
         var source = new InMemoryContainerSource(new ContainerAttribute("ExampleSystem", name));
-        var output = new InMemoryContainerDslOutput();
+        var output = new InMemoryContextDeclarationDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
         // When
@@ -116,7 +116,7 @@ public class GenerateContainerDslHandlerTests
     {
         // Given
         var source = new InMemoryContainerSource(new ContainerAttribute(context, "Website"));
-        var output = new InMemoryContainerDslOutput();
+        var output = new InMemoryContextDeclarationDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
         // When
@@ -134,7 +134,7 @@ public class GenerateContainerDslHandlerTests
         var source = new InMemoryContainerSource(
             new ContainerAttribute("Billing", "Invoicing"),
             new ContainerAttribute("Accounts", "Ledger"));
-        var output = new InMemoryContainerDslOutput();
+        var output = new InMemoryContextDeclarationDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
         // When

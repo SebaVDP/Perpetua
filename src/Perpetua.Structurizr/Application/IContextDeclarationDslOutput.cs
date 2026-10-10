@@ -2,8 +2,8 @@ using Perpetua.Structurizr.Domain;
 
 namespace Perpetua.Structurizr.Application;
 
-/// <summary>Where the generated container DSL goes.</summary>
-public interface IContainerDslOutput
+/// <summary>Where the generated context declaration DSL goes.</summary>
+public interface IContextDeclarationDslOutput
 {
     void Write(ContextDeclaration context);
 }
