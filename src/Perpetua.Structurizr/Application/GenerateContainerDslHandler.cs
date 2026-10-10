@@ -7,7 +7,7 @@ namespace Perpetua.Structurizr.Application;
 /// Documents the single container of a deployment unit as Structurizr DSL.
 /// Output is only produced when the unit declares exactly one container.
 /// </summary>
-public sealed class GenerateContainerDslHandler(IContainerSource source, IContainerDslOutput output)
+public sealed class GenerateContainerDslHandler(IDeclarationSource source, IContainerDslOutput output)
 {
     public ContainerDeclarationResult Handle()
     {

@@ -3,7 +3,7 @@ using Perpetua.Structurizr.Application;
 
 namespace Perpetua.Structurizr.Infrastructure;
 
-public sealed class ContainerScanner(DirectoryInfo assemblyDirectory) : IContainerSource
+public sealed class AssemblyDeclarationScanner(DirectoryInfo assemblyDirectory) : IDeclarationSource
 {
     private readonly Lazy<Type[]> types = new(() => assemblyDirectory.GetFiles("*.dll")
         .SelectMany(assemblyFile => GetLoadableTypes(Assembly.LoadFrom(assemblyFile.FullName)))

@@ -3,7 +3,7 @@ using Perpetua.Structurizr.Domain;
 
 namespace Perpetua.Structurizr.Tests;
 
-internal sealed class InMemoryContainerSource : IContainerSource
+internal sealed class InMemoryContainerSource : IDeclarationSource
 {
     private readonly ContainerAttribute[] containers;
     private readonly DependsOnAttribute[] dependencies;
