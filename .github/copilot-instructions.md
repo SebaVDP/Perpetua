@@ -25,6 +25,7 @@ _Exact test and mutation-testing commands live in the `running-tests` skill._
 
 - **Small commits** that follow a single user story / acceptance criterion.
 - **Link every commit to its issue.** Include the relevant GitHub issue reference (for example, `#123`) in each commit message. Do not use auto-closing keywords until the user has explicitly validated the completed work.
+- **Explain why in commit messages.** The subject says what changed; include the rationale in the body, especially when the reason is not obvious from the change itself.
 - **Issue closure requires user validation.** Do not close a GitHub issue, or use an auto-closing reference such as `Closes #...`, until the user has explicitly validated the completed work.
 - **Preparatory refactor first (Kent Beck):** *"First make the change easy, then make the easy change."* When a new behaviour is hard to add, split the work into two commits: (1) a behaviour-preserving refactor that reshapes the design so the feature becomes trivial (all existing tests stay green), then (2) the feature itself as a small RED→GREEN slice. Never mix a structural refactor and a behavioural change in the same commit.
 - **DDD error modeling:** user-supplied invalid input is a **domain error** (a `Result` failure, communicated gracefully); truly impossible states are invariant guards (throw).
