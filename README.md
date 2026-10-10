@@ -20,11 +20,11 @@ dotnet tool install --global Perpetua.Structurizr
 
 ```mermaid
 flowchart LR
-    A["Billing service<br/>[Container('Billing', 'Invoicing')]"] -->|"perpetua-structurizr<br/>(one run per deployment unit)"| B["docs/Billing/containers/Invoicing.dsl"]
-    C["Accounts service<br/>[Container('Accounts', 'Website')]"] -->|"perpetua-structurizr<br/>(one run per deployment unit)"| D["docs/Accounts/containers/Website.dsl"]
+    A["Billing service<br/>[Container('Billing', 'Invoicing')]"] -->|"perpetua-structurizr<br/>(one run per deployment unit)"| B["docs/Billing/containers/Invoicing.dsl<br/>docs/Billing/relationships/Invoicing.dsl"]
+    C["Accounts service<br/>[Container('Accounts', 'Website')]"] -->|"perpetua-structurizr<br/>(one run per deployment unit)"| D["docs/Accounts/containers/Website.dsl<br/>docs/Accounts/relationships/Website.dsl"]
     B --> W["workspace.dsl<br/>(hand-written)"]
     D --> W
-    W -->|"!include &lt;context&gt;/containers"| S["Structurizr"]
+    W -->|"!include &lt;context&gt;/containers<br/>then !include &lt;context&gt;/relationships"| S["Structurizr"]
 ```
 
 Each deployment unit is documented by its own run. The hand-written workspace brings the generated folders together.
@@ -55,11 +55,15 @@ The output directory now contains one folder per context:
 ```
 docs/
 ├── Billing/
-│   └── containers/
-│       └── Invoicing.dsl      Invoicing = container "Invoicing"
+│   ├── containers/
+│   │   └── Invoicing.dsl      Invoicing = container "Invoicing"
+│   └── relationships/
+│       └── Invoicing.dsl      (empty for now)
 └── Accounts/
-    └── containers/
-        └── Website.dsl        Website = container "Website"
+    ├── containers/
+    │   └── Website.dsl        Website = container "Website"
+    └── relationships/
+        └── Website.dsl        (empty for now)
 ```
 
 Include the folders in a hand-written workspace. It uses `!identifiers hierarchical`, and the context must equal the identifier of the `softwareSystem` that includes its folder:
@@ -74,9 +78,13 @@ workspace {
         Accounts = softwareSystem "Accounts" {
             !include docs/Accounts/containers
         }
+        !include docs/Billing/relationships
+        !include docs/Accounts/relationships
     }
 }
 ```
+
+Include every `containers` folder first, then every `relationships` folder. A relationship can point to a container of another context, so all containers must be declared before any relationship is read.
 
 Separate runs can therefore declare containers with the same name in different contexts.
 
