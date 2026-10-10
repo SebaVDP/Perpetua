@@ -14,28 +14,22 @@ public sealed class GenerateContainerDslHandler(IDeclarationSource source, ICont
         var result = new ContainerDeclarationBuilder().Build(source.Containers());
         if (result is DeclarationGenerated generated)
         {
-            if (HasInvalidDependencyIdentifier())
+            var dependencies = new List<DependencyDeclaration>();
+            foreach (var dependency in source.Dependencies())
             {
-                return new InvalidDependencyIdentifier();
+                if (ContainerName.Create(dependency.Identifier) is not Result<ContainerName>.Success { Value: var name })
+                {
+                    return new InvalidDependencyIdentifier();
+                }
+
+                dependencies.Add(new DependencyDeclaration(name, dependency.Context, dependency.Description));
             }
 
-            var declaration = generated.Declaration with
-            {
-                Dependencies = source.Dependencies()
-                    .Select(dependency => new DependencyDeclaration(
-                        dependency.Identifier,
-                        dependency.Context,
-                        dependency.Description))
-                    .ToArray()
-            };
+            var declaration = generated.Declaration with { Dependencies = dependencies };
             output.Write(declaration);
             return generated with { Declaration = declaration };
         }
 
         return result;
     }
-
-    private bool HasInvalidDependencyIdentifier()
-        => source.Dependencies()
-            .Any(dependency => Identifier.Create(dependency.Identifier) is Result<Identifier>.Failure);
 }

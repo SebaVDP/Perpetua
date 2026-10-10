@@ -57,7 +57,7 @@ public class GenerateContainerDslHandlerTests
         // Then
         var generated = Assert.IsType<DeclarationGenerated>(result);
         Assert.Same(generated.Declaration, Assert.Single(output.Written));
-        Assert.Equal(new DependencyDeclaration("ABC", null, null), Assert.Single(generated.Declaration.Dependencies));
+        Assert.Equal(new DependencyDeclaration(Container("ABC"), null, null), Assert.Single(generated.Declaration.Dependencies));
     }
 
     [Fact]
@@ -76,7 +76,7 @@ public class GenerateContainerDslHandlerTests
         // Then
         var generated = Assert.IsType<DeclarationGenerated>(result);
         Assert.Same(generated.Declaration, Assert.Single(output.Written));
-        Assert.Equal(new DependencyDeclaration("ABC", "Accounts", null), Assert.Single(generated.Declaration.Dependencies));
+        Assert.Equal(new DependencyDeclaration(Container("ABC"), "Accounts", null), Assert.Single(generated.Declaration.Dependencies));
     }
 
     [Fact]
@@ -162,4 +162,7 @@ public class GenerateContainerDslHandlerTests
         Assert.IsType<OnlyOneContainerAllowed>(result);
         Assert.Empty(output.Written);
     }
+
+    private static ContainerName Container(string value)
+        => ((Result<ContainerName>.Success)ContainerName.Create(value)).Value;
 }
