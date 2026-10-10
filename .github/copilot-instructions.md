@@ -15,6 +15,12 @@ Every change follows this loop:
 
 _Exact test and mutation-testing commands live in the `running-tests` skill._
 
+## Discuss before changing
+
+- **A question is not an instruction.** When the user asks an open question or floats an idea ("wouldn't it be better…?", "just wondering", "what if…"), do not edit files. Weigh it, give trade-offs and a recommendation, then wait for the decision.
+- **The user can be wrong, and so can the agent.** Do not agree just to be agreeable; give an honest opinion with reasons.
+- **Edit only on an explicit go-ahead** ("do it", "yes", "go"). When unsure whether something is a question or an instruction, treat it as a question.
+
 ## Conventions
 
 - **Small commits** that follow a single user story / acceptance criterion.
