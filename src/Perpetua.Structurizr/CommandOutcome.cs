@@ -13,6 +13,7 @@ internal sealed record CommandOutcome(CommandExitCode ExitCode, string? Message 
         OnlyOneContainerAllowed => new(CommandExitCode.OnlyOneContainerAllowed, "A deployment unit may declare only one container."),
         InvalidContainerName => new(CommandExitCode.InvalidContainerName, "The container name is not a valid identifier."),
         InvalidContextName => new(CommandExitCode.InvalidContextName, "The context is not a valid identifier."),
+        InvalidDependencyIdentifier => new(CommandExitCode.InvalidDependencyIdentifier, "A dependency identifier is not a valid identifier."),
         _ => throw new UnreachableException()
     };
 }
