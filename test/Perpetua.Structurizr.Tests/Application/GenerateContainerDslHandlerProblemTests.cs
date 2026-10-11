@@ -110,6 +110,50 @@ public class GenerateContainerDslHandlerProblemTests
     }
 
     [Fact]
+    public void Reports_an_invalid_dependency_context_together_with_an_invalid_container_name()
+    {
+        // Given
+        var source = new InMemoryContainerSource(
+            [new ContainerAttribute("Billing", "Invoice.Api").DeclaredOn()],
+            [new DependsOnAttribute("LedgerApi", "Accounting.Ledger").DeclaredOn("Billing.Api.LedgerClient")]);
+        var output = new InMemoryContextDeclarationDslOutput();
+        var handler = new GenerateContainerDslHandler(source, output);
+
+        // When
+        var result = handler.Handle();
+
+        // Then
+        Assert.Equal(
+            [
+                "PSTRUCT.0002: Container name 'Invoice.Api' on class 'Billing.Api.InvoiceApi' is not a valid identifier.",
+                "PSTRUCT.0005: Dependency context 'Accounting.Ledger' on class 'Billing.Api.LedgerClient' is not a valid identifier."
+            ],
+            Reported(result));
+        Assert.Empty(output.Written);
+    }
+
+    [Fact]
+    public void Reports_only_the_invalid_container_name_when_the_dependencies_are_valid()
+    {
+        // Given
+        var source = new InMemoryContainerSource(
+            [new ContainerAttribute("Billing", "Invoice.Api").DeclaredOn()],
+            [
+                new DependsOnAttribute("PaymentGateway").DeclaredOn("Billing.Api.PaymentClient"),
+                new DependsOnAttribute("LedgerApi", "Accounting").DeclaredOn("Billing.Api.LedgerClient")
+            ]);
+        var output = new InMemoryContextDeclarationDslOutput();
+        var handler = new GenerateContainerDslHandler(source, output);
+
+        // When
+        var result = handler.Handle();
+
+        // Then
+        Assert.Equal(["PSTRUCT.0002: Container name 'Invoice.Api' on class 'Billing.Api.InvoiceApi' is not a valid identifier."], Reported(result));
+        Assert.Empty(output.Written);
+    }
+
+    [Fact]
     public void Reports_an_invalid_dependency_together_with_an_invalid_container_name()
     {
         // Given

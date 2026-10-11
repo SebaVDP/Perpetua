@@ -14,7 +14,7 @@ public sealed class GenerateContainerDslHandler(IDeclarationSource source, ICont
         var result = new ContainerDeclarationBuilder().Build(source.Containers());
         if (result is Rejected rejected)
         {
-            return new Rejected([.. rejected.Problems, .. InvalidDependencyIdentifiers()]);
+            return new Rejected([.. rejected.Problems, .. InvalidDependencies()]);
         }
 
         if (result is not DeclarationGenerated built)
@@ -32,10 +32,19 @@ public sealed class GenerateContainerDslHandler(IDeclarationSource source, ICont
         return new DeclarationGenerated(declared.Declaration);
     }
 
-    private IEnumerable<Problem> InvalidDependencyIdentifiers()
-        => source.Dependencies()
-            .Where(dependency => ContainerName.Create(dependency.Attribute.Identifier) is not Result<ContainerName>.Success)
-            .Select(dependency => Problem.InvalidDependencyIdentifier(dependency.Attribute.Identifier, dependency.DeclaringClass));
+    private IEnumerable<Problem> InvalidDependencies()
+        => source.Dependencies().SelectMany(declared =>
+        {
+            var dependency = declared.Attribute;
+            if (ContainerName.Create(dependency.Identifier) is not Result<ContainerName>.Success)
+            {
+                return [Problem.InvalidDependencyIdentifier(dependency.Identifier, declared.DeclaringClass)];
+            }
+
+            return dependency.Context is not null && ContextName.Create(dependency.Context) is not Result<ContextName>.Success
+                ? [Problem.InvalidDependencyContext(dependency.Context, declared.DeclaringClass)]
+                : Array.Empty<Problem>();
+        });
 
     // Extends the declaration with the dependency; otherwise keeps it and records the problem.
     private static Declaring AddDependency(Declaring declaring, Declared<DependsOnAttribute> declared)
