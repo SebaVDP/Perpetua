@@ -43,6 +43,6 @@ public sealed record Problem
     /// The same dependency (target, context and description) is declared more than once on the container.
     /// Structurizr rejects a duplicate relationship.
     /// </summary>
-    public static Problem DuplicateDependency(string value, DeclaringClass declaringClass)
-        => new("PSTRUCT.0006", $"Dependency '{value}' on class '{declaringClass.FullName}' is declared twice with the same context and description. Remove the duplicate.");
+    public static Problem DuplicateDependency(ContainerName container, DeclaringClass declaringClass)
+        => new("PSTRUCT.0006", $"Dependency '{container}' on class '{declaringClass.FullName}' is declared twice with the same context and description. Remove the duplicate.");
 }

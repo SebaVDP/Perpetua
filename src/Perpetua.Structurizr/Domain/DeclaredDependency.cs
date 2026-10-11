@@ -21,16 +21,16 @@ public abstract record DeclaredDependency
 
         if (dependency.Context is null)
         {
-            return new Valid(declared, defaultContext => new DependencyDeclaration(name, defaultContext, dependency.Description));
+            return new Valid(name, declared.DeclaringClass, defaultContext => new DependencyDeclaration(name, defaultContext, dependency.Description));
         }
 
         return ContextName.Create(dependency.Context) is Result<ContextName>.Success { Value: var context }
-            ? new Valid(declared, _ => new DependencyDeclaration(name, context, dependency.Description))
+            ? new Valid(name, declared.DeclaringClass, _ => new DependencyDeclaration(name, context, dependency.Description))
             : new Invalid(Problem.InvalidDependencyContext(dependency.Context, declared.DeclaringClass));
     }
 
     /// <summary>The dependency can be placed in a context; it knows where it was declared, in case it turns out to be a duplicate.</summary>
-    public sealed record Valid(Declared<DependsOnAttribute> Source, Func<ContextName, DependencyDeclaration> ResolveIn) : DeclaredDependency;
+    public sealed record Valid(ContainerName Container, DeclaringClass DeclaringClass, Func<ContextName, DependencyDeclaration> ResolveIn) : DeclaredDependency;
 
     /// <summary>The dependency cannot be used, and the problem tells the user what to resolve.</summary>
     public sealed record Invalid(Problem Problem) : DeclaredDependency;

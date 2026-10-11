@@ -64,7 +64,7 @@ public sealed record DeploymentUnitAggregate(ContextName ContextName, ContainerN
                     declaration = extended;
                     break;
                 case DeclaredDependency.Valid duplicate:
-                    problems.Add(Problem.DuplicateDependency(duplicate.Source.Attribute.Identifier, duplicate.Source.DeclaringClass));
+                    problems.Add(Problem.DuplicateDependency(duplicate.Container, duplicate.DeclaringClass));
                     break;
             }
         }
