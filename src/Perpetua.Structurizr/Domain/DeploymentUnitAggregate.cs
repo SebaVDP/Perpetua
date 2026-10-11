@@ -11,6 +11,8 @@ public sealed record DeploymentUnitAggregate(ContextName ContextName, ContainerN
 {
     public IReadOnlyList<DependencyDeclaration> Dependencies { get; init; } = [];
 
+    public QualifiedContainerName QualifiedName => new(ContextName, ContainerName);
+
     /// <summary>
     /// Decides what a run produces from what its deployment unit declares:
     /// none means nothing to document, exactly one container is documented together with its dependencies,

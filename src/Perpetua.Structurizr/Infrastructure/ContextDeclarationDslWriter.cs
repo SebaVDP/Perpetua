@@ -18,10 +18,8 @@ public sealed class ContextDeclarationDslWriter(DirectoryInfo outputDirectory) :
 
     private static string Relationship(DeploymentUnitAggregate unit, DependencyDeclaration dependency)
     {
-        var source = $"{unit.ContextName}.{unit.ContainerName}";
-        var target = $"{dependency.Context}.{dependency.Container}";
         var description = dependency.Description is null ? "" : $" \"{dependency.Description}\"";
-        return $"{source} -> {target}{description}\n";
+        return $"{unit.QualifiedName} -> {dependency.Target}{description}\n";
     }
 
     private void WriteFile(DeploymentUnitAggregate unit, string folder, ContainerName name, string content)
