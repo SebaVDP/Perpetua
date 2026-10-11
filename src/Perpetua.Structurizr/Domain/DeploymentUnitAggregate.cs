@@ -38,7 +38,7 @@ public sealed record DeploymentUnitAggregate(ContextName ContextName, ContainerN
     }
 
     private static IEnumerable<Problem> DependencyProblems(IEnumerable<DeclaredDependency> dependencies)
-        => dependencies.Select(dependency => dependency.Problem).OfType<Problem>();
+        => dependencies.OfType<DeclaredDependency.Invalid>().Select(invalid => invalid.Problem);
 
     private static ContainerDeclarationResult From(Declared<ContainerAttribute> declared)
         => ContextName.Create(declared.Attribute.Context).Match<ContainerDeclarationResult>(
@@ -54,17 +54,18 @@ public sealed record DeploymentUnitAggregate(ContextName ContextName, ContainerN
         var problems = new List<Problem>();
         foreach (var dependency in dependencies)
         {
-            if (dependency.ResolveIn(ContextName) is not { } resolved)
+            switch (dependency)
             {
-                problems.Add(dependency.Problem!);
-            }
-            else if (declaration.WithDependency(resolved) is Result<DeploymentUnitAggregate>.Success { Value: var extended })
-            {
-                declaration = extended;
-            }
-            else
-            {
-                problems.Add(Problem.DuplicateDependency(dependency.Source.Attribute.Identifier, dependency.Source.DeclaringClass));
+                case DeclaredDependency.Invalid invalid:
+                    problems.Add(invalid.Problem);
+                    break;
+                case DeclaredDependency.Valid valid when declaration.WithDependency(valid.ResolveIn(ContextName))
+                    is Result<DeploymentUnitAggregate>.Success { Value: var extended }:
+                    declaration = extended;
+                    break;
+                case DeclaredDependency.Valid duplicate:
+                    problems.Add(Problem.DuplicateDependency(duplicate.Source.Attribute.Identifier, duplicate.Source.DeclaringClass));
+                    break;
             }
         }
 
