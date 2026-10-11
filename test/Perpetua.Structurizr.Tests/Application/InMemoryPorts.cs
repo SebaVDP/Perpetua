@@ -7,14 +7,17 @@ internal static class DeclaredExtensions
 {
     public const string DefaultDeclaringClass = "Billing.Api.InvoiceApi";
 
-    public static Declared<T> DeclaredOn<T>(this T attribute, string declaringClass = DefaultDeclaringClass)
-        => new(attribute, new DeclaringClass(declaringClass));
+    public static ContainerClaim DeclaredOn(this ContainerAttribute attribute, string declaringClass = DefaultDeclaringClass)
+        => new(attribute.Context, attribute.Name, new DeclaringClass(declaringClass));
+
+    public static DependencyClaim DeclaredOn(this DependsOnAttribute attribute, string declaringClass = DefaultDeclaringClass)
+        => new(attribute.Identifier, attribute.Context, attribute.Description, new DeclaringClass(declaringClass));
 }
 
 internal sealed class InMemoryContainerSource : IDeclarationSource
 {
-    private readonly Declared<ContainerAttribute>[] containers;
-    private readonly Declared<DependsOnAttribute>[] dependencies;
+    private readonly ContainerClaim[] containers;
+    private readonly DependencyClaim[] dependencies;
 
     public InMemoryContainerSource(params ContainerAttribute[] containers)
         : this(containers, [])
@@ -28,15 +31,15 @@ internal sealed class InMemoryContainerSource : IDeclarationSource
     {
     }
 
-    public InMemoryContainerSource(Declared<ContainerAttribute>[] containers, Declared<DependsOnAttribute>[] dependencies)
+    public InMemoryContainerSource(ContainerClaim[] containers, DependencyClaim[] dependencies)
     {
         this.containers = containers;
         this.dependencies = dependencies;
     }
 
-    public IEnumerable<Declared<ContainerAttribute>> Containers() => containers;
+    public IEnumerable<ContainerClaim> Containers() => containers;
 
-    public IEnumerable<Declared<DependsOnAttribute>> Dependencies() => dependencies;
+    public IEnumerable<DependencyClaim> Dependencies() => dependencies;
 }
 
 internal sealed class InMemoryContextDeclarationDslOutput : IContextDeclarationDslOutput

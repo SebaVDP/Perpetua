@@ -12,7 +12,7 @@ public class AssemblyDeclarationScannerTests
         var containers = new AssemblyDeclarationScanner(directory).Containers();
 
         Assert.Contains(containers, container =>
-            container.Attribute.Context == "Billing" && container.Attribute.Name == "InvoiceApi");
+            container.Context == "Billing" && container.Name == "InvoiceApi");
     }
 
     [Fact]
@@ -23,7 +23,7 @@ public class AssemblyDeclarationScannerTests
         var containers = new AssemblyDeclarationScanner(directory).Containers();
 
         Assert.Contains(containers, container =>
-            container.Attribute.Name == "InvoiceApi" && container.DeclaringClass.FullName.EndsWith(".InvoiceApi"));
+            container.Name == "InvoiceApi" && container.DeclaringClass.FullName.EndsWith(".InvoiceApi"));
     }
 
     [Fact]
@@ -52,6 +52,6 @@ public class AssemblyDeclarationScannerTests
         var containers = new AssemblyDeclarationScanner(assemblyDirectory).Containers();
 
         Assert.Contains(containers, container =>
-            container.Attribute.Context == "Billing" && container.Attribute.Name == "ReportingService");
+            container.Context == "Billing" && container.Name == "ReportingService");
     }
 }

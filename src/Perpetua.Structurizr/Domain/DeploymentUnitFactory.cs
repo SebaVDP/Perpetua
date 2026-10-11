@@ -11,8 +11,8 @@ namespace Perpetua.Structurizr.Domain;
 public static class DeploymentUnitFactory
 {
     public static ContainerDeclarationResult Create(
-        IEnumerable<Declared<ContainerAttribute>> containers,
-        IEnumerable<Declared<DependsOnAttribute>> dependencies)
+        IEnumerable<ContainerClaim> containers,
+        IEnumerable<DependencyClaim> dependencies)
     {
         var declared = dependencies.Select(DeclaredDependency.From).ToList();
         return containers.ToList() switch
@@ -33,12 +33,12 @@ public static class DeploymentUnitFactory
     private static IEnumerable<Problem> DependencyProblems(IEnumerable<DeclaredDependency> dependencies)
         => dependencies.OfType<DeclaredDependency.Invalid>().Select(invalid => invalid.Problem);
 
-    private static ContainerDeclarationResult Declare(Declared<ContainerAttribute> declared)
-        => ContextName.Create(declared.Attribute.Context).Match<ContainerDeclarationResult>(
-            context => ContainerName.Create(declared.Attribute.Name).Match<ContainerDeclarationResult>(
+    private static ContainerDeclarationResult Declare(ContainerClaim claim)
+        => ContextName.Create(claim.Context).Match<ContainerDeclarationResult>(
+            context => ContainerName.Create(claim.Name).Match<ContainerDeclarationResult>(
                 name => new DeclarationGenerated(new DeploymentUnitAggregate(context, name)),
-                () => new Rejected([Problem.InvalidContainerName(declared.Attribute.Name, declared.DeclaringClass)])),
-            () => new Rejected([Problem.InvalidContextName(declared.Attribute.Context, declared.DeclaringClass)]));
+                () => new Rejected([Problem.InvalidContainerName(claim.Name, claim.DeclaringClass)])),
+            () => new Rejected([Problem.InvalidContextName(claim.Context, claim.DeclaringClass)]));
 
     // Extends the unit with every valid dependency; every invalid or duplicate one is reported instead.
     private static ContainerDeclarationResult AddDependencies(DeploymentUnitAggregate unit, IEnumerable<DeclaredDependency> dependencies)

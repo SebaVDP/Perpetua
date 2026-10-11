@@ -10,13 +10,13 @@ public sealed class AssemblyDeclarationScanner(DirectoryInfo assemblyDirectory) 
         .SelectMany(assemblyFile => GetLoadableTypes(Assembly.LoadFrom(assemblyFile.FullName)))
         .ToArray());
 
-    public IEnumerable<Declared<ContainerAttribute>> Containers()
+    public IEnumerable<ContainerClaim> Containers()
         => Types().SelectMany(type => type.GetCustomAttributes<ContainerAttribute>()
-            .Select(attribute => new Declared<ContainerAttribute>(attribute, new DeclaringClass(type.FullName!))));
+            .Select(attribute => new ContainerClaim(attribute.Context, attribute.Name, new DeclaringClass(type.FullName!))));
 
-    public IEnumerable<Declared<DependsOnAttribute>> Dependencies()
+    public IEnumerable<DependencyClaim> Dependencies()
         => Types().SelectMany(type => type.GetCustomAttributes<DependsOnAttribute>()
-            .Select(attribute => new Declared<DependsOnAttribute>(attribute, new DeclaringClass(type.FullName!))));
+            .Select(attribute => new DependencyClaim(attribute.Identifier, attribute.Context, attribute.Description, new DeclaringClass(type.FullName!))));
 
     private IEnumerable<Type> Types()
         => types.Value;
