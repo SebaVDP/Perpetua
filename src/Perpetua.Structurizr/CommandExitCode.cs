@@ -9,5 +9,6 @@ internal enum CommandExitCode
     InvalidContainerName = 3,
     InvalidContextName = 4,
     InvalidDependencyIdentifier = 5,
-    InvalidDependencyContext = 6
+    InvalidDependencyContext = 6,
+    DuplicateDependency = 7
 }

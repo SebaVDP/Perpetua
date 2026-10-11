@@ -15,6 +15,7 @@ internal sealed record CommandOutcome(CommandExitCode ExitCode, string? Message 
         InvalidContextName => new(CommandExitCode.InvalidContextName, "The context is not a valid identifier."),
         InvalidDependencyIdentifier => new(CommandExitCode.InvalidDependencyIdentifier, "A dependency identifier is not a valid identifier."),
         InvalidDependencyContext => new(CommandExitCode.InvalidDependencyContext, "A dependency context is not a valid identifier."),
+        DuplicateDependency => new(CommandExitCode.DuplicateDependency, "A dependency is declared twice with the same target and description. Remove the duplicate."),
         _ => throw new UnreachableException()
     };
 }

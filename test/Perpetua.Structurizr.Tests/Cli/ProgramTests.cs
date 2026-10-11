@@ -141,6 +141,25 @@ public class ProgramTests
     }
 
     [Fact]
+    public void Reports_an_error_when_the_same_dependency_is_declared_twice()
+    {
+        // Given
+        var source = new InMemoryContainerSource(
+            [new ContainerAttribute("Billing", "CBA")],
+            new DependsOnAttribute("ABC", "Accounts", "Pays invoices"),
+            new DependsOnAttribute("ABC", "Accounts", "Pays invoices"));
+        var output = new InMemoryContextDeclarationDslOutput();
+        using var error = new StringWriter();
+
+        // When
+        var result = Program.Generate(source, output, error);
+
+        // Then
+        Assert.Equal(CommandExitCode.DuplicateDependency, result);
+        Assert.Contains("duplicate", error.ToString(), StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void Overwrites_the_declaration_of_an_earlier_run_with_the_same_context_and_identifier()
     {
         // Given
