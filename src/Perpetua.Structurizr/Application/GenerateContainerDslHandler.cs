@@ -30,7 +30,7 @@ public sealed class GenerateContainerDslHandler(IDeclarationSource source, ICont
     {
         if (ContainerName.Create(dependency.Identifier) is not Result<ContainerName>.Success { Value: var name })
         {
-            return new InvalidDependencyIdentifier();
+            return new Rejected([new Problem.InvalidDependencyIdentifier()]);
         }
 
         var context = declaration.ContextName;
@@ -38,7 +38,7 @@ public sealed class GenerateContainerDslHandler(IDeclarationSource source, ICont
         {
             if (ContextName.Create(dependency.Context) is not Result<ContextName>.Success { Value: var created })
             {
-                return new InvalidDependencyContext();
+                return new Rejected([new Problem.InvalidDependencyContext()]);
             }
 
             context = created;
@@ -47,6 +47,6 @@ public sealed class GenerateContainerDslHandler(IDeclarationSource source, ICont
         return declaration.WithDependency(new DependencyDeclaration(name, context, dependency.Description))
             is Result<ContextDeclaration>.Success { Value: var extended }
             ? new DeclarationGenerated(extended)
-            : new DuplicateDependency();
+            : new Rejected([new Problem.DuplicateDependency()]);
     }
 }

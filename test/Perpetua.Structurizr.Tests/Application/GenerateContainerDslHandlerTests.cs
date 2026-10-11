@@ -93,7 +93,7 @@ public class GenerateContainerDslHandlerTests
         var result = handler.Handle();
 
         // Then
-        Assert.IsType<InvalidDependencyIdentifier>(result);
+        Assert.Equal([new Problem.InvalidDependencyIdentifier()], Assert.IsType<Rejected>(result).Problems);
         Assert.Empty(output.Written);
     }
 
@@ -111,7 +111,7 @@ public class GenerateContainerDslHandlerTests
         var result = handler.Handle();
 
         // Then
-        Assert.IsType<InvalidDependencyContext>(result);
+        Assert.Equal([new Problem.InvalidDependencyContext()], Assert.IsType<Rejected>(result).Problems);
         Assert.Empty(output.Written);
     }
 
@@ -130,7 +130,7 @@ public class GenerateContainerDslHandlerTests
         var result = handler.Handle();
 
         // Then
-        Assert.IsType<DuplicateDependency>(result);
+        Assert.Equal([new Problem.DuplicateDependency()], Assert.IsType<Rejected>(result).Problems);
         Assert.Empty(output.Written);
     }
 
@@ -149,7 +149,7 @@ public class GenerateContainerDslHandlerTests
         var result = handler.Handle();
 
         // Then
-        Assert.IsType<DuplicateDependency>(result);
+        Assert.Equal([new Problem.DuplicateDependency()], Assert.IsType<Rejected>(result).Problems);
         Assert.Empty(output.Written);
     }
 
@@ -197,7 +197,7 @@ public class GenerateContainerDslHandlerTests
         var result = handler.Handle();
 
         // Then
-        Assert.IsType<InvalidContainerName>(result);
+        Assert.Equal([new Problem.InvalidContainerName()], Assert.IsType<Rejected>(result).Problems);
         Assert.Empty(output.Written);
     }
 
@@ -221,7 +221,7 @@ public class GenerateContainerDslHandlerTests
         var result = handler.Handle();
 
         // Then
-        Assert.IsType<InvalidContextName>(result);
+        Assert.Equal([new Problem.InvalidContextName()], Assert.IsType<Rejected>(result).Problems);
         Assert.Empty(output.Written);
     }
 
@@ -239,7 +239,7 @@ public class GenerateContainerDslHandlerTests
         var result = handler.Handle();
 
         // Then
-        Assert.IsType<OnlyOneContainerAllowed>(result);
+        Assert.Equal([new Problem.OnlyOneContainerAllowed()], Assert.IsType<Rejected>(result).Problems);
         Assert.Empty(output.Written);
     }
 

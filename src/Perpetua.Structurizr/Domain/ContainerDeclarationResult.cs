@@ -16,39 +16,6 @@ public abstract record ContainerDeclarationResult
     /// <summary>The deployment unit declares no container, so there is nothing to document. This is not a failure.</summary>
     public sealed record NoContainersFound : ContainerDeclarationResult;
 
-    /// <summary>
-    /// A deployment unit declared more than one container. Each deployment unit is documented by its own run,
-    /// so the run fails and generates nothing.
-    /// </summary>
-    public sealed record OnlyOneContainerAllowed : ContainerDeclarationResult;
-
-    /// <summary>
-    /// The container name cannot be used as a Structurizr identifier or as a folder name,
-    /// so the run fails and generates nothing.
-    /// </summary>
-    public sealed record InvalidContainerName : ContainerDeclarationResult;
-
-    /// <summary>
-    /// The context cannot be used as a Structurizr identifier or as a folder name,
-    /// so the run fails and generates nothing.
-    /// </summary>
-    public sealed record InvalidContextName : ContainerDeclarationResult;
-
-    /// <summary>
-    /// A dependency identifier cannot be used as a Structurizr identifier,
-    /// so the run fails and generates nothing.
-    /// </summary>
-    public sealed record InvalidDependencyIdentifier : ContainerDeclarationResult;
-
-    /// <summary>
-    /// A dependency context cannot be used as a Structurizr identifier,
-    /// so the run fails and generates nothing.
-    /// </summary>
-    public sealed record InvalidDependencyContext : ContainerDeclarationResult;
-
-    /// <summary>
-    /// The same dependency (target, context and description) is declared more than once on the container.
-    /// Structurizr rejects a duplicate relationship, so the run fails and generates nothing; the user resolves it.
-    /// </summary>
-    public sealed record DuplicateDependency : ContainerDeclarationResult;
+    /// <summary>The run fails and generates nothing, because of the problems the user has to resolve.</summary>
+    public sealed record Rejected(IReadOnlyList<Problem> Problems) : ContainerDeclarationResult;
 }

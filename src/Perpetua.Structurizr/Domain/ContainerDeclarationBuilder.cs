@@ -16,13 +16,13 @@ public sealed class ContainerDeclarationBuilder
         {
             [] => new NoContainersFound(),
             [var container] => Declare(container),
-            _ => new OnlyOneContainerAllowed()
+            _ => new Rejected([new Problem.OnlyOneContainerAllowed()])
         };
 
     private static ContainerDeclarationResult Declare(ContainerAttribute container)
         => ContextName.Create(container.Context).Match<ContainerDeclarationResult>(
             context => ContainerName.Create(container.Name).Match<ContainerDeclarationResult>(
                 name => new DeclarationGenerated(new ContextDeclaration(context, new ContainerDeclaration(name))),
-                () => new InvalidContainerName()),
-            () => new InvalidContextName());
+                () => new Rejected([new Problem.InvalidContainerName()])),
+            () => new Rejected([new Problem.InvalidContextName()]));
 }

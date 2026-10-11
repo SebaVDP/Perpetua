@@ -10,12 +10,18 @@ internal sealed record CommandOutcome(CommandExitCode ExitCode, string? Message 
     public static CommandOutcome From(ContainerDeclarationResult result) => result switch
     {
         DeclarationGenerated or NoContainersFound => new(CommandExitCode.Success),
-        OnlyOneContainerAllowed => new(CommandExitCode.OnlyOneContainerAllowed, "A deployment unit may declare only one container."),
-        InvalidContainerName => new(CommandExitCode.InvalidContainerName, "The container name is not a valid identifier."),
-        InvalidContextName => new(CommandExitCode.InvalidContextName, "The context is not a valid identifier."),
-        InvalidDependencyIdentifier => new(CommandExitCode.InvalidDependencyIdentifier, "A dependency identifier is not a valid identifier."),
-        InvalidDependencyContext => new(CommandExitCode.InvalidDependencyContext, "A dependency context is not a valid identifier."),
-        DuplicateDependency => new(CommandExitCode.DuplicateDependency, "A dependency is declared twice with the same target and description. Remove the duplicate."),
+        Rejected { Problems: [var problem] } => From(problem),
+        _ => throw new UnreachableException()
+    };
+
+    private static CommandOutcome From(Problem problem) => problem switch
+    {
+        Problem.OnlyOneContainerAllowed => new(CommandExitCode.OnlyOneContainerAllowed, "A deployment unit may declare only one container."),
+        Problem.InvalidContainerName => new(CommandExitCode.InvalidContainerName, "The container name is not a valid identifier."),
+        Problem.InvalidContextName => new(CommandExitCode.InvalidContextName, "The context is not a valid identifier."),
+        Problem.InvalidDependencyIdentifier => new(CommandExitCode.InvalidDependencyIdentifier, "A dependency identifier is not a valid identifier."),
+        Problem.InvalidDependencyContext => new(CommandExitCode.InvalidDependencyContext, "A dependency context is not a valid identifier."),
+        Problem.DuplicateDependency => new(CommandExitCode.DuplicateDependency, "A dependency is declared twice with the same target and description. Remove the duplicate."),
         _ => throw new UnreachableException()
     };
 }
