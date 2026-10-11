@@ -3,10 +3,11 @@ using static Perpetua.Structurizr.Domain.ContainerDeclarationResult;
 namespace Perpetua.Structurizr.Domain;
 
 /// <summary>
-/// The container of a deployment unit together with the software-system context it belongs to.
-/// A context holds exactly one container per run, because each deployment unit runs the tool separately.
+/// A deployment unit as it is documented: its one container, the software-system context the container
+/// belongs to, and the dependencies it declares. It is the aggregate root: a dependency can only be added
+/// through it, so a relationship is never declared twice. Each deployment unit is documented by its own run.
 /// </summary>
-public sealed record ContextDeclaration(ContextName ContextName, ContainerName ContainerName)
+public sealed record DeploymentUnitAggregate(ContextName ContextName, ContainerName ContainerName)
 {
     public IReadOnlyList<DependencyDeclaration> Dependencies { get; init; } = [];
 
@@ -42,7 +43,7 @@ public sealed record ContextDeclaration(ContextName ContextName, ContainerName C
     private static ContainerDeclarationResult From(Declared<ContainerAttribute> declared)
         => ContextName.Create(declared.Attribute.Context).Match<ContainerDeclarationResult>(
             context => ContainerName.Create(declared.Attribute.Name).Match<ContainerDeclarationResult>(
-                name => new DeclarationGenerated(new ContextDeclaration(context, name)),
+                name => new DeclarationGenerated(new DeploymentUnitAggregate(context, name)),
                 () => new Rejected([Problem.InvalidContainerName(declared.Attribute.Name, declared.DeclaringClass)])),
             () => new Rejected([Problem.InvalidContextName(declared.Attribute.Context, declared.DeclaringClass)]));
 
@@ -57,7 +58,7 @@ public sealed record ContextDeclaration(ContextName ContextName, ContainerName C
             {
                 problems.Add(dependency.Problem!);
             }
-            else if (declaration.WithDependency(resolved) is Result<ContextDeclaration>.Success { Value: var extended })
+            else if (declaration.WithDependency(resolved) is Result<DeploymentUnitAggregate>.Success { Value: var extended })
             {
                 declaration = extended;
             }
@@ -74,8 +75,8 @@ public sealed record ContextDeclaration(ContextName ContextName, ContainerName C
     /// Adds a dependency. A relationship is identified by its target, context and description,
     /// so declaring the same one twice fails instead of producing a duplicate relationship.
     /// </summary>
-    public Result<ContextDeclaration> WithDependency(DependencyDeclaration dependency)
+    public Result<DeploymentUnitAggregate> WithDependency(DependencyDeclaration dependency)
         => Dependencies.Contains(dependency)
-            ? new Result<ContextDeclaration>.Failure()
-            : new Result<ContextDeclaration>.Success(this with { Dependencies = [.. Dependencies, dependency] });
+            ? new Result<DeploymentUnitAggregate>.Failure()
+            : new Result<DeploymentUnitAggregate>.Success(this with { Dependencies = [.. Dependencies, dependency] });
 }

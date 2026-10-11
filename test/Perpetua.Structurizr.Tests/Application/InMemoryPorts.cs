@@ -41,7 +41,7 @@ internal sealed class InMemoryContainerSource : IDeclarationSource
 
 internal sealed class InMemoryContextDeclarationDslOutput : IContextDeclarationDslOutput
 {
-    public List<ContextDeclaration> Written { get; } = [];
+    public List<DeploymentUnitAggregate> Written { get; } = [];
 
-    public void Write(ContextDeclaration context) => Written.Add(context);
+    public void Write(DeploymentUnitAggregate unit) => Written.Add(unit);
 }

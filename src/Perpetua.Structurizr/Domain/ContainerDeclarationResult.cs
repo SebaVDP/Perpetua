@@ -11,7 +11,7 @@ public abstract record ContainerDeclarationResult
     }
 
     /// <summary>The deployment unit declares exactly one container, and this is the declaration that documents it.</summary>
-    public sealed record DeclarationGenerated(ContextDeclaration Declaration) : ContainerDeclarationResult;
+    public sealed record DeclarationGenerated(DeploymentUnitAggregate Declaration) : ContainerDeclarationResult;
 
     /// <summary>The deployment unit declares no container, so there is nothing to document. This is not a failure.</summary>
     public sealed record NoContainersFound : ContainerDeclarationResult;

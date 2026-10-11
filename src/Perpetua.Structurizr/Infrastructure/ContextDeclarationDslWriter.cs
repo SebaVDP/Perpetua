@@ -5,29 +5,29 @@ namespace Perpetua.Structurizr.Infrastructure;
 
 public sealed class ContextDeclarationDslWriter(DirectoryInfo outputDirectory) : IContextDeclarationDslOutput
 {
-    public void Write(ContextDeclaration context)
+    public void     Write(DeploymentUnitAggregate unit)
     {
-        var name = context.ContainerName;
-        WriteFile(context, "containers", name, $"{name} = container \"{name}\"\n");
+        var name = unit.ContainerName;
+        WriteFile(unit, "containers", name, $"{name} = container \"{name}\"\n");
         WriteFile(
-            context,
+            unit,
             "relationships",
             name,
-            string.Concat(context.Dependencies.Select(dependency => Relationship(context, dependency))));
+            string.Concat(unit.Dependencies.Select(dependency => Relationship(unit, dependency))));
     }
 
-    private static string Relationship(ContextDeclaration context, DependencyDeclaration dependency)
+    private static string Relationship(DeploymentUnitAggregate unit, DependencyDeclaration dependency)
     {
-        var source = $"{context.ContextName}.{context.ContainerName}";
+        var source = $"{unit.ContextName}.{unit.ContainerName}";
         var target = $"{dependency.Context}.{dependency.Container}";
         var description = dependency.Description is null ? "" : $" \"{dependency.Description}\"";
         return $"{source} -> {target}{description}\n";
     }
 
-    private void WriteFile(ContextDeclaration context, string folder, ContainerName name, string content)
+    private void WriteFile(DeploymentUnitAggregate unit, string folder, ContainerName name, string content)
     {
         var directory = Directory.CreateDirectory(
-            Path.Combine(outputDirectory.FullName, context.ContextName.Value, folder));
+            Path.Combine(outputDirectory.FullName, unit.ContextName.Value, folder));
         File.WriteAllText(Path.Combine(directory.FullName, $"{name}.dsl"), content);
     }
 }

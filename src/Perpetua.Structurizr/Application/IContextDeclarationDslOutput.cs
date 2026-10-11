@@ -5,5 +5,5 @@ namespace Perpetua.Structurizr.Application;
 /// <summary>Where the generated context declaration DSL goes.</summary>
 public interface IContextDeclarationDslOutput
 {
-    void Write(ContextDeclaration context);
+    void Write(DeploymentUnitAggregate unit);
 }

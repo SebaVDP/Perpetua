@@ -11,7 +11,7 @@ public sealed class GenerateContainerDslHandler(IDeclarationSource source, ICont
 {
     public ContainerDeclarationResult Handle()
     {
-        var result = ContextDeclaration.From(source.Containers(), source.Dependencies());
+        var result = DeploymentUnitAggregate.From(source.Containers(), source.Dependencies());
         if (result is DeclarationGenerated generated)
         {
             output.Write(generated.Declaration);
