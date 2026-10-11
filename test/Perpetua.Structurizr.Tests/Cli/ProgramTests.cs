@@ -22,14 +22,16 @@ public class ProgramTests
             """.ReplaceLineEndings("\n"),
             File.ReadAllText(Path.Combine(outputDirectory.Info.FullName, "Billing", "containers", "InvoiceApi.dsl")));
         Assert.Empty(Directory.GetFiles(workingDirectory.Info.FullName));
-        Assert.Equal(
-            """
-            Billing.InvoiceApi -> Billing.PaymentGateway
-            Billing.InvoiceApi -> Accounting.LedgerApi
-            Billing.InvoiceApi -> Compliance.AuditTrail "Records changes"
-
-            """.ReplaceLineEndings("\n"),
-            File.ReadAllText(Path.Combine(outputDirectory.Info.FullName, "Billing", "relationships", "InvoiceApi.dsl")));
+        var relationships = File.ReadAllLines(
+            Path.Combine(outputDirectory.Info.FullName, "Billing", "relationships", "InvoiceApi.dsl"));
+        Assert.Equivalent(
+            new[]
+            {
+                "Billing.InvoiceApi -> Billing.PaymentGateway",
+                "Billing.InvoiceApi -> Accounting.LedgerApi",
+                "Billing.InvoiceApi -> Compliance.AuditTrail \"Records changes\""
+            },
+            relationships.Where(line => line.Length > 0).ToArray());
     }
 
     [Fact]

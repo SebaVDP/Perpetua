@@ -3,7 +3,7 @@ using Perpetua.Structurizr.Domain;
 
 namespace Perpetua.Structurizr.Tests;
 
-internal static class DeclaredExtensions
+internal static class AttributeClaimExtensions
 {
     public const string DefaultDeclaringClass = "Billing.Api.InvoiceApi";
 
