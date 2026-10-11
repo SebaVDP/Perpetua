@@ -57,7 +57,7 @@ public class GenerateContainerDslHandlerTests
         // Then
         var generated = Assert.IsType<DeclarationGenerated>(result);
         Assert.Same(generated.Declaration, Assert.Single(output.Written));
-        Assert.Equal(new DependencyDeclaration(Container("ABC"), null, null), Assert.Single(generated.Declaration.Dependencies));
+        Assert.Equal(new DependencyDeclaration(Container("ABC"), Context("Billing"), null), Assert.Single(generated.Declaration.Dependencies));
     }
 
     [Fact]

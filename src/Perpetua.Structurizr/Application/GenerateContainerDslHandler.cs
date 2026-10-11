@@ -33,7 +33,7 @@ public sealed class GenerateContainerDslHandler(IDeclarationSource source, ICont
             return new InvalidDependencyIdentifier();
         }
 
-        ContextName? context = null;
+        var context = declaration.ContextName;
         if (dependency.Context is not null)
         {
             if (ContextName.Create(dependency.Context) is not Result<ContextName>.Success { Value: var created })
