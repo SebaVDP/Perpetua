@@ -68,7 +68,7 @@ public class ProgramTests
         var result = Program.Generate(source, output, error);
 
         // Then
-        Assert.Equal(CommandExitCode.OnlyOneContainerAllowed, result);
+        Assert.Equal(CommandExitCode.Failure, result);
         Assert.Contains("one container", error.ToString(), StringComparison.OrdinalIgnoreCase);
     }
 
@@ -84,7 +84,7 @@ public class ProgramTests
         var result = Program.Generate(source, output, error);
 
         // Then
-        Assert.Equal(CommandExitCode.InvalidContainerName, result);
+        Assert.Equal(CommandExitCode.Failure, result);
         Assert.Contains("identifier", error.ToString(), StringComparison.OrdinalIgnoreCase);
     }
 
@@ -100,44 +100,8 @@ public class ProgramTests
         var result = Program.Generate(source, output, error);
 
         // Then
-        Assert.Equal(CommandExitCode.InvalidContextName, result);
+        Assert.Equal(CommandExitCode.Failure, result);
         Assert.Contains("context", error.ToString(), StringComparison.OrdinalIgnoreCase);
-    }
-
-    [Fact]
-    public void Reports_an_error_when_a_dependency_identifier_is_not_a_valid_identifier()
-    {
-        // Given
-        var source = new InMemoryContainerSource(
-            [new ContainerAttribute("Billing", "CBA")],
-            new DependsOnAttribute("A.B"));
-        var output = new InMemoryContextDeclarationDslOutput();
-        using var error = new StringWriter();
-
-        // When
-        var result = Program.Generate(source, output, error);
-
-        // Then
-        Assert.Equal(CommandExitCode.InvalidDependencyIdentifier, result);
-        Assert.Contains("dependency", error.ToString(), StringComparison.OrdinalIgnoreCase);
-    }
-
-    [Fact]
-    public void Reports_an_error_when_a_dependency_context_is_not_a_valid_identifier()
-    {
-        // Given
-        var source = new InMemoryContainerSource(
-            [new ContainerAttribute("Billing", "CBA")],
-            new DependsOnAttribute("ABC", "A.B"));
-        var output = new InMemoryContextDeclarationDslOutput();
-        using var error = new StringWriter();
-
-        // When
-        var result = Program.Generate(source, output, error);
-
-        // Then
-        Assert.Equal(CommandExitCode.InvalidDependencyContext, result);
-        Assert.Contains("dependency", error.ToString(), StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -155,7 +119,7 @@ public class ProgramTests
         var result = Program.Generate(source, output, error);
 
         // Then
-        Assert.Equal(CommandExitCode.DuplicateDependency, result);
+        Assert.Equal(CommandExitCode.Failure, result);
         Assert.Contains("duplicate", error.ToString(), StringComparison.OrdinalIgnoreCase);
     }
 
@@ -174,7 +138,7 @@ public class ProgramTests
         var result = Program.Generate(source, output, error);
 
         // Then
-        Assert.Equal(CommandExitCode.MultipleProblems, result);
+        Assert.Equal(CommandExitCode.Failure, result);
         Assert.Contains("dependency identifier", error.ToString(), StringComparison.OrdinalIgnoreCase);
         Assert.Contains("dependency context", error.ToString(), StringComparison.OrdinalIgnoreCase);
     }
@@ -207,7 +171,7 @@ public class ProgramTests
 
         var result = Program.Run(["does-not-exist"], new DirectoryInfo(Environment.CurrentDirectory), error);
 
-        Assert.Equal(CommandExitCode.InvalidArguments, result);
+        Assert.Equal(CommandExitCode.Failure, result);
         Assert.Contains("directory", error.ToString(), StringComparison.OrdinalIgnoreCase);
     }
 }

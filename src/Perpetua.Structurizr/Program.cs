@@ -14,7 +14,7 @@ public static class Program
         if (args.Length > 2 || !assemblyDirectory.Exists)
         {
             error.WriteLine("Provide a directory containing the assemblies to scan.");
-            return CommandExitCode.InvalidArguments;
+            return CommandExitCode.Failure;
         }
 
         var outputDirectory = args.Length == 2 ? new DirectoryInfo(args[1]) : workingDirectory;
