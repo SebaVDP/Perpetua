@@ -12,6 +12,11 @@ public sealed class GenerateContainerDslHandler(IDeclarationSource source, ICont
     public ContainerDeclarationResult Handle()
     {
         var result = new ContainerDeclarationBuilder().Build(source.Containers());
+        if (result is Rejected rejected)
+        {
+            return new Rejected([.. rejected.Problems, .. InvalidDependencyIdentifiers()]);
+        }
+
         if (result is not DeclarationGenerated built)
         {
             return result;
@@ -26,6 +31,11 @@ public sealed class GenerateContainerDslHandler(IDeclarationSource source, ICont
         output.Write(declared.Declaration);
         return new DeclarationGenerated(declared.Declaration);
     }
+
+    private IEnumerable<Problem> InvalidDependencyIdentifiers()
+        => source.Dependencies()
+            .Where(dependency => ContainerName.Create(dependency.Identifier) is not Result<ContainerName>.Success)
+            .Select(_ => new Problem.InvalidDependencyIdentifier());
 
     // Extends the declaration with the dependency; otherwise keeps it and records the problem.
     private static Declaring AddDependency(Declaring declaring, DependsOnAttribute dependency)

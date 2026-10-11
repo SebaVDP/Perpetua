@@ -264,6 +264,26 @@ public class GenerateContainerDslHandlerTests
         Assert.Empty(output.Written);
     }
 
+    [Fact]
+    public void Reports_an_invalid_dependency_together_with_an_invalid_container_name()
+    {
+        // Given
+        var source = new InMemoryContainerSource(
+            [new ContainerAttribute("Billing", "a.b")],
+            new DependsOnAttribute("A.B"));
+        var output = new InMemoryContextDeclarationDslOutput();
+        var handler = new GenerateContainerDslHandler(source, output);
+
+        // When
+        var result = handler.Handle();
+
+        // Then
+        Assert.Equal(
+            [new Problem.InvalidContainerName(), new Problem.InvalidDependencyIdentifier()],
+            Assert.IsType<Rejected>(result).Problems);
+        Assert.Empty(output.Written);
+    }
+
     private static ContainerName Container(string value)
         => ((Result<ContainerName>.Success)ContainerName.Create(value)).Value;
 
