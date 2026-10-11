@@ -17,6 +17,8 @@ public sealed record Problem
 
     public string Message { get; }
 
+    public override string ToString() => $"{Code}: {Message}";
+
     /// <summary>
     /// A deployment unit declared more than one container. Each deployment unit is documented by its own run.
     /// </summary>

@@ -12,7 +12,7 @@ internal sealed record CommandOutcome(CommandExitCode ExitCode, string? Message 
         DeclarationGenerated or NoContainersFound => new(CommandExitCode.Success),
         Rejected rejected => new(
             CommandExitCode.Failure,
-            string.Join(Environment.NewLine, rejected.Problems.Select(problem => $"{problem.Code}: {problem.Message}"))),
+            string.Join(Environment.NewLine, rejected.Problems.Select(problem => problem.ToString()))),
         _ => throw new UnreachableException()
     };
 }

@@ -6,7 +6,7 @@ namespace Perpetua.Structurizr.Tests;
 internal static class HandlerTestSupport
 {
     public static string[] Reported(ContainerDeclarationResult result)
-        => [.. Assert.IsType<Rejected>(result).Problems.Select(problem => $"{problem.Code}: {problem.Message}")];
+        => [.. Assert.IsType<Rejected>(result).Problems.Select(problem => problem.ToString())];
 
     public static ContainerName Container(string value)
         => ((Result<ContainerName>.Success)ContainerName.Create(value)).Value;
