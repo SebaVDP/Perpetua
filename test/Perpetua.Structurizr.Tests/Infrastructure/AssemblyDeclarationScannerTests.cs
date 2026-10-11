@@ -12,7 +12,18 @@ public class AssemblyDeclarationScannerTests
         var containers = new AssemblyDeclarationScanner(directory).Containers();
 
         Assert.Contains(containers, container =>
-            container.Context == "SampleSystem" && container.Name == "SampleContainer");
+            container.Attribute.Context == "SampleSystem" && container.Attribute.Name == "SampleContainer");
+    }
+
+    [Fact]
+    public void Finds_the_class_that_declares_a_container()
+    {
+        var directory = new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "fixtures"));
+
+        var containers = new AssemblyDeclarationScanner(directory).Containers();
+
+        Assert.Contains(containers, container =>
+            container.Attribute.Name == "SampleContainer" && container.DeclaringClass.EndsWith(".SampleContainer"));
     }
 
     [Fact]
@@ -41,6 +52,6 @@ public class AssemblyDeclarationScannerTests
         var containers = new AssemblyDeclarationScanner(assemblyDirectory).Containers();
 
         Assert.Contains(containers, container =>
-            container.Context == "SampleSystem" && container.Name == "FrameworkIndependentContainer");
+            container.Attribute.Context == "SampleSystem" && container.Attribute.Name == "FrameworkIndependentContainer");
     }
 }

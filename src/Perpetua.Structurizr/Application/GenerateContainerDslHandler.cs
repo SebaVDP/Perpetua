@@ -11,7 +11,7 @@ public sealed class GenerateContainerDslHandler(IDeclarationSource source, ICont
 {
     public ContainerDeclarationResult Handle()
     {
-        var result = new ContainerDeclarationBuilder().Build(source.Containers());
+        var result = new ContainerDeclarationBuilder().Build(source.Containers().Select(container => container.Attribute));
         if (result is Rejected rejected)
         {
             return new Rejected([.. rejected.Problems, .. InvalidDependencyIdentifiers()]);
@@ -22,7 +22,8 @@ public sealed class GenerateContainerDslHandler(IDeclarationSource source, ICont
             return result;
         }
 
-        var declared = source.Dependencies().Aggregate(new Declaring(built.Declaration, []), AddDependency);
+        var declared = source.Dependencies().Select(dependency => dependency.Attribute)
+            .Aggregate(new Declaring(built.Declaration, []), AddDependency);
         if (declared.Problems.Count > 0)
         {
             return new Rejected(declared.Problems);
@@ -34,6 +35,7 @@ public sealed class GenerateContainerDslHandler(IDeclarationSource source, ICont
 
     private IEnumerable<Problem> InvalidDependencyIdentifiers()
         => source.Dependencies()
+            .Select(dependency => dependency.Attribute)
             .Where(dependency => ContainerName.Create(dependency.Identifier) is not Result<ContainerName>.Success)
             .Select(_ => new Problem.InvalidDependencyIdentifier());
 
