@@ -11,30 +11,22 @@ public sealed class GenerateContainerDslHandler(IDeclarationSource source, ICont
 {
     public ContainerDeclarationResult Handle()
     {
-        var result = new ContainerDeclarationBuilder().Build(source.Containers());
-        if (result is DeclarationGenerated generated)
-        {
-            var dependencies = new List<DependencyDeclaration>();
-            foreach (var dependency in source.Dependencies())
-            {
-                if (AddDependency(dependencies, dependency) is { } failure)
-                {
-                    return failure;
-                }
-            }
+        var result = source.Dependencies().Aggregate(
+            new ContainerDeclarationBuilder().Build(source.Containers()),
+            (outcome, dependency) => outcome is DeclarationGenerated generated
+                ? AddDependency(generated.Declaration, dependency)
+                : outcome);
 
-            var declaration = generated.Declaration with { Dependencies = dependencies };
-            output.Write(declaration);
-            return generated with { Declaration = declaration };
+        if (result is DeclarationGenerated final)
+        {
+            output.Write(final.Declaration);
         }
 
         return result;
     }
 
-    // Adds the dependency when it is valid; otherwise returns the failure that stops the run.
-    private static ContainerDeclarationResult? AddDependency(
-        List<DependencyDeclaration> dependencies,
-        DependsOnAttribute dependency)
+    // Extends the declaration with the dependency; otherwise returns the failure that stops the run.
+    private static ContainerDeclarationResult AddDependency(ContextDeclaration declaration, DependsOnAttribute dependency)
     {
         if (ContainerName.Create(dependency.Identifier) is not Result<ContainerName>.Success { Value: var name })
         {
@@ -52,7 +44,9 @@ public sealed class GenerateContainerDslHandler(IDeclarationSource source, ICont
             context = created;
         }
 
-        dependencies.Add(new DependencyDeclaration(name, context, dependency.Description));
-        return null;
+        return declaration.WithDependency(new DependencyDeclaration(name, context, dependency.Description))
+            is Result<ContextDeclaration>.Success { Value: var extended }
+            ? new DeclarationGenerated(extended)
+            : new DuplicateDependency();
     }
 }

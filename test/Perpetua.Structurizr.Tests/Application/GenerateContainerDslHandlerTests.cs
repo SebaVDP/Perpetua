@@ -115,6 +115,25 @@ public class GenerateContainerDslHandlerTests
         Assert.Empty(output.Written);
     }
 
+    [Fact]
+    public void Writes_nothing_when_the_same_dependency_is_declared_twice()
+    {
+        // Given
+        var source = new InMemoryContainerSource(
+            [new ContainerAttribute("Billing", "CBA")],
+            new DependsOnAttribute("ABC", "Accounts", "Pays invoices"),
+            new DependsOnAttribute("ABC", "Accounts", "Pays invoices"));
+        var output = new InMemoryContextDeclarationDslOutput();
+        var handler = new GenerateContainerDslHandler(source, output);
+
+        // When
+        var result = handler.Handle();
+
+        // Then
+        Assert.IsType<DuplicateDependency>(result);
+        Assert.Empty(output.Written);
+    }
+
     [Theory]
     [InlineData("a.b")]
     [InlineData("a b")]

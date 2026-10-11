@@ -45,4 +45,10 @@ public abstract record ContainerDeclarationResult
     /// so the run fails and generates nothing.
     /// </summary>
     public sealed record InvalidDependencyContext : ContainerDeclarationResult;
+
+    /// <summary>
+    /// The same dependency (target, context and description) is declared more than once on the container.
+    /// Structurizr rejects a duplicate relationship, so the run fails and generates nothing; the user resolves it.
+    /// </summary>
+    public sealed record DuplicateDependency : ContainerDeclarationResult;
 }
