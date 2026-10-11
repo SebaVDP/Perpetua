@@ -39,7 +39,7 @@ public class GenerateContainerDslHandlerContainerTests
         var context = generated.Declaration;
         Assert.Same(context, Assert.Single(output.Written));
         Assert.Equal("ExampleSystem", context.ContextName.Value);
-        Assert.Equal("Website", context.Container.Name.Value);
+        Assert.Equal("Website", context.ContainerName.Value);
     }
 
     [Fact]

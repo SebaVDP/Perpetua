@@ -28,7 +28,7 @@ public class ContextDeclarationDslWriterStructurizrTests
                 """);
 
             // When
-            writer.Write(new ContextDeclaration(Context("SampleSystem"), new ContainerDeclaration(Container("Website"))));
+            writer.Write(new ContextDeclaration(Context("SampleSystem"), Container("Website")));
 
             // Then
             Assert.True(await StructurizrCli.AcceptsAsync(workspaceDirectory));
@@ -65,8 +65,8 @@ public class ContextDeclarationDslWriterStructurizrTests
                 """);
 
             // When
-            writer.Write(new ContextDeclaration(Context("Billing"), new ContainerDeclaration(Container("Website"))));
-            writer.Write(new ContextDeclaration(Context("Accounts"), new ContainerDeclaration(Container("Website"))));
+            writer.Write(new ContextDeclaration(Context("Billing"), Container("Website")));
+            writer.Write(new ContextDeclaration(Context("Accounts"), Container("Website")));
 
             // Then
             Assert.True(await StructurizrCli.AcceptsAsync(workspaceDirectory));
@@ -105,8 +105,8 @@ public class ContextDeclarationDslWriterStructurizrTests
                 """);
 
             // When
-            writer.Write(new ContextDeclaration(Context("Billing"), new ContainerDeclaration(Container("Website"))));
-            writer.Write(new ContextDeclaration(Context("Accounts"), new ContainerDeclaration(Container("Api"))));
+            writer.Write(new ContextDeclaration(Context("Billing"), Container("Website")));
+            writer.Write(new ContextDeclaration(Context("Accounts"), Container("Api")));
 
             // Then
             Assert.True(await StructurizrCli.AcceptsAsync(workspaceDirectory));
@@ -147,9 +147,9 @@ public class ContextDeclarationDslWriterStructurizrTests
                 """);
 
             // When
-            writer.Write(new ContextDeclaration(Context("A"), new ContainerDeclaration(Container("ABC"))));
-            writer.Write(new ContextDeclaration(Context("B"), new ContainerDeclaration(Container("ABC"))));
-            writer.Write(new ContextDeclaration(Context("C"), new ContainerDeclaration(Container("CBA")))
+            writer.Write(new ContextDeclaration(Context("A"), Container("ABC")));
+            writer.Write(new ContextDeclaration(Context("B"), Container("ABC")));
+            writer.Write(new ContextDeclaration(Context("C"), Container("CBA"))
             {
                 Dependencies =
                 [

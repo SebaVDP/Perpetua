@@ -6,7 +6,7 @@ namespace Perpetua.Structurizr.Domain;
 /// The container of a deployment unit together with the software-system context it belongs to.
 /// A context holds exactly one container per run, because each deployment unit runs the tool separately.
 /// </summary>
-public sealed record ContextDeclaration(ContextName ContextName, ContainerDeclaration Container)
+public sealed record ContextDeclaration(ContextName ContextName, ContainerName ContainerName)
 {
     public IReadOnlyList<DependencyDeclaration> Dependencies { get; init; } = [];
 
@@ -42,7 +42,7 @@ public sealed record ContextDeclaration(ContextName ContextName, ContainerDeclar
     private static ContainerDeclarationResult From(Declared<ContainerAttribute> declared)
         => ContextName.Create(declared.Attribute.Context).Match<ContainerDeclarationResult>(
             context => ContainerName.Create(declared.Attribute.Name).Match<ContainerDeclarationResult>(
-                name => new DeclarationGenerated(new ContextDeclaration(context, new ContainerDeclaration(name))),
+                name => new DeclarationGenerated(new ContextDeclaration(context, name)),
                 () => new Rejected([Problem.InvalidContainerName(declared.Attribute.Name, declared.DeclaringClass)])),
             () => new Rejected([Problem.InvalidContextName(declared.Attribute.Context, declared.DeclaringClass)]));
 

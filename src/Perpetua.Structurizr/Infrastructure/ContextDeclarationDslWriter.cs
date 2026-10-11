@@ -7,7 +7,7 @@ public sealed class ContextDeclarationDslWriter(DirectoryInfo outputDirectory) :
 {
     public void Write(ContextDeclaration context)
     {
-        var name = context.Container.Name;
+        var name = context.ContainerName;
         WriteFile(context, "containers", name, $"{name} = container \"{name}\"\n");
         WriteFile(
             context,
@@ -18,7 +18,7 @@ public sealed class ContextDeclarationDslWriter(DirectoryInfo outputDirectory) :
 
     private static string Relationship(ContextDeclaration context, DependencyDeclaration dependency)
     {
-        var source = $"{context.ContextName}.{context.Container.Name}";
+        var source = $"{context.ContextName}.{context.ContainerName}";
         var target = $"{dependency.Context}.{dependency.Container}";
         var description = dependency.Description is null ? "" : $" \"{dependency.Description}\"";
         return $"{source} -> {target}{description}\n";
