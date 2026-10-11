@@ -3,18 +3,17 @@ using Perpetua.Structurizr.Infrastructure;
 
 namespace Perpetua.Structurizr.Tests;
 
-public class GeneratedDeclarationsInWorkspaceTests
+public class ContextDeclarationDslWriterStructurizrTests
 {
     [Fact]
     public async Task Generated_container_declaration_is_accepted_inside_a_manually_authored_software_system()
     {
         // Given
-        var assemblyDirectory = Path.Combine(AppContext.BaseDirectory, "fixtures");
         var workspaceDirectory = Directory.CreateTempSubdirectory();
+        var writer = new ContextDeclarationDslWriter(workspaceDirectory);
 
         try
         {
-            Program.Run([assemblyDirectory, workspaceDirectory.FullName], workspaceDirectory, TextWriter.Null);
             File.WriteAllText(
                 Path.Combine(workspaceDirectory.FullName, "workspace.dsl"),
                 """
@@ -29,10 +28,10 @@ public class GeneratedDeclarationsInWorkspaceTests
                 """);
 
             // When
-            var accepted = await StructurizrCli.AcceptsAsync(workspaceDirectory);
+            writer.Write(new ContextDeclaration(Context("SampleSystem"), new ContainerDeclaration(Container("Website"))));
 
             // Then
-            Assert.True(accepted);
+            Assert.True(await StructurizrCli.AcceptsAsync(workspaceDirectory));
         }
         finally
         {
@@ -49,8 +48,6 @@ public class GeneratedDeclarationsInWorkspaceTests
 
         try
         {
-            writer.Write(new ContextDeclaration(Context("Billing"), new ContainerDeclaration(Container("Website"))));
-            writer.Write(new ContextDeclaration(Context("Accounts"), new ContainerDeclaration(Container("Website"))));
             File.WriteAllText(
                 Path.Combine(workspaceDirectory.FullName, "workspace.dsl"),
                 """
@@ -68,10 +65,11 @@ public class GeneratedDeclarationsInWorkspaceTests
                 """);
 
             // When
-            var accepted = await StructurizrCli.AcceptsAsync(workspaceDirectory);
+            writer.Write(new ContextDeclaration(Context("Billing"), new ContainerDeclaration(Container("Website"))));
+            writer.Write(new ContextDeclaration(Context("Accounts"), new ContainerDeclaration(Container("Website"))));
 
             // Then
-            Assert.True(accepted);
+            Assert.True(await StructurizrCli.AcceptsAsync(workspaceDirectory));
         }
         finally
         {
@@ -88,8 +86,6 @@ public class GeneratedDeclarationsInWorkspaceTests
 
         try
         {
-            writer.Write(new ContextDeclaration(Context("Billing"), new ContainerDeclaration(Container("Website"))));
-            writer.Write(new ContextDeclaration(Context("Accounts"), new ContainerDeclaration(Container("Api"))));
             File.WriteAllText(
                 Path.Combine(workspaceDirectory.FullName, "workspace.dsl"),
                 """
@@ -109,10 +105,11 @@ public class GeneratedDeclarationsInWorkspaceTests
                 """);
 
             // When
-            var accepted = await StructurizrCli.AcceptsAsync(workspaceDirectory);
+            writer.Write(new ContextDeclaration(Context("Billing"), new ContainerDeclaration(Container("Website"))));
+            writer.Write(new ContextDeclaration(Context("Accounts"), new ContainerDeclaration(Container("Api"))));
 
             // Then
-            Assert.True(accepted);
+            Assert.True(await StructurizrCli.AcceptsAsync(workspaceDirectory));
         }
         finally
         {
@@ -129,16 +126,6 @@ public class GeneratedDeclarationsInWorkspaceTests
 
         try
         {
-            writer.Write(new ContextDeclaration(Context("A"), new ContainerDeclaration(Container("ABC"))));
-            writer.Write(new ContextDeclaration(Context("B"), new ContainerDeclaration(Container("ABC"))));
-            writer.Write(new ContextDeclaration(Context("C"), new ContainerDeclaration(Container("CBA")))
-            {
-                Dependencies =
-                [
-                    new DependencyDeclaration(Container("ABC"), Context("A"), null),
-                    new DependencyDeclaration(Container("ABC"), Context("B"), null)
-                ]
-            });
             File.WriteAllText(
                 Path.Combine(workspaceDirectory.FullName, "workspace.dsl"),
                 """
@@ -160,10 +147,19 @@ public class GeneratedDeclarationsInWorkspaceTests
                 """);
 
             // When
-            var accepted = await StructurizrCli.AcceptsAsync(workspaceDirectory);
+            writer.Write(new ContextDeclaration(Context("A"), new ContainerDeclaration(Container("ABC"))));
+            writer.Write(new ContextDeclaration(Context("B"), new ContainerDeclaration(Container("ABC"))));
+            writer.Write(new ContextDeclaration(Context("C"), new ContainerDeclaration(Container("CBA")))
+            {
+                Dependencies =
+                [
+                    new DependencyDeclaration(Container("ABC"), Context("A"), null),
+                    new DependencyDeclaration(Container("ABC"), Context("B"), null)
+                ]
+            });
 
             // Then
-            Assert.True(accepted);
+            Assert.True(await StructurizrCli.AcceptsAsync(workspaceDirectory));
         }
         finally
         {
