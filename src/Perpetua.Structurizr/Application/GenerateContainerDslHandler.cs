@@ -22,8 +22,7 @@ public sealed class GenerateContainerDslHandler(IDeclarationSource source, ICont
             return result;
         }
 
-        var declared = source.Dependencies().Select(dependency => dependency.Attribute)
-            .Aggregate(new Declaring(built.Declaration, []), AddDependency);
+        var declared = source.Dependencies().Aggregate(new Declaring(built.Declaration, []), AddDependency);
         if (declared.Problems.Count > 0)
         {
             return new Rejected(declared.Problems);
@@ -35,16 +34,16 @@ public sealed class GenerateContainerDslHandler(IDeclarationSource source, ICont
 
     private IEnumerable<Problem> InvalidDependencyIdentifiers()
         => source.Dependencies()
-            .Select(dependency => dependency.Attribute)
-            .Where(dependency => ContainerName.Create(dependency.Identifier) is not Result<ContainerName>.Success)
-            .Select(_ => new Problem.InvalidDependencyIdentifier());
+            .Where(dependency => ContainerName.Create(dependency.Attribute.Identifier) is not Result<ContainerName>.Success)
+            .Select(dependency => new Problem.InvalidDependencyIdentifier(dependency.Attribute.Identifier, dependency.DeclaringClass));
 
     // Extends the declaration with the dependency; otherwise keeps it and records the problem.
-    private static Declaring AddDependency(Declaring declaring, DependsOnAttribute dependency)
+    private static Declaring AddDependency(Declaring declaring, Declared<DependsOnAttribute> declared)
     {
+        var dependency = declared.Attribute;
         if (ContainerName.Create(dependency.Identifier) is not Result<ContainerName>.Success { Value: var name })
         {
-            return declaring.With(new Problem.InvalidDependencyIdentifier());
+            return declaring.With(new Problem.InvalidDependencyIdentifier(dependency.Identifier, declared.DeclaringClass));
         }
 
         var context = declaring.Declaration.ContextName;

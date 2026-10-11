@@ -19,7 +19,8 @@ internal sealed record CommandOutcome(CommandExitCode ExitCode, string? Message 
         Problem.OnlyOneContainerAllowed => "A deployment unit may declare only one container.",
         Problem.InvalidContainerName => "The container name is not a valid identifier.",
         Problem.InvalidContextName => "The context is not a valid identifier.",
-        Problem.InvalidDependencyIdentifier => "A dependency identifier is not a valid identifier.",
+        Problem.InvalidDependencyIdentifier invalid
+            => $"PSTRUCT.0004: Dependency identifier '{invalid.Value}' on class '{invalid.DeclaringClass}' is not a valid identifier.",
         Problem.InvalidDependencyContext => "A dependency context is not a valid identifier.",
         Problem.DuplicateDependency => "A dependency is declared twice with the same target and description. Remove the duplicate.",
         _ => throw new UnreachableException()

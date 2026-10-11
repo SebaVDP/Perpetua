@@ -144,6 +144,25 @@ public class ProgramTests
     }
 
     [Fact]
+    public void Tells_where_an_invalid_dependency_identifier_lies()
+    {
+        // Given
+        var source = new InMemoryContainerSource(
+            [new ContainerAttribute("Billing", "CBA")],
+            new DependsOnAttribute("A.B"));
+        var output = new InMemoryContextDeclarationDslOutput();
+        using var error = new StringWriter();
+
+        // When
+        Program.Generate(source, output, error);
+
+        // Then
+        Assert.Equal(
+            "PSTRUCT.0004: Dependency identifier 'A.B' on class 'Sample.Fixture' is not a valid identifier.",
+            error.ToString().Trim());
+    }
+
+    [Fact]
     public void Overwrites_the_declaration_of_an_earlier_run_with_the_same_context_and_identifier()
     {
         // Given

@@ -22,7 +22,7 @@ public abstract record Problem
     public sealed record InvalidContextName : Problem;
 
     /// <summary>A dependency identifier cannot be used as a Structurizr identifier.</summary>
-    public sealed record InvalidDependencyIdentifier : Problem;
+    public sealed record InvalidDependencyIdentifier(string Value, string DeclaringClass) : Problem;
 
     /// <summary>A dependency context cannot be used as a Structurizr identifier.</summary>
     public sealed record InvalidDependencyContext : Problem;

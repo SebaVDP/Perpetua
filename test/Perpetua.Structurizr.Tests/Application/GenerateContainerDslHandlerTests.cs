@@ -93,7 +93,7 @@ public class GenerateContainerDslHandlerTests
         var result = handler.Handle();
 
         // Then
-        Assert.Equal([new Problem.InvalidDependencyIdentifier()], Assert.IsType<Rejected>(result).Problems);
+        Assert.Equal([new Problem.InvalidDependencyIdentifier("A.B", "Sample.Fixture")], Assert.IsType<Rejected>(result).Problems);
         Assert.Empty(output.Written);
     }
 
@@ -131,7 +131,7 @@ public class GenerateContainerDslHandlerTests
 
         // Then
         Assert.Equal(
-            [new Problem.InvalidDependencyIdentifier(), new Problem.InvalidDependencyContext()],
+            [new Problem.InvalidDependencyIdentifier("A.B", "Sample.Fixture"), new Problem.InvalidDependencyContext()],
             Assert.IsType<Rejected>(result).Problems);
         Assert.Empty(output.Written);
     }
@@ -279,7 +279,7 @@ public class GenerateContainerDslHandlerTests
 
         // Then
         Assert.Equal(
-            [new Problem.InvalidContainerName(), new Problem.InvalidDependencyIdentifier()],
+            [new Problem.InvalidContainerName(), new Problem.InvalidDependencyIdentifier("A.B", "Sample.Fixture")],
             Assert.IsType<Rejected>(result).Problems);
         Assert.Empty(output.Written);
     }
