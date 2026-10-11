@@ -160,6 +160,26 @@ public class ProgramTests
     }
 
     [Fact]
+    public void Reports_every_problem_when_a_run_has_several()
+    {
+        // Given
+        var source = new InMemoryContainerSource(
+            [new ContainerAttribute("Billing", "CBA")],
+            new DependsOnAttribute("A.B"),
+            new DependsOnAttribute("ABC", "A.B"));
+        var output = new InMemoryContextDeclarationDslOutput();
+        using var error = new StringWriter();
+
+        // When
+        var result = Program.Generate(source, output, error);
+
+        // Then
+        Assert.Equal(CommandExitCode.MultipleProblems, result);
+        Assert.Contains("dependency identifier", error.ToString(), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("dependency context", error.ToString(), StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void Overwrites_the_declaration_of_an_earlier_run_with_the_same_context_and_identifier()
     {
         // Given

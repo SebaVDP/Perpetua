@@ -11,6 +11,9 @@ internal sealed record CommandOutcome(CommandExitCode ExitCode, string? Message 
     {
         DeclarationGenerated or NoContainersFound => new(CommandExitCode.Success),
         Rejected { Problems: [var problem] } => From(problem),
+        Rejected rejected => new(
+            CommandExitCode.MultipleProblems,
+            string.Join(Environment.NewLine, rejected.Problems.Select(problem => From(problem).Message))),
         _ => throw new UnreachableException()
     };
 
