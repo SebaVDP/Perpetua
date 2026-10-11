@@ -120,6 +120,57 @@ public class GeneratedDeclarationsInWorkspaceTests
         }
     }
 
+    [Fact]
+    public async Task Relationships_are_accepted_to_containers_with_the_same_identifier_in_different_software_systems()
+    {
+        // Given
+        var workspaceDirectory = Directory.CreateTempSubdirectory();
+        var writer = new ContextDeclarationDslWriter(workspaceDirectory);
+
+        try
+        {
+            writer.Write(new ContextDeclaration(Context("A"), new ContainerDeclaration(Container("ABC"))));
+            writer.Write(new ContextDeclaration(Context("B"), new ContainerDeclaration(Container("ABC"))));
+            writer.Write(new ContextDeclaration(Context("C"), new ContainerDeclaration(Container("CBA")))
+            {
+                Dependencies =
+                [
+                    new DependencyDeclaration(Container("ABC"), Context("A"), null),
+                    new DependencyDeclaration(Container("ABC"), Context("B"), null)
+                ]
+            });
+            File.WriteAllText(
+                Path.Combine(workspaceDirectory.FullName, "workspace.dsl"),
+                """
+                workspace {
+                    !identifiers hierarchical
+                    model {
+                        A = softwareSystem "A" {
+                            !include A/containers
+                        }
+                        B = softwareSystem "B" {
+                            !include B/containers
+                        }
+                        C = softwareSystem "C" {
+                            !include C/containers
+                        }
+                        !include C/relationships
+                    }
+                }
+                """);
+
+            // When
+            var accepted = await StructurizrCli.AcceptsAsync(workspaceDirectory);
+
+            // Then
+            Assert.True(accepted);
+        }
+        finally
+        {
+            workspaceDirectory.Delete(recursive: true);
+        }
+    }
+
     private static ContextName Context(string value)
         => ((Result<ContextName>.Success)ContextName.Create(value)).Value;
 
