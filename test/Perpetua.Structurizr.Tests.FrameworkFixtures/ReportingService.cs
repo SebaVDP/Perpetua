@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Perpetua.Structurizr.Tests.FrameworkFixtures;
 
-[Container("SampleSystem", "FrameworkIndependentContainer")]
-public sealed class SampleContainer;
+[Container("Billing", "ReportingService")]
+public sealed class ReportingService;
 
 public sealed class FrameworkDependentController : ControllerBase;

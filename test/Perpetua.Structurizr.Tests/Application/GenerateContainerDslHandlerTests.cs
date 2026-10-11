@@ -37,8 +37,8 @@ public class GenerateContainerDslHandlerTests
         var result = handler.Handle();
 
         // Then
-        var generated =         Assert.IsType<DeclarationGenerated>(result);
-                var context = generated.Declaration;
+        var generated = Assert.IsType<DeclarationGenerated>(result);
+        var context = generated.Declaration;
         Assert.Same(context, Assert.Single(output.Written));
         Assert.Equal("ExampleSystem", context.ContextName.Value);
         Assert.Equal("Website", context.Container.Name.Value);
@@ -49,8 +49,8 @@ public class GenerateContainerDslHandlerTests
     {
         // Given
         var source = new InMemoryContainerSource(
-            [new ContainerAttribute("Billing", "CBA")],
-            new DependsOnAttribute("ABC"));
+            [new ContainerAttribute("Billing", "InvoiceApi")],
+            new DependsOnAttribute("PaymentGateway"));
         var output = new InMemoryContextDeclarationDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
@@ -60,7 +60,7 @@ public class GenerateContainerDslHandlerTests
         // Then
         var generated = Assert.IsType<DeclarationGenerated>(result);
         Assert.Same(generated.Declaration, Assert.Single(output.Written));
-        Assert.Equal(new DependencyDeclaration(Container("ABC"), Context("Billing"), null), Assert.Single(generated.Declaration.Dependencies));
+        Assert.Equal(new DependencyDeclaration(Container("PaymentGateway"), Context("Billing"), null), Assert.Single(generated.Declaration.Dependencies));
     }
 
     [Fact]
@@ -68,8 +68,8 @@ public class GenerateContainerDslHandlerTests
     {
         // Given
         var source = new InMemoryContainerSource(
-            [new ContainerAttribute("Billing", "CBA")],
-            new DependsOnAttribute("ABC", "Accounts"));
+            [new ContainerAttribute("Billing", "InvoiceApi")],
+            new DependsOnAttribute("LedgerApi", "Accounting"));
         var output = new InMemoryContextDeclarationDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
@@ -79,7 +79,7 @@ public class GenerateContainerDslHandlerTests
         // Then
         var generated = Assert.IsType<DeclarationGenerated>(result);
         Assert.Same(generated.Declaration, Assert.Single(output.Written));
-        Assert.Equal(new DependencyDeclaration(Container("ABC"), Context("Accounts"), null), Assert.Single(generated.Declaration.Dependencies));
+        Assert.Equal(new DependencyDeclaration(Container("LedgerApi"), Context("Accounting"), null), Assert.Single(generated.Declaration.Dependencies));
     }
 
     [Fact]
@@ -87,8 +87,8 @@ public class GenerateContainerDslHandlerTests
     {
         // Given
         var source = new InMemoryContainerSource(
-            [new ContainerAttribute("Billing", "CBA")],
-            new DependsOnAttribute("A.B"));
+            [new ContainerAttribute("Billing", "InvoiceApi").DeclaredOn()],
+            [new DependsOnAttribute("Payment.Gateway").DeclaredOn("Billing.Api.PaymentClient")]);
         var output = new InMemoryContextDeclarationDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
@@ -96,7 +96,7 @@ public class GenerateContainerDslHandlerTests
         var result = handler.Handle();
 
         // Then
-        Assert.Equal(["PSTRUCT.0004: Dependency identifier 'A.B' on class 'Sample.Fixture' is not a valid identifier."], Reported(result));
+        Assert.Equal(["PSTRUCT.0004: Dependency identifier 'Payment.Gateway' on class 'Billing.Api.PaymentClient' is not a valid identifier."], Reported(result));
         Assert.Empty(output.Written);
     }
 
@@ -105,8 +105,8 @@ public class GenerateContainerDslHandlerTests
     {
         // Given
         var source = new InMemoryContainerSource(
-            [new ContainerAttribute("Billing", "CBA")],
-            new DependsOnAttribute("ABC", "A.B"));
+            [new ContainerAttribute("Billing", "InvoiceApi").DeclaredOn()],
+            [new DependsOnAttribute("LedgerApi", "Accounting.Ledger").DeclaredOn("Billing.Api.LedgerClient")]);
         var output = new InMemoryContextDeclarationDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
@@ -114,7 +114,7 @@ public class GenerateContainerDslHandlerTests
         var result = handler.Handle();
 
         // Then
-        Assert.Equal(["PSTRUCT.0005: A dependency context is not a valid identifier."], Reported(result));
+        Assert.Equal(["PSTRUCT.0005: Dependency context 'Accounting.Ledger' on class 'Billing.Api.LedgerClient' is not a valid identifier."], Reported(result));
         Assert.Empty(output.Written);
     }
 
@@ -123,9 +123,11 @@ public class GenerateContainerDslHandlerTests
     {
         // Given
         var source = new InMemoryContainerSource(
-            [new ContainerAttribute("Billing", "CBA")],
-            new DependsOnAttribute("A.B"),
-            new DependsOnAttribute("ABC", "A.B"));
+            [new ContainerAttribute("Billing", "InvoiceApi").DeclaredOn()],
+            [
+                new DependsOnAttribute("Payment.Gateway").DeclaredOn("Billing.Api.PaymentClient"),
+                new DependsOnAttribute("LedgerApi", "Accounting.Ledger").DeclaredOn("Billing.Api.LedgerClient")
+            ]);
         var output = new InMemoryContextDeclarationDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
@@ -135,8 +137,8 @@ public class GenerateContainerDslHandlerTests
         // Then
         Assert.Equal(
             [
-                "PSTRUCT.0004: Dependency identifier 'A.B' on class 'Sample.Fixture' is not a valid identifier.",
-                "PSTRUCT.0005: A dependency context is not a valid identifier."
+                "PSTRUCT.0004: Dependency identifier 'Payment.Gateway' on class 'Billing.Api.PaymentClient' is not a valid identifier.",
+                "PSTRUCT.0005: Dependency context 'Accounting.Ledger' on class 'Billing.Api.LedgerClient' is not a valid identifier."
             ],
             Reported(result));
         Assert.Empty(output.Written);
@@ -147,9 +149,11 @@ public class GenerateContainerDslHandlerTests
     {
         // Given
         var source = new InMemoryContainerSource(
-            [new ContainerAttribute("Billing", "CBA")],
-            new DependsOnAttribute("ABC", "Accounts", "Pays invoices"),
-            new DependsOnAttribute("ABC", "Accounts", "Pays invoices"));
+            [new ContainerAttribute("Billing", "InvoiceApi").DeclaredOn()],
+            [
+                new DependsOnAttribute("LedgerApi", "Accounting", "Posts invoices").DeclaredOn("Billing.Api.LedgerClient"),
+                new DependsOnAttribute("LedgerApi", "Accounting", "Posts invoices").DeclaredOn("Billing.Api.InvoiceJob")
+            ]);
         var output = new InMemoryContextDeclarationDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
@@ -157,7 +161,7 @@ public class GenerateContainerDslHandlerTests
         var result = handler.Handle();
 
         // Then
-        Assert.Equal(["PSTRUCT.0006: A dependency is declared twice with the same target and description. Remove the duplicate."], Reported(result));
+        Assert.Equal(["PSTRUCT.0006: Dependency 'LedgerApi' on class 'Billing.Api.InvoiceJob' is declared twice with the same context and description. Remove the duplicate."], Reported(result));
         Assert.Empty(output.Written);
     }
 
@@ -166,9 +170,11 @@ public class GenerateContainerDslHandlerTests
     {
         // Given
         var source = new InMemoryContainerSource(
-            [new ContainerAttribute("Billing", "CBA")],
-            new DependsOnAttribute("ABC"),
-            new DependsOnAttribute("ABC", "Billing"));
+            [new ContainerAttribute("Billing", "InvoiceApi").DeclaredOn()],
+            [
+                new DependsOnAttribute("PaymentGateway").DeclaredOn("Billing.Api.PaymentClient"),
+                new DependsOnAttribute("PaymentGateway", "Billing").DeclaredOn("Billing.Api.InvoiceJob")
+            ]);
         var output = new InMemoryContextDeclarationDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
@@ -176,7 +182,7 @@ public class GenerateContainerDslHandlerTests
         var result = handler.Handle();
 
         // Then
-        Assert.Equal(["PSTRUCT.0006: A dependency is declared twice with the same target and description. Remove the duplicate."], Reported(result));
+        Assert.Equal(["PSTRUCT.0006: Dependency 'PaymentGateway' on class 'Billing.Api.InvoiceJob' is declared twice with the same context and description. Remove the duplicate."], Reported(result));
         Assert.Empty(output.Written);
     }
 
@@ -185,9 +191,9 @@ public class GenerateContainerDslHandlerTests
     {
         // Given
         var source = new InMemoryContainerSource(
-            [new ContainerAttribute("Billing", "CBA")],
-            new DependsOnAttribute("ABC", "A"),
-            new DependsOnAttribute("ABC", "B"));
+            [new ContainerAttribute("Billing", "InvoiceApi")],
+            new DependsOnAttribute("NotificationService", "Accounting"),
+            new DependsOnAttribute("NotificationService", "Shipping"));
         var output = new InMemoryContextDeclarationDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
@@ -198,20 +204,20 @@ public class GenerateContainerDslHandlerTests
         var generated = Assert.IsType<DeclarationGenerated>(result);
         Assert.Equal(
             [
-                new DependencyDeclaration(Container("ABC"), Context("A"), null),
-                new DependencyDeclaration(Container("ABC"), Context("B"), null)
+                new DependencyDeclaration(Container("NotificationService"), Context("Accounting"), null),
+                new DependencyDeclaration(Container("NotificationService"), Context("Shipping"), null)
             ],
             generated.Declaration.Dependencies);
     }
 
     [Theory]
-    [InlineData("a.b")]
-    [InlineData("a b")]
-    [InlineData("é")]
-    [InlineData("a/b")]
-    [InlineData("a$b")]
-    [InlineData("a:b")]
-    [InlineData("-a")]
+    [InlineData("Invoice.Api")]
+    [InlineData("Invoice Api")]
+    [InlineData("Invoicé")]
+    [InlineData("Invoice/Api")]
+    [InlineData("Invoice$Api")]
+    [InlineData("Invoice:Api")]
+    [InlineData("-InvoiceApi")]
     [InlineData("")]
     public void Writes_nothing_when_the_container_name_is_not_a_valid_identifier(string name)
     {
@@ -224,7 +230,7 @@ public class GenerateContainerDslHandlerTests
         var result = handler.Handle();
 
         // Then
-        Assert.Equal(["PSTRUCT.0002: The container name is not a valid identifier."], Reported(result));
+        Assert.Equal([$"PSTRUCT.0002: Container name '{name}' on class 'Billing.Api.InvoiceApi' is not a valid identifier."], Reported(result));
         Assert.Empty(output.Written);
     }
 
@@ -248,7 +254,7 @@ public class GenerateContainerDslHandlerTests
         var result = handler.Handle();
 
         // Then
-        Assert.Equal(["PSTRUCT.0003: The context is not a valid identifier."], Reported(result));
+        Assert.Equal([$"PSTRUCT.0003: Context '{context}' on class 'Billing.Api.InvoiceApi' is not a valid identifier."], Reported(result));
         Assert.Empty(output.Written);
     }
 
@@ -257,8 +263,11 @@ public class GenerateContainerDslHandlerTests
     {
         // Given
         var source = new InMemoryContainerSource(
-            new ContainerAttribute("Billing", "Invoicing"),
-            new ContainerAttribute("Accounts", "Ledger"));
+            [
+                new ContainerAttribute("Billing", "Invoicing").DeclaredOn("Billing.Api.InvoiceApi"),
+                new ContainerAttribute("Accounts", "Ledger").DeclaredOn("Accounting.Api.LedgerApi")
+            ],
+            []);
         var output = new InMemoryContextDeclarationDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
@@ -266,7 +275,7 @@ public class GenerateContainerDslHandlerTests
         var result = handler.Handle();
 
         // Then
-        Assert.Equal(["PSTRUCT.0001: A deployment unit may declare only one container."], Reported(result));
+        Assert.Equal(["PSTRUCT.0001: A deployment unit may declare only one container, but containers were found on classes 'Billing.Api.InvoiceApi', 'Accounting.Api.LedgerApi'."], Reported(result));
         Assert.Empty(output.Written);
     }
 
@@ -275,8 +284,8 @@ public class GenerateContainerDslHandlerTests
     {
         // Given
         var source = new InMemoryContainerSource(
-            [new ContainerAttribute("Billing", "a.b")],
-            new DependsOnAttribute("A.B"));
+            [new ContainerAttribute("Billing", "Invoice.Api").DeclaredOn()],
+            [new DependsOnAttribute("Payment.Gateway").DeclaredOn("Billing.Api.PaymentClient")]);
         var output = new InMemoryContextDeclarationDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
@@ -286,8 +295,8 @@ public class GenerateContainerDslHandlerTests
         // Then
         Assert.Equal(
             [
-                "PSTRUCT.0002: The container name is not a valid identifier.",
-                "PSTRUCT.0004: Dependency identifier 'A.B' on class 'Sample.Fixture' is not a valid identifier."
+                "PSTRUCT.0002: Container name 'Invoice.Api' on class 'Billing.Api.InvoiceApi' is not a valid identifier.",
+                "PSTRUCT.0004: Dependency identifier 'Payment.Gateway' on class 'Billing.Api.PaymentClient' is not a valid identifier."
             ],
             Reported(result));
         Assert.Empty(output.Written);

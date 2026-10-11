@@ -11,18 +11,18 @@ using static ContainerDeclarationResult;
 /// </summary>
 public sealed class ContainerDeclarationBuilder
 {
-    public ContainerDeclarationResult Build(IEnumerable<ContainerAttribute> containers)
+    public ContainerDeclarationResult Build(IEnumerable<Declared<ContainerAttribute>> containers)
         => containers.ToList() switch
         {
             [] => new NoContainersFound(),
             [var container] => Declare(container),
-            _ => new Rejected([Problem.OnlyOneContainerAllowed()])
+            _ => new Rejected([Problem.OnlyOneContainerAllowed([.. containers.Select(container => container.DeclaringClass)])])
         };
 
-    private static ContainerDeclarationResult Declare(ContainerAttribute container)
-        => ContextName.Create(container.Context).Match<ContainerDeclarationResult>(
-            context => ContainerName.Create(container.Name).Match<ContainerDeclarationResult>(
+    private static ContainerDeclarationResult Declare(Declared<ContainerAttribute> declared)
+        => ContextName.Create(declared.Attribute.Context).Match<ContainerDeclarationResult>(
+            context => ContainerName.Create(declared.Attribute.Name).Match<ContainerDeclarationResult>(
                 name => new DeclarationGenerated(new ContextDeclaration(context, new ContainerDeclaration(name))),
-                () => new Rejected([Problem.InvalidContainerName()])),
-            () => new Rejected([Problem.InvalidContextName()]));
+                () => new Rejected([Problem.InvalidContainerName(declared.Attribute.Name, declared.DeclaringClass)])),
+            () => new Rejected([Problem.InvalidContextName(declared.Attribute.Context, declared.DeclaringClass)]));
 }

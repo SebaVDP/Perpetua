@@ -11,7 +11,7 @@ public sealed class GenerateContainerDslHandler(IDeclarationSource source, ICont
 {
     public ContainerDeclarationResult Handle()
     {
-        var result = new ContainerDeclarationBuilder().Build(source.Containers().Select(container => container.Attribute));
+        var result = new ContainerDeclarationBuilder().Build(source.Containers());
         if (result is Rejected rejected)
         {
             return new Rejected([.. rejected.Problems, .. InvalidDependencyIdentifiers()]);
@@ -51,7 +51,7 @@ public sealed class GenerateContainerDslHandler(IDeclarationSource source, ICont
         {
             if (ContextName.Create(dependency.Context) is not Result<ContextName>.Success { Value: var created })
             {
-                return declaring.With(Problem.InvalidDependencyContext());
+                return declaring.With(Problem.InvalidDependencyContext(dependency.Context, declared.DeclaringClass));
             }
 
             context = created;
@@ -60,7 +60,7 @@ public sealed class GenerateContainerDslHandler(IDeclarationSource source, ICont
         return declaring.Declaration.WithDependency(new DependencyDeclaration(name, context, dependency.Description))
             is Result<ContextDeclaration>.Success { Value: var extended }
             ? declaring with { Declaration = extended }
-            : declaring.With(Problem.DuplicateDependency());
+            : declaring.With(Problem.DuplicateDependency(dependency.Identifier, declared.DeclaringClass));
     }
 
     private sealed record Declaring(ContextDeclaration Declaration, IReadOnlyList<Problem> Problems)

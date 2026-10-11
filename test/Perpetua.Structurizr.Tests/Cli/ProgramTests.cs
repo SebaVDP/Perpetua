@@ -17,19 +17,19 @@ public class ProgramTests
         Assert.Equal(CommandExitCode.Success, result);
         Assert.Equal(
             """
-            SampleContainer = container "SampleContainer"
+            InvoiceApi = container "InvoiceApi"
 
             """.ReplaceLineEndings("\n"),
-            File.ReadAllText(Path.Combine(outputDirectory.Info.FullName, "SampleSystem", "containers", "SampleContainer.dsl")));
+            File.ReadAllText(Path.Combine(outputDirectory.Info.FullName, "Billing", "containers", "InvoiceApi.dsl")));
         Assert.Empty(Directory.GetFiles(workingDirectory.Info.FullName));
         Assert.Equal(
             """
-            SampleSystem.SampleContainer -> SampleSystem.Api
-            SampleSystem.SampleContainer -> Accounts.Ledger
-            SampleSystem.SampleContainer -> Compliance.Audit "Records changes"
+            Billing.InvoiceApi -> Billing.PaymentGateway
+            Billing.InvoiceApi -> Accounting.LedgerApi
+            Billing.InvoiceApi -> Compliance.AuditTrail "Records changes"
 
             """.ReplaceLineEndings("\n"),
-            File.ReadAllText(Path.Combine(outputDirectory.Info.FullName, "SampleSystem", "relationships", "SampleContainer.dsl")));
+            File.ReadAllText(Path.Combine(outputDirectory.Info.FullName, "Billing", "relationships", "InvoiceApi.dsl")));
     }
 
     [Fact]
@@ -46,11 +46,11 @@ public class ProgramTests
             // Then
             Assert.Equal(CommandExitCode.Success, result);
             Assert.True(File.Exists(Path.Combine(
-                workingDirectory.FullName, "SampleSystem", "containers", "SampleContainer.dsl")));
+                workingDirectory.FullName, "Billing", "containers", "InvoiceApi.dsl")));
         }
         finally
         {
-            Directory.Delete(Path.Combine(workingDirectory.FullName, "SampleSystem"), recursive: true);
+            Directory.Delete(Path.Combine(workingDirectory.FullName, "Billing"), recursive: true);
         }
     }
 
@@ -59,8 +59,8 @@ public class ProgramTests
     {
         // Given
         var source = new InMemoryContainerSource(
-            [new ContainerAttribute("Billing", "a.b")],
-            new DependsOnAttribute("A.B"));
+            [new ContainerAttribute("Billing", "Invoice.Api").DeclaredOn()],
+            [new DependsOnAttribute("Payment.Gateway").DeclaredOn("Billing.Api.PaymentClient")]);
         var output = new InMemoryContextDeclarationDslOutput();
         using var error = new StringWriter();
 
@@ -71,8 +71,8 @@ public class ProgramTests
         Assert.Equal(CommandExitCode.Failure, result);
         Assert.Equal(
             """
-            PSTRUCT.0002: The container name is not a valid identifier.
-            PSTRUCT.0004: Dependency identifier 'A.B' on class 'Sample.Fixture' is not a valid identifier.
+            PSTRUCT.0002: Container name 'Invoice.Api' on class 'Billing.Api.InvoiceApi' is not a valid identifier.
+            PSTRUCT.0004: Dependency identifier 'Payment.Gateway' on class 'Billing.Api.PaymentClient' is not a valid identifier.
             """.ReplaceLineEndings(),
             error.ToString().Trim());
     }
@@ -84,7 +84,7 @@ public class ProgramTests
         var assemblyDirectory = Path.Combine(AppContext.BaseDirectory, "fixtures");
         using var workingDirectory = new TemporaryDirectory();
         using var outputDirectory = new TemporaryDirectory();
-        var earlierRun = Path.Combine(outputDirectory.Info.FullName, "SampleSystem", "containers", "SampleContainer.dsl");
+        var earlierRun = Path.Combine(outputDirectory.Info.FullName, "Billing", "containers", "InvoiceApi.dsl");
         Directory.CreateDirectory(Path.GetDirectoryName(earlierRun)!);
         File.WriteAllText(earlierRun, "stale");
 
@@ -94,7 +94,7 @@ public class ProgramTests
         // Then
         Assert.Equal(CommandExitCode.Success, result);
         Assert.Equal(
-            "SampleContainer = container \"SampleContainer\"\n",
+            "InvoiceApi = container \"InvoiceApi\"\n",
             File.ReadAllText(earlierRun));
     }
 

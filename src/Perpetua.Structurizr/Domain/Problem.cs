@@ -20,29 +20,29 @@ public sealed record Problem
     /// <summary>
     /// A deployment unit declared more than one container. Each deployment unit is documented by its own run.
     /// </summary>
-    public static Problem OnlyOneContainerAllowed()
-        => new("PSTRUCT.0001", "A deployment unit may declare only one container.");
+    public static Problem OnlyOneContainerAllowed(IReadOnlyList<DeclaringClass> declaringClasses)
+        => new("PSTRUCT.0001", $"A deployment unit may declare only one container, but containers were found on classes {string.Join(", ", declaringClasses.Select(declaringClass => $"'{declaringClass.FullName}'"))}.");
 
     /// <summary>The container name cannot be used as a Structurizr identifier or as a folder name.</summary>
-    public static Problem InvalidContainerName()
-        => new("PSTRUCT.0002", "The container name is not a valid identifier.");
+    public static Problem InvalidContainerName(string value, DeclaringClass declaringClass)
+        => new("PSTRUCT.0002", $"Container name '{value}' on class '{declaringClass.FullName}' is not a valid identifier.");
 
     /// <summary>The context cannot be used as a Structurizr identifier or as a folder name.</summary>
-    public static Problem InvalidContextName()
-        => new("PSTRUCT.0003", "The context is not a valid identifier.");
+    public static Problem InvalidContextName(string value, DeclaringClass declaringClass)
+        => new("PSTRUCT.0003", $"Context '{value}' on class '{declaringClass.FullName}' is not a valid identifier.");
 
     /// <summary>A dependency identifier cannot be used as a Structurizr identifier.</summary>
     public static Problem InvalidDependencyIdentifier(string value, DeclaringClass declaringClass)
         => new("PSTRUCT.0004", $"Dependency identifier '{value}' on class '{declaringClass.FullName}' is not a valid identifier.");
 
     /// <summary>A dependency context cannot be used as a Structurizr identifier.</summary>
-    public static Problem InvalidDependencyContext()
-        => new("PSTRUCT.0005", "A dependency context is not a valid identifier.");
+    public static Problem InvalidDependencyContext(string value, DeclaringClass declaringClass)
+        => new("PSTRUCT.0005", $"Dependency context '{value}' on class '{declaringClass.FullName}' is not a valid identifier.");
 
     /// <summary>
     /// The same dependency (target, context and description) is declared more than once on the container.
     /// Structurizr rejects a duplicate relationship.
     /// </summary>
-    public static Problem DuplicateDependency()
-        => new("PSTRUCT.0006", "A dependency is declared twice with the same target and description. Remove the duplicate.");
+    public static Problem DuplicateDependency(string value, DeclaringClass declaringClass)
+        => new("PSTRUCT.0006", $"Dependency '{value}' on class '{declaringClass.FullName}' is declared twice with the same context and description. Remove the duplicate.");
 }
