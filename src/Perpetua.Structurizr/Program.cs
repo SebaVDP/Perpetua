@@ -18,10 +18,10 @@ public static class Program
         }
 
         var outputDirectory = args.Length == 2 ? new DirectoryInfo(args[1]) : workingDirectory;
-        return Generate(new AssemblyDeclarationScanner(assemblyDirectory), new ContextDeclarationDslWriter(outputDirectory), error);
+        return Generate(new AssemblyDeclarationScanner(assemblyDirectory), new DeploymentUnitDslWriter(outputDirectory), error);
     }
 
-    internal static CommandExitCode Generate(IDeclarationSource source, IContextDeclarationDslOutput output, TextWriter error)
+    internal static CommandExitCode Generate(IDeclarationSource source, IDeploymentUnitDslOutput output, TextWriter error)
     {
         var outcome = CommandOutcome.From(new GenerateContainerDslHandler(source, output).Handle());
         if (outcome.Message is not null)

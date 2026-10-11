@@ -12,7 +12,7 @@ public class GenerateContainerDslHandlerContainerTests
     {
         // Given
         var source = new InMemoryContainerSource();
-        var output = new InMemoryContextDeclarationDslOutput();
+                var output = new InMemoryDeploymentUnitDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
         // When
@@ -28,7 +28,7 @@ public class GenerateContainerDslHandlerContainerTests
     {
         // Given
         var source = new InMemoryContainerSource(new ContainerAttribute("ExampleSystem", "Website"));
-        var output = new InMemoryContextDeclarationDslOutput();
+                var output = new InMemoryDeploymentUnitDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
         // When
@@ -52,7 +52,7 @@ public class GenerateContainerDslHandlerContainerTests
                 new ContainerAttribute("Accounts", "Ledger").DeclaredOn("Accounting.Api.LedgerApi")
             ],
             []);
-        var output = new InMemoryContextDeclarationDslOutput();
+        var output = new InMemoryDeploymentUnitDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
         // When
@@ -76,7 +76,7 @@ public class GenerateContainerDslHandlerContainerTests
     {
         // Given
         var source = new InMemoryContainerSource(new ContainerAttribute("ExampleSystem", name));
-        var output = new InMemoryContextDeclarationDslOutput();
+                var output = new InMemoryDeploymentUnitDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
         // When
@@ -100,7 +100,7 @@ public class GenerateContainerDslHandlerContainerTests
     {
         // Given
         var source = new InMemoryContainerSource(new ContainerAttribute(context, "Website"));
-        var output = new InMemoryContextDeclarationDslOutput();
+                var output = new InMemoryDeploymentUnitDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
         // When

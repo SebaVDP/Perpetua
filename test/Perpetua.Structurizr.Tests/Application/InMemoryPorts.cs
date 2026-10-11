@@ -42,7 +42,7 @@ internal sealed class InMemoryContainerSource : IDeclarationSource
     public IEnumerable<DependencyClaim> Dependencies() => dependencies;
 }
 
-internal sealed class InMemoryContextDeclarationDslOutput : IContextDeclarationDslOutput
+internal sealed class InMemoryDeploymentUnitDslOutput : IDeploymentUnitDslOutput
 {
     public List<DeploymentUnitAggregate> Written { get; } = [];
 

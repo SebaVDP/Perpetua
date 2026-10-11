@@ -3,7 +3,7 @@ using Perpetua.Structurizr.Domain;
 namespace Perpetua.Structurizr.Application;
 
 /// <summary>Where the generated context declaration DSL goes.</summary>
-public interface IContextDeclarationDslOutput
+public interface IDeploymentUnitDslOutput
 {
     void Write(DeploymentUnitAggregate unit);
 }

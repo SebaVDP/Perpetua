@@ -12,7 +12,7 @@ public class GenerateContainerDslHandlerProblemTests
         var source = new InMemoryContainerSource(
             [new ContainerAttribute("Billing", "InvoiceApi").DeclaredOn()],
             [new DependsOnAttribute("Payment.Gateway").DeclaredOn("Billing.Api.PaymentClient")]);
-        var output = new InMemoryContextDeclarationDslOutput();
+                    var output = new InMemoryDeploymentUnitDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
         // When
@@ -30,7 +30,7 @@ public class GenerateContainerDslHandlerProblemTests
         var source = new InMemoryContainerSource(
             [new ContainerAttribute("Billing", "InvoiceApi").DeclaredOn()],
             [new DependsOnAttribute("LedgerApi", "Accounting.Ledger").DeclaredOn("Billing.Api.LedgerClient")]);
-        var output = new InMemoryContextDeclarationDslOutput();
+                    var output = new InMemoryDeploymentUnitDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
         // When
@@ -51,7 +51,7 @@ public class GenerateContainerDslHandlerProblemTests
                 new DependsOnAttribute("Payment.Gateway").DeclaredOn("Billing.Api.PaymentClient"),
                 new DependsOnAttribute("LedgerApi", "Accounting.Ledger").DeclaredOn("Billing.Api.LedgerClient")
             ]);
-        var output = new InMemoryContextDeclarationDslOutput();
+                        var output = new InMemoryDeploymentUnitDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
         // When
@@ -77,7 +77,7 @@ public class GenerateContainerDslHandlerProblemTests
                 new DependsOnAttribute("LedgerApi", "Accounting", "Posts invoices").DeclaredOn("Billing.Api.LedgerClient"),
                 new DependsOnAttribute("LedgerApi", "Accounting", "Posts invoices").DeclaredOn("Billing.Api.InvoiceJob")
             ]);
-        var output = new InMemoryContextDeclarationDslOutput();
+                        var output = new InMemoryDeploymentUnitDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
         // When
@@ -98,7 +98,7 @@ public class GenerateContainerDslHandlerProblemTests
                 new DependsOnAttribute("PaymentGateway").DeclaredOn("Billing.Api.PaymentClient"),
                 new DependsOnAttribute("PaymentGateway", "Billing").DeclaredOn("Billing.Api.InvoiceJob")
             ]);
-        var output = new InMemoryContextDeclarationDslOutput();
+                        var output = new InMemoryDeploymentUnitDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
         // When
@@ -116,7 +116,7 @@ public class GenerateContainerDslHandlerProblemTests
         var source = new InMemoryContainerSource(
             [new ContainerAttribute("Billing", "Invoice.Api").DeclaredOn()],
             [new DependsOnAttribute("LedgerApi", "Accounting.Ledger").DeclaredOn("Billing.Api.LedgerClient")]);
-        var output = new InMemoryContextDeclarationDslOutput();
+                    var output = new InMemoryDeploymentUnitDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
         // When
@@ -142,7 +142,7 @@ public class GenerateContainerDslHandlerProblemTests
                 new DependsOnAttribute("PaymentGateway").DeclaredOn("Billing.Api.PaymentClient"),
                 new DependsOnAttribute("LedgerApi", "Accounting").DeclaredOn("Billing.Api.LedgerClient")
             ]);
-        var output = new InMemoryContextDeclarationDslOutput();
+                        var output = new InMemoryDeploymentUnitDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
         // When
@@ -160,7 +160,7 @@ public class GenerateContainerDslHandlerProblemTests
         var source = new InMemoryContainerSource(
             [new ContainerAttribute("Billing", "Invoice.Api").DeclaredOn()],
             [new DependsOnAttribute("Payment.Gateway").DeclaredOn("Billing.Api.PaymentClient")]);
-        var output = new InMemoryContextDeclarationDslOutput();
+                    var output = new InMemoryDeploymentUnitDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
         // When

@@ -3,14 +3,14 @@ using Perpetua.Structurizr.Infrastructure;
 
 namespace Perpetua.Structurizr.Tests;
 
-public class ContextDeclarationDslWriterStructurizrTests
+public class DeploymentUnitDslWriterStructurizrTests
 {
     [Fact]
     public async Task Generated_container_declaration_is_accepted_inside_a_manually_authored_software_system()
     {
         // Given
         var workspaceDirectory = Directory.CreateTempSubdirectory();
-        var writer = new ContextDeclarationDslWriter(workspaceDirectory);
+            var writer = new DeploymentUnitDslWriter(workspaceDirectory);
 
         try
         {
@@ -44,7 +44,7 @@ public class ContextDeclarationDslWriterStructurizrTests
     {
         // Given
         var workspaceDirectory = Directory.CreateTempSubdirectory();
-        var writer = new ContextDeclarationDslWriter(workspaceDirectory);
+            var writer = new DeploymentUnitDslWriter(workspaceDirectory);
 
         try
         {
@@ -82,7 +82,7 @@ public class ContextDeclarationDslWriterStructurizrTests
     {
         // Given
         var workspaceDirectory = Directory.CreateTempSubdirectory();
-        var writer = new ContextDeclarationDslWriter(workspaceDirectory);
+            var writer = new DeploymentUnitDslWriter(workspaceDirectory);
 
         try
         {
@@ -122,7 +122,7 @@ public class ContextDeclarationDslWriterStructurizrTests
     {
         // Given
         var workspaceDirectory = Directory.CreateTempSubdirectory();
-        var writer = new ContextDeclarationDslWriter(workspaceDirectory);
+            var writer = new DeploymentUnitDslWriter(workspaceDirectory);
 
         try
         {

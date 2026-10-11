@@ -3,7 +3,7 @@ using Perpetua.Structurizr.Domain;
 
 namespace Perpetua.Structurizr.Infrastructure;
 
-public sealed class ContextDeclarationDslWriter(DirectoryInfo outputDirectory) : IContextDeclarationDslOutput
+public sealed class DeploymentUnitDslWriter(DirectoryInfo outputDirectory) : IDeploymentUnitDslOutput
 {
     public void     Write(DeploymentUnitAggregate unit)
     {
