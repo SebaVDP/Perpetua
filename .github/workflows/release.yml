@@ -2,11 +2,13 @@ name: Release
 
 on:
   push:
-    tags: [ 'v*' ]
+    tags: [ 'perpetua-v*', 'structurizr-v*' ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
     steps:
       - uses: actions/checkout@v4
 
@@ -15,9 +17,15 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
-      - name: Derive version from tag
+      - name: Derive package and version from tag
         id: version
-        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+        run: |
+          case "$GITHUB_REF_NAME" in
+            perpetua-v*)    echo "project=src/Perpetua/Perpetua.csproj" >> "$GITHUB_OUTPUT"
+                            echo "version=${GITHUB_REF_NAME#perpetua-v}" >> "$GITHUB_OUTPUT" ;;
+            structurizr-v*) echo "project=src/Perpetua.Structurizr/Perpetua.Structurizr.csproj" >> "$GITHUB_OUTPUT"
+                            echo "version=${GITHUB_REF_NAME#structurizr-v}" >> "$GITHUB_OUTPUT" ;;
+          esac
 
       - name: Restore
         run: dotnet restore Perpetua.slnx
@@ -29,9 +37,7 @@ jobs:
         run: dotnet run --project test/Perpetua.Structurizr.Tests/Perpetua.Structurizr.Tests.csproj --configuration Release --no-build
 
       - name: Pack
-        run: |
-          dotnet pack src/Perpetua/Perpetua.csproj --configuration Release --no-build -p:Version=${{ steps.version.outputs.version }} --output artifacts
-          dotnet pack src/Perpetua.Structurizr/Perpetua.Structurizr.csproj --configuration Release --no-build -p:Version=${{ steps.version.outputs.version }} --output artifacts
+        run: dotnet pack ${{ steps.version.outputs.project }} --configuration Release --no-build -p:Version=${{ steps.version.outputs.version }} --output artifacts
 
       - name: Upload packages
         uses: actions/upload-artifact@v4
@@ -71,5 +77,5 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           generate_release_notes: true
-          prerelease: ${{ contains(github.ref_name, '-') }}
+          prerelease: ${{ contains(needs.build.outputs.version, '-') }}
           files: artifacts/*.nupkg
