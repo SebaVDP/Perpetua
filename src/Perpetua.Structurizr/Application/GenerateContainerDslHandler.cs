@@ -11,69 +11,12 @@ public sealed class GenerateContainerDslHandler(IDeclarationSource source, ICont
 {
     public ContainerDeclarationResult Handle()
     {
-        var result = new ContainerDeclarationBuilder().Build(source.Containers());
-        if (result is Rejected rejected)
+        var result = ContextDeclaration.From(source.Containers(), source.Dependencies());
+        if (result is DeclarationGenerated generated)
         {
-            return new Rejected([.. rejected.Problems, .. InvalidDependencies()]);
+            output.Write(generated.Declaration);
         }
 
-        if (result is not DeclarationGenerated built)
-        {
-            return result;
-        }
-
-        var declared = source.Dependencies().Aggregate(new Declaring(built.Declaration, []), AddDependency);
-        if (declared.Problems.Count > 0)
-        {
-            return new Rejected(declared.Problems);
-        }
-
-        output.Write(declared.Declaration);
-        return new DeclarationGenerated(declared.Declaration);
-    }
-
-    private IEnumerable<Problem> InvalidDependencies()
-        => source.Dependencies().SelectMany(declared =>
-        {
-            var dependency = declared.Attribute;
-            if (ContainerName.Create(dependency.Identifier) is not Result<ContainerName>.Success)
-            {
-                return [Problem.InvalidDependencyIdentifier(dependency.Identifier, declared.DeclaringClass)];
-            }
-
-            return dependency.Context is not null && ContextName.Create(dependency.Context) is not Result<ContextName>.Success
-                ? [Problem.InvalidDependencyContext(dependency.Context, declared.DeclaringClass)]
-                : Array.Empty<Problem>();
-        });
-
-    // Extends the declaration with the dependency; otherwise keeps it and records the problem.
-    private static Declaring AddDependency(Declaring declaring, Declared<DependsOnAttribute> declared)
-    {
-        var dependency = declared.Attribute;
-        if (ContainerName.Create(dependency.Identifier) is not Result<ContainerName>.Success { Value: var name })
-        {
-            return declaring.With(Problem.InvalidDependencyIdentifier(dependency.Identifier, declared.DeclaringClass));
-        }
-
-        var context = declaring.Declaration.ContextName;
-        if (dependency.Context is not null)
-        {
-            if (ContextName.Create(dependency.Context) is not Result<ContextName>.Success { Value: var created })
-            {
-                return declaring.With(Problem.InvalidDependencyContext(dependency.Context, declared.DeclaringClass));
-            }
-
-            context = created;
-        }
-
-        return declaring.Declaration.WithDependency(new DependencyDeclaration(name, context, dependency.Description))
-            is Result<ContextDeclaration>.Success { Value: var extended }
-            ? declaring with { Declaration = extended }
-            : declaring.With(Problem.DuplicateDependency(dependency.Identifier, declared.DeclaringClass));
-    }
-
-    private sealed record Declaring(ContextDeclaration Declaration, IReadOnlyList<Problem> Problems)
-    {
-        public Declaring With(Problem problem) => this with { Problems = [.. Problems, problem] };
+        return result;
     }
 }
