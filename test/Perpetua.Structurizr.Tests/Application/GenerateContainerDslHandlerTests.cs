@@ -134,6 +134,49 @@ public class GenerateContainerDslHandlerTests
         Assert.Empty(output.Written);
     }
 
+    [Fact]
+    public void Writes_nothing_when_a_dependency_is_declared_twice_with_and_without_the_container_context()
+    {
+        // Given
+        var source = new InMemoryContainerSource(
+            [new ContainerAttribute("Billing", "CBA")],
+            new DependsOnAttribute("ABC"),
+            new DependsOnAttribute("ABC", "Billing"));
+        var output = new InMemoryContextDeclarationDslOutput();
+        var handler = new GenerateContainerDslHandler(source, output);
+
+        // When
+        var result = handler.Handle();
+
+        // Then
+        Assert.IsType<DuplicateDependency>(result);
+        Assert.Empty(output.Written);
+    }
+
+    [Fact]
+    public void Writes_both_relationships_when_the_same_container_is_a_dependency_in_two_contexts()
+    {
+        // Given
+        var source = new InMemoryContainerSource(
+            [new ContainerAttribute("Billing", "CBA")],
+            new DependsOnAttribute("ABC", "A"),
+            new DependsOnAttribute("ABC", "B"));
+        var output = new InMemoryContextDeclarationDslOutput();
+        var handler = new GenerateContainerDslHandler(source, output);
+
+        // When
+        var result = handler.Handle();
+
+        // Then
+        var generated = Assert.IsType<DeclarationGenerated>(result);
+        Assert.Equal(
+            [
+                new DependencyDeclaration(Container("ABC"), Context("A"), null),
+                new DependencyDeclaration(Container("ABC"), Context("B"), null)
+            ],
+            generated.Declaration.Dependencies);
+    }
+
     [Theory]
     [InlineData("a.b")]
     [InlineData("a b")]

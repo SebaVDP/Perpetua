@@ -13,7 +13,13 @@ public sealed record ContextDeclaration(ContextName ContextName, ContainerDeclar
     /// so declaring the same one twice fails instead of producing a duplicate relationship.
     /// </summary>
     public Result<ContextDeclaration> WithDependency(DependencyDeclaration dependency)
-        => Dependencies.Contains(dependency)
+        => Dependencies.Any(existing => IsSameRelationship(existing, dependency))
             ? new Result<ContextDeclaration>.Failure()
             : new Result<ContextDeclaration>.Success(this with { Dependencies = [.. Dependencies, dependency] });
+
+    // A dependency without a context targets the context of the container it sits in.
+    private bool IsSameRelationship(DependencyDeclaration first, DependencyDeclaration second)
+        => first.Container == second.Container
+            && (first.Context ?? ContextName) == (second.Context ?? ContextName)
+            && first.Description == second.Description;
 }
