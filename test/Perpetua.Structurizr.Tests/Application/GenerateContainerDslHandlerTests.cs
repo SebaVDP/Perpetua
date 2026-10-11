@@ -116,6 +116,27 @@ public class GenerateContainerDslHandlerTests
     }
 
     [Fact]
+    public void Reports_every_invalid_dependency_when_several_are_declared()
+    {
+        // Given
+        var source = new InMemoryContainerSource(
+            [new ContainerAttribute("Billing", "CBA")],
+            new DependsOnAttribute("A.B"),
+            new DependsOnAttribute("ABC", "A.B"));
+        var output = new InMemoryContextDeclarationDslOutput();
+        var handler = new GenerateContainerDslHandler(source, output);
+
+        // When
+        var result = handler.Handle();
+
+        // Then
+        Assert.Equal(
+            [new Problem.InvalidDependencyIdentifier(), new Problem.InvalidDependencyContext()],
+            Assert.IsType<Rejected>(result).Problems);
+        Assert.Empty(output.Written);
+    }
+
+    [Fact]
     public void Writes_nothing_when_the_same_dependency_is_declared_twice()
     {
         // Given
