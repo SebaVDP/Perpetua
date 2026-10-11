@@ -1,6 +1,6 @@
 using Perpetua.Structurizr.Application;
 using Perpetua.Structurizr.Domain;
-using static Perpetua.Structurizr.Domain.ContainerDeclarationResult;
+using static Perpetua.Structurizr.Domain.DocumentationOutcome;
 using static Perpetua.Structurizr.Tests.HandlerTestSupport;
 
 namespace Perpetua.Structurizr.Tests;
@@ -19,7 +19,7 @@ public class GenerateContainerDslHandlerContainerTests
         var result = handler.Handle();
 
         // Then
-        Assert.IsType<NoContainersFound>(result);
+        Assert.IsType<NothingToDocument>(result);
         Assert.Empty(output.Written);
     }
 
@@ -35,8 +35,8 @@ public class GenerateContainerDslHandlerContainerTests
         var result = handler.Handle();
 
         // Then
-        var generated = Assert.IsType<DeclarationGenerated>(result);
-        var context = generated.Declaration;
+        var generated = Assert.IsType<Documented>(result);
+        var context = generated.Unit;
         Assert.Same(context, Assert.Single(output.Written));
         Assert.Equal("ExampleSystem", context.ContextName.Value);
         Assert.Equal("Website", context.ContainerName.Value);

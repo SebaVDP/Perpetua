@@ -1,11 +1,11 @@
 using Perpetua.Structurizr.Domain;
-using static Perpetua.Structurizr.Domain.ContainerDeclarationResult;
+using static Perpetua.Structurizr.Domain.DocumentationOutcome;
 
 namespace Perpetua.Structurizr.Tests;
 
 internal static class HandlerTestSupport
 {
-    public static string[] Reported(ContainerDeclarationResult result)
+    public static string[] Reported(DocumentationOutcome result)
         => [.. Assert.IsType<Rejected>(result).Problems.Select(problem => problem.ToString())];
 
     public static ContainerName Container(string value)

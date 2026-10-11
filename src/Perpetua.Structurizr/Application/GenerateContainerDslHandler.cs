@@ -1,5 +1,5 @@
 using Perpetua.Structurizr.Domain;
-using static Perpetua.Structurizr.Domain.ContainerDeclarationResult;
+using static Perpetua.Structurizr.Domain.DocumentationOutcome;
 
 namespace Perpetua.Structurizr.Application;
 
@@ -9,12 +9,12 @@ namespace Perpetua.Structurizr.Application;
 /// </summary>
 public sealed class GenerateContainerDslHandler(IDeclarationSource source, IContextDeclarationDslOutput output)
 {
-    public ContainerDeclarationResult Handle()
+    public DocumentationOutcome Handle()
     {
         var result = DeploymentUnitFactory.Create(source.Containers(), source.Dependencies());
-        if (result is DeclarationGenerated generated)
+        if (result is Documented documented)
         {
-            output.Write(generated.Declaration);
+            output.Write(documented.Unit);
         }
 
         return result;

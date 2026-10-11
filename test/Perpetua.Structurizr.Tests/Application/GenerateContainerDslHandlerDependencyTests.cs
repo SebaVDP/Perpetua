@@ -1,6 +1,6 @@
 using Perpetua.Structurizr.Application;
 using Perpetua.Structurizr.Domain;
-using static Perpetua.Structurizr.Domain.ContainerDeclarationResult;
+using static Perpetua.Structurizr.Domain.DocumentationOutcome;
 using static Perpetua.Structurizr.Tests.HandlerTestSupport;
 
 namespace Perpetua.Structurizr.Tests;
@@ -21,9 +21,9 @@ public class GenerateContainerDslHandlerDependencyTests
         var result = handler.Handle();
 
         // Then
-        var generated = Assert.IsType<DeclarationGenerated>(result);
-        Assert.Same(generated.Declaration, Assert.Single(output.Written));
-        Assert.Equal(new DependencyDeclaration(Container("PaymentGateway"), Context("Billing"), null), Assert.Single(generated.Declaration.Dependencies));
+        var documented = Assert.IsType<Documented>(result);
+        Assert.Same(documented.Unit, Assert.Single(output.Written));
+        Assert.Equal(new DependencyDeclaration(Container("PaymentGateway"), Context("Billing"), null), Assert.Single(documented.Unit.Dependencies));
     }
 
     [Fact]
@@ -40,9 +40,9 @@ public class GenerateContainerDslHandlerDependencyTests
         var result = handler.Handle();
 
         // Then
-        var generated = Assert.IsType<DeclarationGenerated>(result);
-        Assert.Same(generated.Declaration, Assert.Single(output.Written));
-        Assert.Equal(new DependencyDeclaration(Container("LedgerApi"), Context("Accounting"), null), Assert.Single(generated.Declaration.Dependencies));
+        var documented = Assert.IsType<Documented>(result);
+        Assert.Same(documented.Unit, Assert.Single(output.Written));
+        Assert.Equal(new DependencyDeclaration(Container("LedgerApi"), Context("Accounting"), null), Assert.Single(documented.Unit.Dependencies));
     }
 
     [Fact]
@@ -60,12 +60,12 @@ public class GenerateContainerDslHandlerDependencyTests
         var result = handler.Handle();
 
         // Then
-        var generated = Assert.IsType<DeclarationGenerated>(result);
+        var documented = Assert.IsType<Documented>(result);
         Assert.Equal(
             [
                 new DependencyDeclaration(Container("NotificationService"), Context("Accounting"), null),
                 new DependencyDeclaration(Container("NotificationService"), Context("Shipping"), null)
             ],
-            generated.Declaration.Dependencies);
+            documented.Unit.Dependencies);
     }
 }

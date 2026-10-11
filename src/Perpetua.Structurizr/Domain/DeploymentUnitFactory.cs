@@ -1,4 +1,4 @@
-using static Perpetua.Structurizr.Domain.ContainerDeclarationResult;
+using static Perpetua.Structurizr.Domain.DocumentationOutcome;
 
 namespace Perpetua.Structurizr.Domain;
 
@@ -10,17 +10,17 @@ namespace Perpetua.Structurizr.Domain;
 /// </summary>
 public static class DeploymentUnitFactory
 {
-    public static ContainerDeclarationResult Create(
+    public static DocumentationOutcome Create(
         IEnumerable<ContainerClaim> containers,
         IEnumerable<DependencyClaim> dependencies)
     {
         var declared = dependencies.Select(DeclaredDependency.From).ToList();
         return containers.ToList() switch
         {
-            [] => new NoContainersFound(),
+            [] => new NothingToDocument(),
             [var container] => Declare(container) switch
             {
-                DeclarationGenerated built => AddDependencies(built.Declaration, declared),
+                Documented built => AddDependencies(built.Unit, declared),
                 Rejected rejected => new Rejected([.. rejected.Problems, .. DependencyProblems(declared)]),
                 var other => other
             },
@@ -33,15 +33,15 @@ public static class DeploymentUnitFactory
     private static IEnumerable<Problem> DependencyProblems(IEnumerable<DeclaredDependency> dependencies)
         => dependencies.OfType<DeclaredDependency.Invalid>().Select(invalid => invalid.Problem);
 
-    private static ContainerDeclarationResult Declare(ContainerClaim claim)
-        => ContextName.Create(claim.Context).Match<ContainerDeclarationResult>(
-            context => ContainerName.Create(claim.Name).Match<ContainerDeclarationResult>(
-                name => new DeclarationGenerated(new DeploymentUnitAggregate(context, name)),
+    private static DocumentationOutcome Declare(ContainerClaim claim)
+        => ContextName.Create(claim.Context).Match<DocumentationOutcome>(
+            context => ContainerName.Create(claim.Name).Match<DocumentationOutcome>(
+                name => new Documented(new DeploymentUnitAggregate(context, name)),
                 () => new Rejected([Problem.InvalidContainerName(claim.Name, claim.DeclaringClass)])),
             () => new Rejected([Problem.InvalidContextName(claim.Context, claim.DeclaringClass)]));
 
     // Extends the unit with every valid dependency; every invalid or duplicate one is reported instead.
-    private static ContainerDeclarationResult AddDependencies(DeploymentUnitAggregate unit, IEnumerable<DeclaredDependency> dependencies)
+    private static DocumentationOutcome AddDependencies(DeploymentUnitAggregate unit, IEnumerable<DeclaredDependency> dependencies)
     {
         var problems = new List<Problem>();
         foreach (var dependency in dependencies)
@@ -61,6 +61,6 @@ public static class DeploymentUnitFactory
             }
         }
 
-        return problems.Count > 0 ? new Rejected(problems) : new DeclarationGenerated(unit);
+        return problems.Count > 0 ? new Rejected(problems) : new Documented(unit);
     }
 }
