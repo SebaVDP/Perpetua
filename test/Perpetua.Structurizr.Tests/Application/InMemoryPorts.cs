@@ -20,10 +20,10 @@ internal sealed class InMemoryContainerSource : IDeclarationSource
     }
 
     public IEnumerable<Declared<ContainerAttribute>> Containers()
-        => containers.Select(container => new Declared<ContainerAttribute>(container, "Sample.Fixture"));
+        => containers.Select(container => new Declared<ContainerAttribute>(container, new DeclaringClass("Sample.Fixture")));
 
     public IEnumerable<Declared<DependsOnAttribute>> Dependencies()
-        => dependencies.Select(dependency => new Declared<DependsOnAttribute>(dependency, "Sample.Fixture"));
+        => dependencies.Select(dependency => new Declared<DependsOnAttribute>(dependency, new DeclaringClass("Sample.Fixture")));
 }
 
 internal sealed class InMemoryContextDeclarationDslOutput : IContextDeclarationDslOutput

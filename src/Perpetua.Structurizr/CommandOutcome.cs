@@ -10,19 +10,9 @@ internal sealed record CommandOutcome(CommandExitCode ExitCode, string? Message 
     public static CommandOutcome From(ContainerDeclarationResult result) => result switch
     {
         DeclarationGenerated or NoContainersFound => new(CommandExitCode.Success),
-        Rejected rejected => new(CommandExitCode.Failure, string.Join(Environment.NewLine, rejected.Problems.Select(Describe))),
-        _ => throw new UnreachableException()
-    };
-
-    private static string Describe(Problem problem) => problem switch
-    {
-        Problem.OnlyOneContainerAllowed => "A deployment unit may declare only one container.",
-        Problem.InvalidContainerName => "The container name is not a valid identifier.",
-        Problem.InvalidContextName => "The context is not a valid identifier.",
-        Problem.InvalidDependencyIdentifier invalid
-            => $"PSTRUCT.0004: Dependency identifier '{invalid.Value}' on class '{invalid.DeclaringClass}' is not a valid identifier.",
-        Problem.InvalidDependencyContext => "A dependency context is not a valid identifier.",
-        Problem.DuplicateDependency => "A dependency is declared twice with the same target and description. Remove the duplicate.",
+        Rejected rejected => new(
+            CommandExitCode.Failure,
+            string.Join(Environment.NewLine, rejected.Problems.Select(problem => $"{problem.Code}: {problem.Message}"))),
         _ => throw new UnreachableException()
     };
 }

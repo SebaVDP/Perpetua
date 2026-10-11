@@ -55,110 +55,25 @@ public class ProgramTests
     }
 
     [Fact]
-    public void Reports_an_error_when_more_than_one_container_is_found()
+    public void Prints_every_problem_as_a_code_and_a_message()
     {
         // Given
         var source = new InMemoryContainerSource(
-            new ContainerAttribute("Billing", "Invoicing"),
-            new ContainerAttribute("Accounts", "Ledger"));
-        var output = new InMemoryContextDeclarationDslOutput();
-        using var error = new StringWriter();
-
-        // When
-        var result = Program.Generate(source, output, error);
-
-        // Then
-        Assert.Equal(CommandExitCode.Failure, result);
-        Assert.Contains("one container", error.ToString(), StringComparison.OrdinalIgnoreCase);
-    }
-
-    [Fact]
-    public void Reports_an_error_when_the_container_name_is_not_a_valid_identifier()
-    {
-        // Given
-        var source = new InMemoryContainerSource(new ContainerAttribute("ExampleSystem", "a.b"));
-        var output = new InMemoryContextDeclarationDslOutput();
-        using var error = new StringWriter();
-
-        // When
-        var result = Program.Generate(source, output, error);
-
-        // Then
-        Assert.Equal(CommandExitCode.Failure, result);
-        Assert.Contains("identifier", error.ToString(), StringComparison.OrdinalIgnoreCase);
-    }
-
-    [Fact]
-    public void Reports_an_error_when_the_context_is_not_a_valid_identifier()
-    {
-        // Given
-        var source = new InMemoryContainerSource(new ContainerAttribute("Example.System", "Website"));
-        var output = new InMemoryContextDeclarationDslOutput();
-        using var error = new StringWriter();
-
-        // When
-        var result = Program.Generate(source, output, error);
-
-        // Then
-        Assert.Equal(CommandExitCode.Failure, result);
-        Assert.Contains("context", error.ToString(), StringComparison.OrdinalIgnoreCase);
-    }
-
-    [Fact]
-    public void Reports_an_error_when_the_same_dependency_is_declared_twice()
-    {
-        // Given
-        var source = new InMemoryContainerSource(
-            [new ContainerAttribute("Billing", "CBA")],
-            new DependsOnAttribute("ABC", "Accounts", "Pays invoices"),
-            new DependsOnAttribute("ABC", "Accounts", "Pays invoices"));
-        var output = new InMemoryContextDeclarationDslOutput();
-        using var error = new StringWriter();
-
-        // When
-        var result = Program.Generate(source, output, error);
-
-        // Then
-        Assert.Equal(CommandExitCode.Failure, result);
-        Assert.Contains("duplicate", error.ToString(), StringComparison.OrdinalIgnoreCase);
-    }
-
-    [Fact]
-    public void Reports_every_problem_when_a_run_has_several()
-    {
-        // Given
-        var source = new InMemoryContainerSource(
-            [new ContainerAttribute("Billing", "CBA")],
-            new DependsOnAttribute("A.B"),
-            new DependsOnAttribute("ABC", "A.B"));
-        var output = new InMemoryContextDeclarationDslOutput();
-        using var error = new StringWriter();
-
-        // When
-        var result = Program.Generate(source, output, error);
-
-        // Then
-        Assert.Equal(CommandExitCode.Failure, result);
-        Assert.Contains("dependency identifier", error.ToString(), StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("dependency context", error.ToString(), StringComparison.OrdinalIgnoreCase);
-    }
-
-    [Fact]
-    public void Tells_where_an_invalid_dependency_identifier_lies()
-    {
-        // Given
-        var source = new InMemoryContainerSource(
-            [new ContainerAttribute("Billing", "CBA")],
+            [new ContainerAttribute("Billing", "a.b")],
             new DependsOnAttribute("A.B"));
         var output = new InMemoryContextDeclarationDslOutput();
         using var error = new StringWriter();
 
         // When
-        Program.Generate(source, output, error);
+        var result = Program.Generate(source, output, error);
 
         // Then
+        Assert.Equal(CommandExitCode.Failure, result);
         Assert.Equal(
-            "PSTRUCT.0004: Dependency identifier 'A.B' on class 'Sample.Fixture' is not a valid identifier.",
+            """
+            PSTRUCT.0002: The container name is not a valid identifier.
+            PSTRUCT.0004: Dependency identifier 'A.B' on class 'Sample.Fixture' is not a valid identifier.
+            """.ReplaceLineEndings(),
             error.ToString().Trim());
     }
 

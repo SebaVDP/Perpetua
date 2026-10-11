@@ -35,7 +35,7 @@ public sealed class GenerateContainerDslHandler(IDeclarationSource source, ICont
     private IEnumerable<Problem> InvalidDependencyIdentifiers()
         => source.Dependencies()
             .Where(dependency => ContainerName.Create(dependency.Attribute.Identifier) is not Result<ContainerName>.Success)
-            .Select(dependency => new Problem.InvalidDependencyIdentifier(dependency.Attribute.Identifier, dependency.DeclaringClass));
+            .Select(dependency => Problem.InvalidDependencyIdentifier(dependency.Attribute.Identifier, dependency.DeclaringClass));
 
     // Extends the declaration with the dependency; otherwise keeps it and records the problem.
     private static Declaring AddDependency(Declaring declaring, Declared<DependsOnAttribute> declared)
@@ -43,7 +43,7 @@ public sealed class GenerateContainerDslHandler(IDeclarationSource source, ICont
         var dependency = declared.Attribute;
         if (ContainerName.Create(dependency.Identifier) is not Result<ContainerName>.Success { Value: var name })
         {
-            return declaring.With(new Problem.InvalidDependencyIdentifier(dependency.Identifier, declared.DeclaringClass));
+            return declaring.With(Problem.InvalidDependencyIdentifier(dependency.Identifier, declared.DeclaringClass));
         }
 
         var context = declaring.Declaration.ContextName;
@@ -51,7 +51,7 @@ public sealed class GenerateContainerDslHandler(IDeclarationSource source, ICont
         {
             if (ContextName.Create(dependency.Context) is not Result<ContextName>.Success { Value: var created })
             {
-                return declaring.With(new Problem.InvalidDependencyContext());
+                return declaring.With(Problem.InvalidDependencyContext());
             }
 
             context = created;
@@ -60,7 +60,7 @@ public sealed class GenerateContainerDslHandler(IDeclarationSource source, ICont
         return declaring.Declaration.WithDependency(new DependencyDeclaration(name, context, dependency.Description))
             is Result<ContextDeclaration>.Success { Value: var extended }
             ? declaring with { Declaration = extended }
-            : declaring.With(new Problem.DuplicateDependency());
+            : declaring.With(Problem.DuplicateDependency());
     }
 
     private sealed record Declaring(ContextDeclaration Declaration, IReadOnlyList<Problem> Problems)

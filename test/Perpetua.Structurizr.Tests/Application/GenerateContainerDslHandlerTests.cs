@@ -6,6 +6,9 @@ namespace Perpetua.Structurizr.Tests;
 
 public class GenerateContainerDslHandlerTests
 {
+    private static string[] Reported(ContainerDeclarationResult result)
+        => [.. Assert.IsType<Rejected>(result).Problems.Select(problem => $"{problem.Code}: {problem.Message}")];
+
     [Fact]
     public void Writes_nothing_when_no_containers_are_found()
     {
@@ -93,7 +96,7 @@ public class GenerateContainerDslHandlerTests
         var result = handler.Handle();
 
         // Then
-        Assert.Equal([new Problem.InvalidDependencyIdentifier("A.B", "Sample.Fixture")], Assert.IsType<Rejected>(result).Problems);
+        Assert.Equal(["PSTRUCT.0004: Dependency identifier 'A.B' on class 'Sample.Fixture' is not a valid identifier."], Reported(result));
         Assert.Empty(output.Written);
     }
 
@@ -111,7 +114,7 @@ public class GenerateContainerDslHandlerTests
         var result = handler.Handle();
 
         // Then
-        Assert.Equal([new Problem.InvalidDependencyContext()], Assert.IsType<Rejected>(result).Problems);
+        Assert.Equal(["PSTRUCT.0005: A dependency context is not a valid identifier."], Reported(result));
         Assert.Empty(output.Written);
     }
 
@@ -131,8 +134,11 @@ public class GenerateContainerDslHandlerTests
 
         // Then
         Assert.Equal(
-            [new Problem.InvalidDependencyIdentifier("A.B", "Sample.Fixture"), new Problem.InvalidDependencyContext()],
-            Assert.IsType<Rejected>(result).Problems);
+            [
+                "PSTRUCT.0004: Dependency identifier 'A.B' on class 'Sample.Fixture' is not a valid identifier.",
+                "PSTRUCT.0005: A dependency context is not a valid identifier."
+            ],
+            Reported(result));
         Assert.Empty(output.Written);
     }
 
@@ -151,7 +157,7 @@ public class GenerateContainerDslHandlerTests
         var result = handler.Handle();
 
         // Then
-        Assert.Equal([new Problem.DuplicateDependency()], Assert.IsType<Rejected>(result).Problems);
+        Assert.Equal(["PSTRUCT.0006: A dependency is declared twice with the same target and description. Remove the duplicate."], Reported(result));
         Assert.Empty(output.Written);
     }
 
@@ -170,7 +176,7 @@ public class GenerateContainerDslHandlerTests
         var result = handler.Handle();
 
         // Then
-        Assert.Equal([new Problem.DuplicateDependency()], Assert.IsType<Rejected>(result).Problems);
+        Assert.Equal(["PSTRUCT.0006: A dependency is declared twice with the same target and description. Remove the duplicate."], Reported(result));
         Assert.Empty(output.Written);
     }
 
@@ -218,7 +224,7 @@ public class GenerateContainerDslHandlerTests
         var result = handler.Handle();
 
         // Then
-        Assert.Equal([new Problem.InvalidContainerName()], Assert.IsType<Rejected>(result).Problems);
+        Assert.Equal(["PSTRUCT.0002: The container name is not a valid identifier."], Reported(result));
         Assert.Empty(output.Written);
     }
 
@@ -242,7 +248,7 @@ public class GenerateContainerDslHandlerTests
         var result = handler.Handle();
 
         // Then
-        Assert.Equal([new Problem.InvalidContextName()], Assert.IsType<Rejected>(result).Problems);
+        Assert.Equal(["PSTRUCT.0003: The context is not a valid identifier."], Reported(result));
         Assert.Empty(output.Written);
     }
 
@@ -260,7 +266,7 @@ public class GenerateContainerDslHandlerTests
         var result = handler.Handle();
 
         // Then
-        Assert.Equal([new Problem.OnlyOneContainerAllowed()], Assert.IsType<Rejected>(result).Problems);
+        Assert.Equal(["PSTRUCT.0001: A deployment unit may declare only one container."], Reported(result));
         Assert.Empty(output.Written);
     }
 
@@ -279,8 +285,11 @@ public class GenerateContainerDslHandlerTests
 
         // Then
         Assert.Equal(
-            [new Problem.InvalidContainerName(), new Problem.InvalidDependencyIdentifier("A.B", "Sample.Fixture")],
-            Assert.IsType<Rejected>(result).Problems);
+            [
+                "PSTRUCT.0002: The container name is not a valid identifier.",
+                "PSTRUCT.0004: Dependency identifier 'A.B' on class 'Sample.Fixture' is not a valid identifier."
+            ],
+            Reported(result));
         Assert.Empty(output.Written);
     }
 

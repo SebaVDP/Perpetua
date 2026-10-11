@@ -23,7 +23,7 @@ public class AssemblyDeclarationScannerTests
         var containers = new AssemblyDeclarationScanner(directory).Containers();
 
         Assert.Contains(containers, container =>
-            container.Attribute.Name == "SampleContainer" && container.DeclaringClass.EndsWith(".SampleContainer"));
+            container.Attribute.Name == "SampleContainer" && container.DeclaringClass.FullName.EndsWith(".SampleContainer"));
     }
 
     [Fact]

@@ -1,5 +1,6 @@
 using System.Reflection;
 using Perpetua.Structurizr.Application;
+using Perpetua.Structurizr.Domain;
 
 namespace Perpetua.Structurizr.Infrastructure;
 
@@ -11,11 +12,11 @@ public sealed class AssemblyDeclarationScanner(DirectoryInfo assemblyDirectory) 
 
     public IEnumerable<Declared<ContainerAttribute>> Containers()
         => Types().SelectMany(type => type.GetCustomAttributes<ContainerAttribute>()
-            .Select(attribute => new Declared<ContainerAttribute>(attribute, type.FullName!)));
+            .Select(attribute => new Declared<ContainerAttribute>(attribute, new DeclaringClass(type.FullName!))));
 
     public IEnumerable<Declared<DependsOnAttribute>> Dependencies()
         => Types().SelectMany(type => type.GetCustomAttributes<DependsOnAttribute>()
-            .Select(attribute => new Declared<DependsOnAttribute>(attribute, type.FullName!)));
+            .Select(attribute => new Declared<DependsOnAttribute>(attribute, new DeclaringClass(type.FullName!))));
 
     private IEnumerable<Type> Types()
         => types.Value;
