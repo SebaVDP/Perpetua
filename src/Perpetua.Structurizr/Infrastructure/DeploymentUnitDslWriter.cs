@@ -8,13 +8,16 @@ public sealed class DeploymentUnitDslWriter(DirectoryInfo outputDirectory) : IDe
     public void     Write(DeploymentUnitAggregate unit)
     {
         var name = unit.ContainerName;
-        WriteFile(unit, "containers", name, $"{name} = container \"{name}\"\n");
+        WriteFile(unit, "containers", name, $"{name} = container \"{name}\"\n" + string.Concat(unit.PublishedEvents.Select(Event)));
         WriteFile(
             unit,
             "relationships",
             name,
             string.Concat(unit.Dependencies.Select(dependency => Relationship(unit, dependency))));
     }
+
+    private static string Event(PublishedEvent published)
+        => $"{published.Name} = container \"{published.Name}\" \"\" \"\" \"Event\"\n";
 
     private static string Relationship(DeploymentUnitAggregate unit, DependencyDeclaration dependency)
     {
