@@ -167,6 +167,52 @@ public class DeploymentUnitDslWriterStructurizrTests
         }
     }
 
+    [Fact]
+    public async Task A_consumer_can_depend_on_an_event_published_by_another_deployment_unit()
+    {
+        // Given
+        var workspaceDirectory = Directory.CreateTempSubdirectory();
+        var writer = new DeploymentUnitDslWriter(workspaceDirectory);
+
+        try
+        {
+            File.WriteAllText(
+                Path.Combine(workspaceDirectory.FullName, "workspace.dsl"),
+                """
+                workspace {
+                    !identifiers hierarchical
+                    model {
+                        Billing = softwareSystem "Billing" {
+                            !include Billing/containers
+                        }
+                        Shipping = softwareSystem "Shipping" {
+                            !include Shipping/containers
+                        }
+                        !include Billing/relationships
+                        !include Shipping/relationships
+                    }
+                }
+                """);
+
+            // When
+            writer.Write(new DeploymentUnitAggregate(Context("Billing"), Container("InvoiceApi"))
+            {
+                PublishedEvents = [new PublishedEvent(Container("InvoiceApi_OrderPlaced"))]
+            });
+            writer.Write(new DeploymentUnitAggregate(Context("Shipping"), Container("ShippingApi"))
+            {
+                Dependencies = [new DependencyDeclaration(Container("InvoiceApi_OrderPlaced"), Context("Billing"), null)]
+            });
+
+            // Then
+            Assert.True(await StructurizrCli.AcceptsAsync(workspaceDirectory));
+        }
+        finally
+        {
+            workspaceDirectory.Delete(recursive: true);
+        }
+    }
+
     private static ContextName Context(string value)
         => ((Result<ContextName>.Success)ContextName.Create(value)).Value;
 
