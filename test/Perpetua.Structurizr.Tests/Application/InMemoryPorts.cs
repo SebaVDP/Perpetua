@@ -12,12 +12,16 @@ internal static class AttributeClaimExtensions
 
     public static DependencyClaim DeclaredOn(this DependsOnAttribute attribute, string declaringClass = DefaultDeclaringClass)
         => new(attribute.Identifier, attribute.Context, attribute.Description, new DeclaringClass(declaringClass));
+
+    public static EventClaim DeclaredOn(this EventAttribute attribute, string declaringClass = DefaultDeclaringClass)
+        => new(attribute.Name, new DeclaringClass(declaringClass));
 }
 
 internal sealed class InMemoryContainerSource : IDeclarationSource
 {
     private readonly ContainerClaim[] containers;
     private readonly DependencyClaim[] dependencies;
+    private readonly EventClaim[] events;
 
     public InMemoryContainerSource(params ContainerAttribute[] containers)
         : this(containers, [])
@@ -32,14 +36,22 @@ internal sealed class InMemoryContainerSource : IDeclarationSource
     }
 
     public InMemoryContainerSource(ContainerClaim[] containers, DependencyClaim[] dependencies)
+        : this(containers, dependencies, [])
+    {
+    }
+
+    public InMemoryContainerSource(ContainerClaim[] containers, DependencyClaim[] dependencies, EventClaim[] events)
     {
         this.containers = containers;
         this.dependencies = dependencies;
+        this.events = events;
     }
 
     public IEnumerable<ContainerClaim> Containers() => containers;
 
     public IEnumerable<DependencyClaim> Dependencies() => dependencies;
+
+    public IEnumerable<EventClaim> Events() => events;
 }
 
 internal sealed class InMemoryDeploymentUnitDslOutput : IDeploymentUnitDslOutput

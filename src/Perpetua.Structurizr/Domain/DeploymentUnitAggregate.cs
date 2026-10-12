@@ -11,6 +11,8 @@ public sealed record DeploymentUnitAggregate(ContextName ContextName, ContainerN
 
     public QualifiedContainerName QualifiedName => new(ContextName, ContainerName);
 
+    public IReadOnlyList<PublishedEvent> PublishedEvents { get; init; } = [];
+
     /// <summary>
     /// Adds a dependency. A relationship is identified by its target, context and description,
     /// so declaring the same one twice fails instead of producing a duplicate relationship.

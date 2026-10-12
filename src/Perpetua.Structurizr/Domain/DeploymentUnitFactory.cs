@@ -12,7 +12,8 @@ public static class DeploymentUnitFactory
 {
     public static DocumentationOutcome Create(
         IEnumerable<ContainerClaim> containers,
-        IEnumerable<DependencyClaim> dependencies)
+        IEnumerable<DependencyClaim> dependencies,
+        IEnumerable<EventClaim> events)
     {
         var declared = dependencies.Select(DeclaredDependency.From).ToList();
         return containers.ToList() switch
@@ -20,7 +21,11 @@ public static class DeploymentUnitFactory
             [] => new NothingToDocument(),
             [var container] => Declare(container) switch
             {
-                Documented built => AddDependencies(built.Unit, declared),
+                Documented built => AddDependencies(built.Unit, declared) switch
+                {
+                    Documented documented => new Documented(documented.Unit with { PublishedEvents = PublishedBy(documented.Unit, events) }),
+                    var other => other
+                },
                 Rejected rejected => new Rejected([.. rejected.Problems, .. DependencyProblems(declared)]),
                 var other => other
             },
@@ -29,6 +34,12 @@ public static class DeploymentUnitFactory
                 .. DependencyProblems(declared)])
         };
     }
+
+    private static IReadOnlyList<PublishedEvent> PublishedBy(DeploymentUnitAggregate unit, IEnumerable<EventClaim> events)
+        => [.. events
+            .Select(claim => ContainerName.Create($"{unit.ContainerName}_{claim.Name}"))
+            .OfType<Result<ContainerName>.Success>()
+            .Select(created => new PublishedEvent(created.Value))];
 
     private static IEnumerable<Problem> DependencyProblems(IEnumerable<DeclaredDependency> dependencies)
         => dependencies.OfType<DeclaredDependency.Invalid>().Select(invalid => invalid.Problem);

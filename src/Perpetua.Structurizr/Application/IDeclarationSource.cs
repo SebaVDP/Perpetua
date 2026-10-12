@@ -8,4 +8,6 @@ public interface IDeclarationSource
     IEnumerable<ContainerClaim> Containers();
 
     IEnumerable<DependencyClaim> Dependencies();
+
+    IEnumerable<EventClaim> Events();
 }
