@@ -30,6 +30,32 @@ public class GenerateContainerDslHandlerEventTests
     }
 
     [Fact]
+    public void Documents_the_same_event_name_in_different_deployment_units_under_different_container_names()
+    {
+        // Given
+        var billing = new InMemoryContainerSource(
+            [new ContainerAttribute("Billing", "InvoiceApi").DeclaredOn()],
+            [],
+            [new EventAttribute("OrderPlaced").DeclaredOn()]);
+        var shipping = new InMemoryContainerSource(
+            [new ContainerAttribute("Shipping", "ShippingApi").DeclaredOn()],
+            [],
+            [new EventAttribute("OrderPlaced").DeclaredOn()]);
+
+        // When
+        var billingResult = new GenerateContainerDslHandler(billing, new InMemoryDeploymentUnitDslOutput()).Handle();
+        var shippingResult = new GenerateContainerDslHandler(shipping, new InMemoryDeploymentUnitDslOutput()).Handle();
+
+        // Then
+        Assert.Equal(
+            [Container("InvoiceApi_OrderPlaced")],
+            Assert.IsType<Documented>(billingResult).Unit.PublishedEvents.Select(published => published.Name));
+        Assert.Equal(
+            [Container("ShippingApi_OrderPlaced")],
+            Assert.IsType<Documented>(shippingResult).Unit.PublishedEvents.Select(published => published.Name));
+    }
+
+    [Fact]
     public void Writes_nothing_when_an_event_name_is_not_a_valid_identifier()
     {
         // Given
