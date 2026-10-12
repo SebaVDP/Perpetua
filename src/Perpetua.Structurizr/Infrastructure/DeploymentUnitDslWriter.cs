@@ -13,7 +13,8 @@ public sealed class DeploymentUnitDslWriter(DirectoryInfo outputDirectory) : IDe
             unit,
             "relationships",
             name,
-            string.Concat(unit.Dependencies.Select(dependency => Relationship(unit, dependency))));
+            string.Concat(unit.PublishedEvents.Select(published => $"{unit.QualifiedName} -> {unit.ContextName}.{published.Name}\n"))
+                + string.Concat(unit.Dependencies.Select(dependency => Relationship(unit, dependency))));
     }
 
     private static string Event(PublishedEvent published)

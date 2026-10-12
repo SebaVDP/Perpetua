@@ -12,3 +12,6 @@ public sealed class LedgerClient;
 
 [DependsOn("AuditTrail", "Compliance", "Records changes")]
 public sealed class AuditLogger;
+
+[Event("OrderPlaced")]
+public sealed class InvoiceIssuer;

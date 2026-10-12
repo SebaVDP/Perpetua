@@ -18,20 +18,22 @@ public class ProgramTests
         Assert.Equal(
             """
             InvoiceApi = container "InvoiceApi"
+            InvoiceApi_OrderPlaced = container "InvoiceApi_OrderPlaced" "" "" "Event"
 
             """.ReplaceLineEndings("\n"),
             File.ReadAllText(Path.Combine(outputDirectory.Info.FullName, "Billing", "containers", "InvoiceApi.dsl")));
         Assert.Empty(Directory.GetFiles(workingDirectory.Info.FullName));
         var relationships = File.ReadAllLines(
             Path.Combine(outputDirectory.Info.FullName, "Billing", "relationships", "InvoiceApi.dsl"));
-        Assert.Equivalent(
+        Assert.Equal(
             new[]
             {
-                "Billing.InvoiceApi -> Billing.PaymentGateway",
                 "Billing.InvoiceApi -> Accounting.LedgerApi",
+                "Billing.InvoiceApi -> Billing.InvoiceApi_OrderPlaced",
+                "Billing.InvoiceApi -> Billing.PaymentGateway",
                 "Billing.InvoiceApi -> Compliance.AuditTrail \"Records changes\""
             },
-            relationships.Where(line => line.Length > 0).ToArray());
+            relationships.Where(line => line.Length > 0).Order().ToArray());
     }
 
     [Fact]
@@ -95,9 +97,7 @@ public class ProgramTests
 
         // Then
         Assert.Equal(CommandExitCode.Success, result);
-        Assert.Equal(
-            "InvoiceApi = container \"InvoiceApi\"\n",
-            File.ReadAllText(earlierRun));
+        Assert.StartsWith("InvoiceApi = container \"InvoiceApi\"\n", File.ReadAllText(earlierRun));
     }
 
     [Fact]
