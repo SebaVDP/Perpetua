@@ -23,6 +23,8 @@ public static class DeploymentUnitFactory
             {
                 Documented built => AddDependencies(built.Unit, declared) switch
                 {
+                    Documented documented when DuplicateEvents(events) is [var duplicate, ..]
+                        => new Rejected([duplicate]),
                     Documented documented => new Documented(documented.Unit with { PublishedEvents = PublishedBy(documented.Unit, events) }),
                     var other => other
                 },
@@ -34,6 +36,12 @@ public static class DeploymentUnitFactory
                 .. DependencyProblems(declared)])
         };
     }
+
+    private static List<Problem> DuplicateEvents(IEnumerable<EventClaim> events)
+        => [.. events
+            .GroupBy(claim => claim.Name)
+            .SelectMany(group => group.Skip(1))
+            .Select(claim => Problem.DuplicateEvent(claim.Name, claim.DeclaringClass))];
 
     private static IReadOnlyList<PublishedEvent> PublishedBy(DeploymentUnitAggregate unit, IEnumerable<EventClaim> events)
         => [.. events

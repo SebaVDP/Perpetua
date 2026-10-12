@@ -47,4 +47,11 @@ public sealed record Problem
     /// </summary>
     public static Problem DuplicateDependency(ContainerName container, DeclaringClass declaringClass)
         => new("PSTRUCT.0006", $"Dependency '{container}' on class '{declaringClass.FullName}' is declared twice with the same context and description. Remove the duplicate.");
+
+    /// <summary>
+    /// The same event is published more than once by the deployment unit.
+    /// Each event of a deployment unit is a container of its own, so the name must be unique within the unit.
+    /// </summary>
+    public static Problem DuplicateEvent(string name, DeclaringClass declaringClass)
+        => new("PSTRUCT.0007", $"Event '{name}' on class '{declaringClass.FullName}' is declared twice in the same deployment unit. Remove the duplicate.");
 }
