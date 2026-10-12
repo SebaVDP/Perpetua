@@ -54,4 +54,8 @@ public sealed record Problem
     /// </summary>
     public static Problem DuplicateEvent(string name, DeclaringClass declaringClass)
         => new("PSTRUCT.0007", $"Event '{name}' on class '{declaringClass.FullName}' is declared twice in the same deployment unit. Remove the duplicate.");
+
+    /// <summary>The event name cannot be used as part of a Structurizr identifier.</summary>
+    public static Problem InvalidEventName(string value, DeclaringClass declaringClass)
+        => new("PSTRUCT.0008", $"Event name '{value}' on class '{declaringClass.FullName}' is not a valid identifier.");
 }

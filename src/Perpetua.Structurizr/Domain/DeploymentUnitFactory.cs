@@ -25,6 +25,8 @@ public static class DeploymentUnitFactory
                 {
                     Documented documented when DuplicateEvents(events) is [var duplicate, ..]
                         => new Rejected([duplicate]),
+                    Documented documented when InvalidEvents(events) is [var invalid, ..]
+                        => new Rejected([invalid]),
                     Documented documented => new Documented(documented.Unit with { PublishedEvents = PublishedBy(documented.Unit, events) }),
                     var other => other
                 },
@@ -42,6 +44,11 @@ public static class DeploymentUnitFactory
             .GroupBy(claim => claim.Name)
             .SelectMany(group => group.Skip(1))
             .Select(claim => Problem.DuplicateEvent(claim.Name, claim.DeclaringClass))];
+
+    private static List<Problem> InvalidEvents(IEnumerable<EventClaim> events)
+        => [.. events
+            .Where(claim => ContainerName.Create(claim.Name) is not Result<ContainerName>.Success)
+            .Select(claim => Problem.InvalidEventName(claim.Name, claim.DeclaringClass))];
 
     private static IReadOnlyList<PublishedEvent> PublishedBy(DeploymentUnitAggregate unit, IEnumerable<EventClaim> events)
         => [.. events

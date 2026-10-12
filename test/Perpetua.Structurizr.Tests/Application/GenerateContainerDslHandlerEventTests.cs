@@ -30,6 +30,25 @@ public class GenerateContainerDslHandlerEventTests
     }
 
     [Fact]
+    public void Writes_nothing_when_an_event_name_is_not_a_valid_identifier()
+    {
+        // Given
+        var source = new InMemoryContainerSource(
+            [new ContainerAttribute("Billing", "InvoiceApi").DeclaredOn()],
+            [],
+            [new EventAttribute("Order.Placed").DeclaredOn("Billing.Api.InvoiceIssuer")]);
+        var output = new InMemoryDeploymentUnitDslOutput();
+        var handler = new GenerateContainerDslHandler(source, output);
+
+        // When
+        var result = handler.Handle();
+
+        // Then
+        Assert.Equal(["PSTRUCT.0008: Event name 'Order.Placed' on class 'Billing.Api.InvoiceIssuer' is not a valid identifier."], Reported(result));
+        Assert.Empty(output.Written);
+    }
+
+    [Fact]
     public void Writes_nothing_when_the_same_event_is_declared_twice_in_one_deployment_unit()
     {
         // Given
