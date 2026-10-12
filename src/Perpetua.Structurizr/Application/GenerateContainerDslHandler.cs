@@ -11,7 +11,7 @@ public sealed class GenerateContainerDslHandler(IDeclarationSource source, IDepl
 {
     public DocumentationOutcome Handle()
     {
-        var result = DeploymentUnitFactory.Create(source.Containers(), source.Dependencies(), source.Events());
+        var result = DeploymentUnitFactory.Create(source.Containers(), source.Dependencies(), source.Events(), source.Consumptions());
         if (result is Documented documented)
         {
             output.Write(documented.Unit);

@@ -15,3 +15,6 @@ public sealed class AuditLogger;
 
 [Event("OrderPlaced")]
 public sealed class InvoiceIssuer;
+
+[Consumes("LedgerApi", "PaymentSettled", "Accounting")]
+public sealed class PaymentSettlementListener;

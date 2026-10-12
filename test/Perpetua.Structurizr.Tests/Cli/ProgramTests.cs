@@ -29,6 +29,7 @@ public class ProgramTests
             new[]
             {
                 "Billing.InvoiceApi -> Accounting.LedgerApi",
+                "Billing.InvoiceApi -> Accounting.LedgerApi_PaymentSettled",
                 "Billing.InvoiceApi -> Billing.InvoiceApi_OrderPlaced",
                 "Billing.InvoiceApi -> Billing.PaymentGateway",
                 "Billing.InvoiceApi -> Compliance.AuditTrail \"Records changes\""

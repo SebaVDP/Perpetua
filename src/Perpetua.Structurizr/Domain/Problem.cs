@@ -58,4 +58,11 @@ public sealed record Problem
     /// <summary>The event name cannot be used as part of a Structurizr identifier.</summary>
     public static Problem InvalidEventName(string value, DeclaringClass declaringClass)
         => new("PSTRUCT.0008", $"Event name '{value}' on class '{declaringClass.FullName}' is not a valid identifier.");
+
+    /// <summary>
+    /// The event a consumer names cannot be used as part of a Structurizr identifier.
+    /// It is reported in the terms of the consumer, who does not know how an event is named in the documentation.
+    /// </summary>
+    public static Problem InvalidConsumedEvent(string eventName, string publisher, DeclaringClass declaringClass)
+        => new("PSTRUCT.0009", $"Consumed event '{eventName}' of '{publisher}' on class '{declaringClass.FullName}' is not a valid identifier.");
 }

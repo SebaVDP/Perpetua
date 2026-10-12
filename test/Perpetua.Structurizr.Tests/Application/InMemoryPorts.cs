@@ -15,6 +15,9 @@ internal static class AttributeClaimExtensions
 
     public static EventClaim DeclaredOn(this EventAttribute attribute, string declaringClass = DefaultDeclaringClass)
         => new(attribute.Name, new DeclaringClass(declaringClass));
+
+    public static ConsumptionClaim DeclaredOn(this ConsumesAttribute attribute, string declaringClass = DefaultDeclaringClass)
+        => new(attribute.Publisher, attribute.EventName, attribute.Context, attribute.Description, new DeclaringClass(declaringClass));
 }
 
 internal sealed class InMemoryContainerSource : IDeclarationSource
@@ -22,6 +25,7 @@ internal sealed class InMemoryContainerSource : IDeclarationSource
     private readonly ContainerClaim[] containers;
     private readonly DependencyClaim[] dependencies;
     private readonly EventClaim[] events;
+    private readonly ConsumptionClaim[] consumptions = [];
 
     public InMemoryContainerSource(params ContainerAttribute[] containers)
         : this(containers, [])
@@ -40,6 +44,12 @@ internal sealed class InMemoryContainerSource : IDeclarationSource
     {
     }
 
+    public InMemoryContainerSource(ContainerClaim[] containers, DependencyClaim[] dependencies, EventClaim[] events, ConsumptionClaim[] consumptions)
+        : this(containers, dependencies, events)
+    {
+        this.consumptions = consumptions;
+    }
+
     public InMemoryContainerSource(ContainerClaim[] containers, DependencyClaim[] dependencies, EventClaim[] events)
     {
         this.containers = containers;
@@ -52,6 +62,8 @@ internal sealed class InMemoryContainerSource : IDeclarationSource
     public IEnumerable<DependencyClaim> Dependencies() => dependencies;
 
     public IEnumerable<EventClaim> Events() => events;
+
+    public IEnumerable<ConsumptionClaim> Consumptions() => consumptions;
 }
 
 internal sealed class InMemoryDeploymentUnitDslOutput : IDeploymentUnitDslOutput

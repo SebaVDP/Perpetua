@@ -13,9 +13,13 @@ public static class DeploymentUnitFactory
     public static DocumentationOutcome Create(
         IEnumerable<ContainerClaim> containers,
         IEnumerable<DependencyClaim> dependencies,
-        IEnumerable<EventClaim> events)
+        IEnumerable<EventClaim> events,
+        IEnumerable<ConsumptionClaim> consumptions)
     {
-        var declared = dependencies.Select(DeclaredDependency.From).ToList();
+        var declared = dependencies
+            .Select(DeclaredDependency.From)
+            .Concat(consumptions.Select(DeclaredConsumption))
+            .ToList();
         return containers.ToList() switch
         {
             [] => new NothingToDocument(),
@@ -39,6 +43,15 @@ public static class DeploymentUnitFactory
         };
     }
 
+    private static DeclaredDependency DeclaredConsumption(ConsumptionClaim consumption)
+        => ContainerName.Create(consumption.EventName) is Result<ContainerName>.Success
+            ? DeclaredDependency.From(new DependencyClaim(
+                PublishedEvent.ContainerNameFor(consumption.Publisher, consumption.EventName),
+                consumption.Context,
+                consumption.Description,
+                consumption.DeclaringClass))
+            : new DeclaredDependency.Invalid(Problem.InvalidConsumedEvent(consumption.EventName, consumption.Publisher, consumption.DeclaringClass));
+
     private static List<Problem> DuplicateEvents(IEnumerable<EventClaim> events)
         => [.. events
             .GroupBy(claim => claim.Name)
@@ -52,7 +65,7 @@ public static class DeploymentUnitFactory
 
     private static IReadOnlyList<PublishedEvent> PublishedBy(DeploymentUnitAggregate unit, IEnumerable<EventClaim> events)
         => [.. events
-            .Select(claim => ContainerName.Create($"{unit.ContainerName}_{claim.Name}"))
+            .Select(claim => ContainerName.Create(PublishedEvent.ContainerNameFor(unit.ContainerName.Value, claim.Name)))
             .OfType<Result<ContainerName>.Success>()
             .Select(created => new PublishedEvent(created.Value))];
 

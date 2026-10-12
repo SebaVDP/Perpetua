@@ -10,4 +10,6 @@ public interface IDeclarationSource
     IEnumerable<DependencyClaim> Dependencies();
 
     IEnumerable<EventClaim> Events();
+
+    IEnumerable<ConsumptionClaim> Consumptions();
 }

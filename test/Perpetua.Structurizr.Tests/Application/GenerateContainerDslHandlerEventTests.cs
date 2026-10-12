@@ -30,6 +30,48 @@ public class GenerateContainerDslHandlerEventTests
     }
 
     [Fact]
+    public void Documents_a_dependency_on_the_event_of_the_publisher_a_consumer_names()
+    {
+        // Given
+        var source = new InMemoryContainerSource(
+            [new ContainerAttribute("Shipping", "ShippingApi").DeclaredOn()],
+            [],
+            [],
+            [new ConsumesAttribute("InvoiceApi", "OrderPlaced", "Billing").DeclaredOn("Shipping.Api.OrderListener")]);
+        var output = new InMemoryDeploymentUnitDslOutput();
+        var handler = new GenerateContainerDslHandler(source, output);
+
+        // When
+        var result = handler.Handle();
+
+        // Then
+        var documented = Assert.IsType<Documented>(result);
+        Assert.Equal(
+            [new DependencyDeclaration(Container("InvoiceApi_OrderPlaced"), Context("Billing"), null)],
+            documented.Unit.Dependencies);
+    }
+
+    [Fact]
+    public void Writes_nothing_when_a_consumed_event_name_is_not_a_valid_identifier()
+    {
+        // Given
+        var source = new InMemoryContainerSource(
+            [new ContainerAttribute("Shipping", "ShippingApi").DeclaredOn()],
+            [],
+            [],
+            [new ConsumesAttribute("InvoiceApi", "Order.Placed", "Billing").DeclaredOn("Shipping.Api.OrderListener")]);
+        var output = new InMemoryDeploymentUnitDslOutput();
+        var handler = new GenerateContainerDslHandler(source, output);
+
+        // When
+        var result = handler.Handle();
+
+        // Then
+        Assert.Equal(["PSTRUCT.0009: Consumed event 'Order.Placed' of 'InvoiceApi' on class 'Shipping.Api.OrderListener' is not a valid identifier."], Reported(result));
+        Assert.Empty(output.Written);
+    }
+
+    [Fact]
     public void Documents_the_same_event_name_in_different_deployment_units_under_different_container_names()
     {
         // Given
