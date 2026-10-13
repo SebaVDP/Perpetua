@@ -37,7 +37,7 @@ public class GenerateContainerDslHandlerEventTests
             [new ContainerAttribute("ShippingApi", "Shipping").DeclaredOn()],
             [],
             [],
-            [new ConsumesAttribute("InvoiceApi", "OrderPlaced", "Billing").DeclaredOn("Shipping.Api.OrderListener")]);
+            [            new ConsumesAttribute("OrderPlaced", "InvoiceApi", "Billing").DeclaredOn("Shipping.Api.OrderListener")]);
         var output = new InMemoryDeploymentUnitDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
@@ -59,7 +59,7 @@ public class GenerateContainerDslHandlerEventTests
             [new ContainerAttribute("ShippingApi", "Shipping").DeclaredOn()],
             [],
             [],
-            [new ConsumesAttribute("InvoiceApi", "Order.Placed", "Billing").DeclaredOn("Shipping.Api.OrderListener")]);
+            [new ConsumesAttribute("Order.Placed", "InvoiceApi", "Billing").DeclaredOn("Shipping.Api.OrderListener")]);
         var output = new InMemoryDeploymentUnitDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
@@ -79,7 +79,7 @@ public class GenerateContainerDslHandlerEventTests
             [new ContainerAttribute("ShippingApi", "Shipping").DeclaredOn()],
             [],
             [],
-            [new ConsumesAttribute("Invoice.Api", "OrderPlaced", "Billing").DeclaredOn("Shipping.Api.OrderListener")]);
+            [new ConsumesAttribute("OrderPlaced", "Invoice.Api", "Billing").DeclaredOn("Shipping.Api.OrderListener")]);
         var output = new InMemoryDeploymentUnitDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
