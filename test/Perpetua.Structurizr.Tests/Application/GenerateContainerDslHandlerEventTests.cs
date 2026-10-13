@@ -72,6 +72,26 @@ public class GenerateContainerDslHandlerEventTests
     }
 
     [Fact]
+    public void Writes_nothing_when_a_consumed_publisher_is_not_a_valid_identifier()
+    {
+        // Given
+        var source = new InMemoryContainerSource(
+            [new ContainerAttribute("ShippingApi", "Shipping").DeclaredOn()],
+            [],
+            [],
+            [new ConsumesAttribute("Invoice.Api", "OrderPlaced", "Billing").DeclaredOn("Shipping.Api.OrderListener")]);
+        var output = new InMemoryDeploymentUnitDslOutput();
+        var handler = new GenerateContainerDslHandler(source, output);
+
+        // When
+        var result = handler.Handle();
+
+        // Then
+        Assert.Equal(["PSTRUCT.0010: Publisher 'Invoice.Api' of consumed event 'OrderPlaced' on class 'Shipping.Api.OrderListener' is not a valid identifier."], Reported(result));
+        Assert.Empty(output.Written);
+    }
+
+    [Fact]
     public void Documents_the_same_event_name_in_different_deployment_units_under_different_container_names()
     {
         // Given

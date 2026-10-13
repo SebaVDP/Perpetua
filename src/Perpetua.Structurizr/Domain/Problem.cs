@@ -60,6 +60,13 @@ public sealed record Problem
         => new("PSTRUCT.0008", $"Event name '{value}' on class '{declaringClass.FullName}' is not a valid identifier.");
 
     /// <summary>
+    /// The publisher a consumer names cannot be used as part of a Structurizr identifier.
+    /// It is reported in the terms of the consumer, who names the publisher and not the event container.
+    /// </summary>
+    public static Problem InvalidConsumedPublisher(string publisher, string eventName, DeclaringClass declaringClass)
+        => new("PSTRUCT.0010", $"Publisher '{publisher}' of consumed event '{eventName}' on class '{declaringClass.FullName}' is not a valid identifier.");
+
+    /// <summary>
     /// The event a consumer names cannot be used as part of a Structurizr identifier.
     /// It is reported in the terms of the consumer, who does not know how an event is named in the documentation.
     /// </summary>

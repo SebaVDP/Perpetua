@@ -44,13 +44,20 @@ public static class DeploymentUnitFactory
     }
 
     private static DeclaredDependency DeclaredConsumption(ConsumptionClaim consumption)
-        => ContainerName.Create(consumption.EventName) is Result<ContainerName>.Success
+    {
+        if (ContainerName.Create(consumption.Publisher) is not Result<ContainerName>.Success)
+        {
+            return new DeclaredDependency.Invalid(Problem.InvalidConsumedPublisher(consumption.Publisher, consumption.EventName, consumption.DeclaringClass));
+        }
+
+        return ContainerName.Create(consumption.EventName) is Result<ContainerName>.Success
             ? DeclaredDependency.From(new DependencyClaim(
                 PublishedEvent.ContainerNameFor(consumption.Publisher, consumption.EventName),
                 consumption.Context,
                 consumption.Description,
                 consumption.DeclaringClass))
             : new DeclaredDependency.Invalid(Problem.InvalidConsumedEvent(consumption.EventName, consumption.Publisher, consumption.DeclaringClass));
+    }
 
     private static List<Problem> DuplicateEvents(IEnumerable<EventClaim> events)
         => [.. events
