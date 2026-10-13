@@ -64,7 +64,7 @@ public class ProgramTests
     {
         // Given
         var source = new InMemoryContainerSource(
-            [new ContainerAttribute("Billing", "Invoice.Api").DeclaredOn()],
+            [new ContainerAttribute("Invoice.Api", "Billing").DeclaredOn()],
             [new DependsOnAttribute("Payment.Gateway").DeclaredOn("Billing.Api.PaymentClient")]);
         var output = new InMemoryDeploymentUnitDslOutput();
         using var error = new StringWriter();

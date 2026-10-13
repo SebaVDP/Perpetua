@@ -1,7 +1,7 @@
 namespace Perpetua.Structurizr.Tests.Fixtures;
 
 /// <summary>A declared container used to exercise assembly scanning in tests.</summary>
-[Container("Billing", "InvoiceApi")]
+[Container("InvoiceApi", "Billing")]
 public sealed class InvoiceApi;
 
 [DependsOn("PaymentGateway")]

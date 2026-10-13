@@ -10,7 +10,7 @@ public class GenerateContainerDslHandlerProblemTests
     {
         // Given
         var source = new InMemoryContainerSource(
-            [new ContainerAttribute("Billing", "InvoiceApi").DeclaredOn()],
+            [new ContainerAttribute("InvoiceApi", "Billing").DeclaredOn()],
             [new DependsOnAttribute("Payment.Gateway").DeclaredOn("Billing.Api.PaymentClient")]);
         var output = new InMemoryDeploymentUnitDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
@@ -28,7 +28,7 @@ public class GenerateContainerDslHandlerProblemTests
     {
         // Given
         var source = new InMemoryContainerSource(
-            [new ContainerAttribute("Billing", "InvoiceApi").DeclaredOn()],
+            [new ContainerAttribute("InvoiceApi", "Billing").DeclaredOn()],
             [new DependsOnAttribute("LedgerApi", "Accounting.Ledger").DeclaredOn("Billing.Api.LedgerClient")]);
         var output = new InMemoryDeploymentUnitDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
@@ -46,7 +46,7 @@ public class GenerateContainerDslHandlerProblemTests
     {
         // Given
         var source = new InMemoryContainerSource(
-            [new ContainerAttribute("Billing", "InvoiceApi").DeclaredOn()],
+            [new ContainerAttribute("InvoiceApi", "Billing").DeclaredOn()],
             [
                 new DependsOnAttribute("Payment.Gateway").DeclaredOn("Billing.Api.PaymentClient"),
                 new DependsOnAttribute("LedgerApi", "Accounting.Ledger").DeclaredOn("Billing.Api.LedgerClient")
@@ -72,7 +72,7 @@ public class GenerateContainerDslHandlerProblemTests
     {
         // Given
         var source = new InMemoryContainerSource(
-            [new ContainerAttribute("Billing", "InvoiceApi").DeclaredOn()],
+            [new ContainerAttribute("InvoiceApi", "Billing").DeclaredOn()],
             [
                 new DependsOnAttribute("LedgerApi", "Accounting", "Posts invoices").DeclaredOn("Billing.Api.LedgerClient"),
                 new DependsOnAttribute("LedgerApi", "Accounting", "Posts invoices").DeclaredOn("Billing.Api.InvoiceJob")
@@ -93,7 +93,7 @@ public class GenerateContainerDslHandlerProblemTests
     {
         // Given
         var source = new InMemoryContainerSource(
-            [new ContainerAttribute("Billing", "InvoiceApi").DeclaredOn()],
+            [new ContainerAttribute("InvoiceApi", "Billing").DeclaredOn()],
             [
                 new DependsOnAttribute("PaymentGateway").DeclaredOn("Billing.Api.PaymentClient"),
                 new DependsOnAttribute("PaymentGateway", "Billing").DeclaredOn("Billing.Api.InvoiceJob")
@@ -114,7 +114,7 @@ public class GenerateContainerDslHandlerProblemTests
     {
         // Given
         var source = new InMemoryContainerSource(
-            [new ContainerAttribute("Billing", "Invoice.Api").DeclaredOn()],
+            [new ContainerAttribute("Invoice.Api", "Billing").DeclaredOn()],
             [new DependsOnAttribute("LedgerApi", "Accounting.Ledger").DeclaredOn("Billing.Api.LedgerClient")]);
         var output = new InMemoryDeploymentUnitDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
@@ -137,7 +137,7 @@ public class GenerateContainerDslHandlerProblemTests
     {
         // Given
         var source = new InMemoryContainerSource(
-            [new ContainerAttribute("Billing", "Invoice.Api").DeclaredOn()],
+            [new ContainerAttribute("Invoice.Api", "Billing").DeclaredOn()],
             [
                 new DependsOnAttribute("PaymentGateway").DeclaredOn("Billing.Api.PaymentClient"),
                 new DependsOnAttribute("LedgerApi", "Accounting").DeclaredOn("Billing.Api.LedgerClient")
@@ -158,7 +158,7 @@ public class GenerateContainerDslHandlerProblemTests
     {
         // Given
         var source = new InMemoryContainerSource(
-            [new ContainerAttribute("Billing", "Invoice.Api").DeclaredOn()],
+            [new ContainerAttribute("Invoice.Api", "Billing").DeclaredOn()],
             [new DependsOnAttribute("Payment.Gateway").DeclaredOn("Billing.Api.PaymentClient")]);
         var output = new InMemoryDeploymentUnitDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);

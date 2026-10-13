@@ -27,7 +27,7 @@ public class GenerateContainerDslHandlerContainerTests
     public void Writes_the_context_fragment_of_the_container_when_exactly_one_is_found()
     {
         // Given
-        var source = new InMemoryContainerSource(new ContainerAttribute("ExampleSystem", "Website"));
+        var source = new InMemoryContainerSource(new ContainerAttribute("Website", "ExampleSystem"));
         var output = new InMemoryDeploymentUnitDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
@@ -48,8 +48,8 @@ public class GenerateContainerDslHandlerContainerTests
         // Given
         var source = new InMemoryContainerSource(
             [
-                new ContainerAttribute("Billing", "Invoicing").DeclaredOn("Billing.Api.InvoiceApi"),
-                new ContainerAttribute("Accounts", "Ledger").DeclaredOn("Accounting.Api.LedgerApi")
+                new ContainerAttribute("Invoicing", "Billing").DeclaredOn("Billing.Api.InvoiceApi"),
+                new ContainerAttribute("Ledger", "Accounts").DeclaredOn("Accounting.Api.LedgerApi")
             ],
             []);
         var output = new InMemoryDeploymentUnitDslOutput();
@@ -75,7 +75,7 @@ public class GenerateContainerDslHandlerContainerTests
     public void Writes_nothing_when_the_container_name_is_not_a_valid_identifier(string name)
     {
         // Given
-        var source = new InMemoryContainerSource(new ContainerAttribute("ExampleSystem", name));
+        var source = new InMemoryContainerSource(new ContainerAttribute(name, "ExampleSystem"));
         var output = new InMemoryDeploymentUnitDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
@@ -99,7 +99,7 @@ public class GenerateContainerDslHandlerContainerTests
     public void Writes_nothing_when_the_context_is_not_a_valid_identifier(string context)
     {
         // Given
-        var source = new InMemoryContainerSource(new ContainerAttribute(context, "Website"));
+        var source = new InMemoryContainerSource(new ContainerAttribute("Website", context));
         var output = new InMemoryDeploymentUnitDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 

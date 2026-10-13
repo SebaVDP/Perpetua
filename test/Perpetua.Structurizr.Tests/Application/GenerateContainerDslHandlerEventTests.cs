@@ -12,7 +12,7 @@ public class GenerateContainerDslHandlerEventTests
     {
         // Given
         var source = new InMemoryContainerSource(
-            [new ContainerAttribute("Billing", "InvoiceApi").DeclaredOn()],
+            [new ContainerAttribute("InvoiceApi", "Billing").DeclaredOn()],
             [],
             [new EventAttribute("OrderPlaced").DeclaredOn()]);
         var output = new InMemoryDeploymentUnitDslOutput();
@@ -34,7 +34,7 @@ public class GenerateContainerDslHandlerEventTests
     {
         // Given
         var source = new InMemoryContainerSource(
-            [new ContainerAttribute("Shipping", "ShippingApi").DeclaredOn()],
+            [new ContainerAttribute("ShippingApi", "Shipping").DeclaredOn()],
             [],
             [],
             [new ConsumesAttribute("InvoiceApi", "OrderPlaced", "Billing").DeclaredOn("Shipping.Api.OrderListener")]);
@@ -56,7 +56,7 @@ public class GenerateContainerDslHandlerEventTests
     {
         // Given
         var source = new InMemoryContainerSource(
-            [new ContainerAttribute("Shipping", "ShippingApi").DeclaredOn()],
+            [new ContainerAttribute("ShippingApi", "Shipping").DeclaredOn()],
             [],
             [],
             [new ConsumesAttribute("InvoiceApi", "Order.Placed", "Billing").DeclaredOn("Shipping.Api.OrderListener")]);
@@ -76,11 +76,11 @@ public class GenerateContainerDslHandlerEventTests
     {
         // Given
         var billing = new InMemoryContainerSource(
-            [new ContainerAttribute("Billing", "InvoiceApi").DeclaredOn()],
+            [new ContainerAttribute("InvoiceApi", "Billing").DeclaredOn()],
             [],
             [new EventAttribute("OrderPlaced").DeclaredOn()]);
         var shipping = new InMemoryContainerSource(
-            [new ContainerAttribute("Shipping", "ShippingApi").DeclaredOn()],
+            [new ContainerAttribute("ShippingApi", "Shipping").DeclaredOn()],
             [],
             [new EventAttribute("OrderPlaced").DeclaredOn()]);
 
@@ -102,7 +102,7 @@ public class GenerateContainerDslHandlerEventTests
     {
         // Given
         var source = new InMemoryContainerSource(
-            [new ContainerAttribute("Billing", "InvoiceApi").DeclaredOn()],
+            [new ContainerAttribute("InvoiceApi", "Billing").DeclaredOn()],
             [],
             [new EventAttribute("Order.Placed").DeclaredOn("Billing.Api.InvoiceIssuer")]);
         var output = new InMemoryDeploymentUnitDslOutput();
@@ -121,7 +121,7 @@ public class GenerateContainerDslHandlerEventTests
     {
         // Given
         var source = new InMemoryContainerSource(
-            [new ContainerAttribute("Billing", "InvoiceApi").DeclaredOn()],
+            [new ContainerAttribute("InvoiceApi", "Billing").DeclaredOn()],
             [],
             [
                 new EventAttribute("OrderPlaced").DeclaredOn("Billing.Api.InvoiceIssuer"),

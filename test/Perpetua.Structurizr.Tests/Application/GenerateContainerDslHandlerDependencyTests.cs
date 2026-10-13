@@ -12,7 +12,7 @@ public class GenerateContainerDslHandlerDependencyTests
     {
         // Given
         var source = new InMemoryContainerSource(
-            [new ContainerAttribute("Billing", "InvoiceApi")],
+            [new ContainerAttribute("InvoiceApi", "Billing")],
             new DependsOnAttribute("PaymentGateway"));
         var output = new InMemoryDeploymentUnitDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
@@ -31,7 +31,7 @@ public class GenerateContainerDslHandlerDependencyTests
     {
         // Given
         var source = new InMemoryContainerSource(
-            [new ContainerAttribute("Billing", "InvoiceApi")],
+            [new ContainerAttribute("InvoiceApi", "Billing")],
             new DependsOnAttribute("LedgerApi", "Accounting"));
         var output = new InMemoryDeploymentUnitDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
@@ -50,7 +50,7 @@ public class GenerateContainerDslHandlerDependencyTests
     {
         // Given
         var source = new InMemoryContainerSource(
-            [new ContainerAttribute("Billing", "InvoiceApi")],
+            [new ContainerAttribute("InvoiceApi", "Billing")],
             new DependsOnAttribute("NotificationService", "Accounting"),
             new DependsOnAttribute("NotificationService", "Shipping"));
         var output = new InMemoryDeploymentUnitDslOutput();
