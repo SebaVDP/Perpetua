@@ -7,10 +7,12 @@ public sealed class ConsumesAttribute(string publisher, string eventName, string
     /// <summary>The name of the container that publishes the event.</summary>
     public string Publisher { get; } = publisher;
 
+    /// <summary>The name of the event published by the container.</summary>
     public string EventName { get; } = eventName;
 
     /// <summary>The software-system context of the publisher; defaults to the context of the consumer.</summary>
     public string? Context { get; } = context;
 
+    /// <summary>Why this class consumes the event.</summary>
     public string? Description { get; } = description;
 }

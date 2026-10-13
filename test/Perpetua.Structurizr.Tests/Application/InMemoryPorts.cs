@@ -11,7 +11,7 @@ internal static class AttributeClaimExtensions
         => new(attribute.Context, attribute.Name, new DeclaringClass(declaringClass));
 
     public static DependencyClaim DeclaredOn(this DependsOnAttribute attribute, string declaringClass = DefaultDeclaringClass)
-        => new(attribute.Identifier, attribute.Context, attribute.Description, new DeclaringClass(declaringClass));
+        => new(attribute.Name, attribute.Context, attribute.Description, new DeclaringClass(declaringClass));
 
     public static EventClaim DeclaredOn(this EventAttribute attribute, string declaringClass = DefaultDeclaringClass)
         => new(attribute.Name, new DeclaringClass(declaringClass));

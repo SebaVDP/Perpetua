@@ -16,7 +16,7 @@ public sealed class AssemblyDeclarationScanner(DirectoryInfo assemblyDirectory) 
 
     public IEnumerable<DependencyClaim> Dependencies()
         => Types().SelectMany(type => type.GetCustomAttributes<DependsOnAttribute>()
-            .Select(attribute => new DependencyClaim(attribute.Identifier, attribute.Context, attribute.Description, new DeclaringClass(type.FullName!))));
+            .Select(attribute => new DependencyClaim(attribute.Name, attribute.Context, attribute.Description, new DeclaringClass(type.FullName!))));
 
     public IEnumerable<EventClaim> Events()
         => Types().SelectMany(type => type.GetCustomAttributes<EventAttribute>()
