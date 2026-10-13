@@ -34,8 +34,8 @@ public sealed record Problem
         => new("PSTRUCT.0003", $"Context '{value}' on class '{declaringClass.FullName}' is not a valid identifier.");
 
     /// <summary>A dependency identifier cannot be used as a Structurizr identifier.</summary>
-    public static Problem InvalidDependencyIdentifier(string value, DeclaringClass declaringClass)
-        => new("PSTRUCT.0004", $"Dependency identifier '{value}' on class '{declaringClass.FullName}' is not a valid identifier.");
+    public static Problem InvalidDependencyName(string value, DeclaringClass declaringClass)
+        => new("PSTRUCT.0004", $"Dependency name '{value}' on class '{declaringClass.FullName}' is not a valid identifier.");
 
     /// <summary>A dependency context cannot be used as a Structurizr identifier.</summary>
     public static Problem InvalidDependencyContext(string value, DeclaringClass declaringClass)

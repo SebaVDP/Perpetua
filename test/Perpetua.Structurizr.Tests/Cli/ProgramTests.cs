@@ -77,7 +77,7 @@ public class ProgramTests
         Assert.Equal(
             """
             PSTRUCT.0002: Container name 'Invoice.Api' on class 'Billing.Api.InvoiceApi' is not a valid identifier.
-            PSTRUCT.0004: Dependency identifier 'Payment.Gateway' on class 'Billing.Api.PaymentClient' is not a valid identifier.
+            PSTRUCT.0004: Dependency name 'Payment.Gateway' on class 'Billing.Api.PaymentClient' is not a valid identifier.
             """.ReplaceLineEndings(),
             error.ToString().Trim());
     }

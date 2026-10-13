@@ -19,7 +19,7 @@ public class GenerateContainerDslHandlerProblemTests
         var result = handler.Handle();
 
         // Then
-        Assert.Equal(["PSTRUCT.0004: Dependency identifier 'Payment.Gateway' on class 'Billing.Api.PaymentClient' is not a valid identifier."], Reported(result));
+        Assert.Equal(["PSTRUCT.0004: Dependency name 'Payment.Gateway' on class 'Billing.Api.PaymentClient' is not a valid identifier."], Reported(result));
         Assert.Empty(output.Written);
     }
 
@@ -60,7 +60,7 @@ public class GenerateContainerDslHandlerProblemTests
         // Then
         Assert.Equal(
             [
-                "PSTRUCT.0004: Dependency identifier 'Payment.Gateway' on class 'Billing.Api.PaymentClient' is not a valid identifier.",
+                "PSTRUCT.0004: Dependency name 'Payment.Gateway' on class 'Billing.Api.PaymentClient' is not a valid identifier.",
                 "PSTRUCT.0005: Dependency context 'Accounting.Ledger' on class 'Billing.Api.LedgerClient' is not a valid identifier."
             ],
             Reported(result));
@@ -170,7 +170,7 @@ public class GenerateContainerDslHandlerProblemTests
         Assert.Equal(
             [
                 "PSTRUCT.0002: Container name 'Invoice.Api' on class 'Billing.Api.InvoiceApi' is not a valid identifier.",
-                "PSTRUCT.0004: Dependency identifier 'Payment.Gateway' on class 'Billing.Api.PaymentClient' is not a valid identifier."
+                "PSTRUCT.0004: Dependency name 'Payment.Gateway' on class 'Billing.Api.PaymentClient' is not a valid identifier."
             ],
             Reported(result));
         Assert.Empty(output.Written);

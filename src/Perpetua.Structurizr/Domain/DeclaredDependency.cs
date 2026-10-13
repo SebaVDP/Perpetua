@@ -15,7 +15,7 @@ public abstract record DeclaredDependency
     {
         if (ContainerName.Create(dependency.Identifier) is not Result<ContainerName>.Success { Value: var name })
         {
-            return new Invalid(Problem.InvalidDependencyIdentifier(dependency.Identifier, dependency.DeclaringClass));
+            return new Invalid(Problem.InvalidDependencyName(dependency.Identifier, dependency.DeclaringClass));
         }
 
         if (dependency.Context is null)
