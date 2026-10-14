@@ -192,7 +192,7 @@ What a valid identifier looks like is described in [Rules](#rules).
 
 ## Sample
 
-[`samples/Library`](samples/Library) is a complete example: a small library system with six deployment units whose containers, HTTP dependencies and `BookBorrowed` event are all declared with attributes. Run `samples/Library/generate-docs.ps1` to generate the fragments, then `samples/Library/run-structurizr.ps1` to see the diagram in Structurizr (needs Docker). Only `samples/Library/docs/workspace.dsl` is written by hand.
+[`samples/Library`](samples/Library) is a complete example: a small library system with six deployment units whose containers, HTTP dependencies and `BookBorrowed` event are all declared with attributes. Run `samples/Library/generate-docs.ps1` to generate the fragments, then `samples/Library/run-structurizr.ps1` to see the diagram in Structurizr (needs Docker). Only `samples/Library/docs/workspace.dsl` is written by hand. To run the system itself (needs Docker), start `samples/Library/Library.AppHost`, then send the requests in `samples/Library/Library.Website/Library.Website.http`.
 
 ## License
 

@@ -1,0 +1,7 @@
+@host = http://localhost:5255
+
+### Reserve a book: Website -> Reservations, which sends the ReserveCopy command to Catalog
+POST {{host}}/reserve
+
+### Borrow a book: Website -> Loans -> Members, then Loans publishes BookBorrowed
+POST {{host}}/borrow
