@@ -9,6 +9,9 @@ Architecture diagrams drift. Someone draws them once, the code moves on, and nob
 
 Perpetua keeps them true by generating them from the code. You mark, in your C# code, which container a service is, what it depends on and which events it publishes or consumes. Perpetua reads those markers from your compiled assemblies and generates [Structurizr](https://structurizr.com) fragments, so a C4 diagram can only show what the code says.
 
+![Containers diagram of the Library sample, generated from its attributes](docs/images/library-containers.svg)
+
+The diagram above is the [Library sample](samples/Library/README.md): six deployment units whose containers, dependencies and `BookBorrowed` event all come from attributes. Only the workspace that includes the generated fragments is written by hand. The [legend](docs/images/library-containers-key.svg) explains the notation.
 ## Install
 
 ```bash
