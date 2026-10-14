@@ -88,6 +88,9 @@ project.fragment.lock.json
 artifacts/
 .artifacts/
 
+# JetBrains IDE files
+.idea/
+
 # ASP.NET Scaffolding
 ScaffoldingReadMe.txt
 

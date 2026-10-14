@@ -1,0 +1,14 @@
+<Solution>
+  <Project Path="Library.AppHost/Library.AppHost.csproj" />
+  <Project Path="Library.Catalog/Library.Catalog.csproj" />
+  <Project Path="Library.Catalog.Contracts/Library.Catalog.Contracts.csproj" />
+  <Project Path="Library.Loans/Library.Loans.csproj" />
+  <Project Path="Library.Loans.Contracts/Library.Loans.Contracts.csproj" />
+  <Project Path="Library.Members/Library.Members.csproj" />
+  <Project Path="Library.Members.Contracts/Library.Members.Contracts.csproj" />
+  <Project Path="Library.Notifications/Library.Notifications.csproj" />
+  <Project Path="Library.Reservations/Library.Reservations.csproj" />
+  <Project Path="Library.Reservations.Contracts/Library.Reservations.Contracts.csproj" />
+  <Project Path="Library.ServiceDefaults/Library.ServiceDefaults.csproj" />
+  <Project Path="Library.Website/Library.Website.csproj" />
+</Solution>
