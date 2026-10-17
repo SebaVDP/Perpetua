@@ -75,7 +75,17 @@ Separate runs can therefore declare containers with the same name in different c
 
 ## Events
 
-Every event a container publishes becomes a container of its own, named `<Container>_<Event>` and tagged `Event`. The publisher and every consumer get a relationship to it, so they never depend on each other directly:
+Every event a container publishes becomes a container of its own, named `<Container>_<Event>` and tagged `Event`. The generated relationships connect the publisher and each consumer to the event, rather than directly to one another.
+
+### An opinionated modeling choice
+
+Perpetua deliberately represents event types as Structurizr containers to make them explicit in the container view. An element tagged `Event` represents an event contract, not a separately deployable application, a broker or a topic.
+
+This makes fan-out and shared contract coupling visible: you can see which containers publish or consume each event, and which consumers may be affected by a change to its contract. The absence of a direct publisher-to-consumer relationship does not mean they are uncoupled. This view exposes contract coupling; it does not establish other dimensions, such as temporal coupling.
+
+The trade-off is visual density: systems with many event types have more elements in their diagrams. Perpetua favors explicit event contracts over hiding them in direct relationships between containers. Views and styles in the hand-written workspace let you choose what to show and distinguish events from running applications.
+
+### Generated fragments
 
 ```
 docs/

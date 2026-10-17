@@ -7,7 +7,9 @@
 
 Architecture diagrams drift. Someone draws them once, the code moves on, and nobody trusts them anymore.
 
-Perpetua keeps them true by generating them from the code. You mark, in your C# code, which container a service is, what it depends on and which events it publishes or consumes. Perpetua reads those markers from your compiled assemblies and generates [Structurizr](https://structurizr.com) fragments, so a C4 diagram can only show what the code says.
+Perpetua generates architecture diagrams from explicit markers in your C# code. Keep architectural intent close to the implementation, and regenerate the diagrams instead of maintaining them separately. The markers declare which container a service represents, what it depends on and which events it publishes or consumes. Perpetua reads them from your compiled assemblies and generates [Structurizr](https://structurizr.com) fragments.
+
+The diagrams reflect those declarations. Perpetua does not verify that they match the implementation, so the markers still need to be maintained as the code changes.
 
 ![Containers diagram of the Library sample, generated from its attributes](docs/images/library-containers.svg)
 
