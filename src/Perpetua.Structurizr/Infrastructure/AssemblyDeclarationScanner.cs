@@ -17,7 +17,7 @@ namespace Perpetua.Structurizr.Infrastructure;
 public sealed class AssemblyDeclarationScanner(DirectoryInfo assemblyDirectory) : IDeclarationSource
 {
     private static readonly Dictionary<string, Type> DeclarationAttributes =
-        new[] { typeof(ContainerAttribute), typeof(DependsOnAttribute), typeof(EventAttribute), typeof(ConsumesAttribute) }
+        new[] { typeof(ContainerAttribute), typeof(DependsOnAttribute), typeof(PublishesAttribute), typeof(ConsumesAttribute) }
             .ToDictionary(type => type.FullName!);
 
     private readonly Lazy<List<Declaration>> declarations = new(() => [.. assemblyDirectory.GetFiles("*.dll").SelectMany(Read)]);
@@ -31,7 +31,7 @@ public sealed class AssemblyDeclarationScanner(DirectoryInfo assemblyDirectory) 
             .Select(declared => new DependencyClaim(declared.Attribute.Name, declared.Attribute.Context, declared.Attribute.Description, declared.DeclaringClass));
 
     public IEnumerable<EventClaim> Events()
-        => Declared<EventAttribute>()
+        => Declared<PublishesAttribute>()
             .Select(declared => new EventClaim(declared.Attribute.Name, declared.DeclaringClass));
 
     public IEnumerable<ConsumptionClaim> Consumptions()

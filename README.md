@@ -44,7 +44,7 @@ Include the generated folders in your hand-written Structurizr workspace, and th
 ## Learn more
 
 - [Concepts](docs/concepts.md): the words Perpetua uses and how a run turns markers into Structurizr fragments.
-- [Attributes](docs/attributes.md): `[Container]`, `[DependsOn]`, `[Event]`, `[Consumes]` and the rules they follow.
+- [Attributes](docs/attributes.md): `[Container]`, `[DependsOn]`, `[Publishes]`, `[Consumes]` and the rules they follow, including [migration from the previous API](docs/attributes.md#breaking-api-changes).
 - [Failures](docs/failures.md): the exit code and the `PSTRUCT` problem codes.
 - [Library sample](samples/Library/README.md): a complete system with six deployment units, whose diagram is generated from its attributes.
 

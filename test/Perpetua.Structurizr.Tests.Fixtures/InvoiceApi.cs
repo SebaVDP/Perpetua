@@ -13,8 +13,8 @@ public sealed class LedgerClient;
 [DependsOn("AuditTrail", "Compliance", "Records changes")]
 public sealed class AuditLogger;
 
-[Event("OrderPlaced")]
+[Publishes("OrderPlaced")]
 public sealed class InvoiceIssuer;
 
-[Consumes("PaymentSettled", "LedgerApi", "Accounting")]
+[Consumes("PaymentSettled", publisherContainer: "LedgerApi", publisherContext: "Accounting")]
 public sealed class PaymentSettlementListener;

@@ -5,9 +5,9 @@ namespace Perpetua.Structurizr.Tests.FrameworkFixtures;
 [Container("ReportingService", "Billing")]
 public sealed class ReportingService;
 
-[Event("ReportGenerated")]
+[Publishes("ReportGenerated")]
 [DependsOn("Catalog", "Library")]
-[Consumes("BookBorrowed", "Loans", "Library")]
+[Consumes("BookBorrowed", publisherContainer: "Loans", publisherContext: "Library")]
 public sealed class FrameworkDependentController : ControllerBase;
 
 public sealed class ReportingModule

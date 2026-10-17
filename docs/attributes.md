@@ -1,6 +1,6 @@
 # Attributes
 
-Every attribute names the thing it refers to first and its context after it: `[Container(name, context)]`, `[DependsOn(name, context)]` and `[Consumes(eventName, publisher, context)]`.
+Every attribute names the thing it refers to first and its context after it: `[Container(name, context)]`, `[DependsOn(name, context)]` and `[Consumes(eventName, publisherContainer, publisherContext)]`.
 
 ## `[Container]`
 
@@ -31,13 +31,13 @@ public class PostingJob { }
 - The context is optional and defaults to the context of the container of the deployment unit (`Billing` here, so `Ledger` is `Billing.Ledger`).
 - The description is optional and becomes the description of the relationship.
 
-## `[Event]`
+## `[Publishes]`
 
-`[Event(name)]` declares that the container publishes an event. Put it on any class of the deployment unit.
+`[Publishes(name)]` declares that the container publishes an event. Put it on any class of the deployment unit.
 
 ```csharp
 // Billing service (container Invoicing, context Billing)
-[Event("InvoiceIssued")]
+[Publishes("InvoiceIssued")]
 public class InvoicingService { }
 ```
 
@@ -45,16 +45,16 @@ Every published event becomes a container of its own, named `<Container>_<Event>
 
 ## `[Consumes]`
 
-`[Consumes(eventName, publisher, context = null, description = null)]` declares that the container consumes an event published by another container.
+`[Consumes(eventName, publisherContainer, publisherContext = null, description = null)]` declares that the container consumes an event published by another container.
 
 ```csharp
 // Accounts service (container Website, context Accounts)
-[Consumes("InvoiceIssued", "Invoicing", "Billing")]
+[Consumes("InvoiceIssued", publisherContainer: "Invoicing", publisherContext: "Billing")]
 public class InvoiceInbox { }
 ```
 
-- The event name and the name of the publishing container are required.
-- The context is the context of the publisher. It is optional and defaults to the context of the consumer.
+- The event name and `publisherContainer`, the name of the publishing container, are required.
+- `publisherContext` is the context of the publishing container. It is optional and defaults to the context of the consumer.
 - The description is optional and becomes the description of the relationship.
 
 The consumer never writes the name of the event container. Perpetua derives it from the publisher and the event.
@@ -70,3 +70,13 @@ Both the publisher and the consumer get a relationship to the event, so they nev
 - Files from an earlier run with the same context and name are overwritten.
 
 A run that breaks a rule fails and reports a code for each problem. See [Failures](failures.md).
+
+## Breaking API changes
+
+Replace `[Event("Name")]` with `[Publishes("Name")]` (or `EventAttribute` with `PublishesAttribute` in explicit constructor calls). `EventAttribute` has been removed; there is no compatibility alias. Rebuild assemblies with the updated package before scanning them with the updated tool.
+
+For `ConsumesAttribute` constructor calls, rename named arguments `publisher:` to `publisherContainer:` and `context:` to `publisherContext:`. Positional argument order and default-context behavior are unchanged. The public `Publisher` and `Context` properties keep their existing names.
+
+These API changes do not change generated event identifiers, the `Event` tag, relationships or validation rules.
+
+The [Library sample](../samples/Library/README.md) remains pinned to Perpetua 0.1.0-preview.5 and uses its `[Event]` API. Its code and tool version will migrate together when the updated packages are released.

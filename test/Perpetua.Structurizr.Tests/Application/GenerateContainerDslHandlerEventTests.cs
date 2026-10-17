@@ -14,7 +14,7 @@ public class GenerateContainerDslHandlerEventTests
         var source = new InMemoryContainerSource(
             [new ContainerAttribute("InvoiceApi", "Billing").DeclaredOn()],
             [],
-            [new EventAttribute("OrderPlaced").DeclaredOn()]);
+            [new PublishesAttribute("OrderPlaced").DeclaredOn()]);
         var output = new InMemoryDeploymentUnitDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
@@ -98,11 +98,11 @@ public class GenerateContainerDslHandlerEventTests
         var billing = new InMemoryContainerSource(
             [new ContainerAttribute("InvoiceApi", "Billing").DeclaredOn()],
             [],
-            [new EventAttribute("OrderPlaced").DeclaredOn()]);
+            [new PublishesAttribute("OrderPlaced").DeclaredOn()]);
         var shipping = new InMemoryContainerSource(
             [new ContainerAttribute("ShippingApi", "Shipping").DeclaredOn()],
             [],
-            [new EventAttribute("OrderPlaced").DeclaredOn()]);
+            [new PublishesAttribute("OrderPlaced").DeclaredOn()]);
 
         // When
         var billingResult = new GenerateContainerDslHandler(billing, new InMemoryDeploymentUnitDslOutput()).Handle();
@@ -124,7 +124,7 @@ public class GenerateContainerDslHandlerEventTests
         var source = new InMemoryContainerSource(
             [new ContainerAttribute("InvoiceApi", "Billing").DeclaredOn()],
             [],
-            [new EventAttribute("Order.Placed").DeclaredOn("Billing.Api.InvoiceIssuer")]);
+            [new PublishesAttribute("Order.Placed").DeclaredOn("Billing.Api.InvoiceIssuer")]);
         var output = new InMemoryDeploymentUnitDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
 
@@ -144,8 +144,8 @@ public class GenerateContainerDslHandlerEventTests
             [new ContainerAttribute("InvoiceApi", "Billing").DeclaredOn()],
             [],
             [
-                new EventAttribute("OrderPlaced").DeclaredOn("Billing.Api.InvoiceIssuer"),
-                new EventAttribute("OrderPlaced").DeclaredOn("Billing.Api.InvoiceCanceller")
+                new PublishesAttribute("OrderPlaced").DeclaredOn("Billing.Api.InvoiceIssuer"),
+                new PublishesAttribute("OrderPlaced").DeclaredOn("Billing.Api.InvoiceCanceller")
             ]);
         var output = new InMemoryDeploymentUnitDslOutput();
         var handler = new GenerateContainerDslHandler(source, output);
